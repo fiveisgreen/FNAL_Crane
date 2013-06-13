@@ -1,0 +1,21 @@
+universe = vanilla
+Executable = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/run.sh
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+# This sets up where your log files go
+# Also make sure that the directoy where your log files will go exists
+transfer_input_files=/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/tar_for_condor.tar,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/plotsWithBackground_dataGLL12.root,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/params_arg.h,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/MCpoint.h
+Outputdir = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/gridout
+
+MClable = st_200_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop200_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st200_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st200_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st200_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st200_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1

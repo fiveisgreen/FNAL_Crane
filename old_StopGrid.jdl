@@ -1,0 +1,2843 @@
+universe = vanilla
+Executable = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/run.sh
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+# This sets up where your log files go
+# Also make sure that the directoy where your log files will go exists
+transfer_input_files=/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/tar_for_condor.tar,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/plotsWithBackground_dataGLL12.root,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/params_arg.h,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/MCpoint.h
+Outputdir = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/gridout
+
+MClable = mst_185_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_185_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st185_ho150.root
+logplotsroot_mc = raw_plots_MC_st185_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st185_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st185_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_185_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_185_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st185_ho175.root
+logplotsroot_mc = raw_plots_MC_st185_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st185_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st185_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_210_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_210_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st210_ho150.root
+logplotsroot_mc = raw_plots_MC_st210_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st210_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st210_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_210_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_210_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st210_ho175.root
+logplotsroot_mc = raw_plots_MC_st210_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st210_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st210_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_210_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_210_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st210_ho200.root
+logplotsroot_mc = raw_plots_MC_st210_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st210_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st210_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_235_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_235_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st235_ho150.root
+logplotsroot_mc = raw_plots_MC_st235_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st235_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st235_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_235_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_235_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st235_ho175.root
+logplotsroot_mc = raw_plots_MC_st235_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st235_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st235_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_235_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_235_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st235_ho200.root
+logplotsroot_mc = raw_plots_MC_st235_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st235_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st235_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_235_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_235_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st235_ho225.root
+logplotsroot_mc = raw_plots_MC_st235_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st235_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st235_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_260_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_260_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st260_ho150.root
+logplotsroot_mc = raw_plots_MC_st260_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st260_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st260_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_260_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_260_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st260_ho175.root
+logplotsroot_mc = raw_plots_MC_st260_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st260_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st260_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_260_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_260_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st260_ho200.root
+logplotsroot_mc = raw_plots_MC_st260_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st260_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st260_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_260_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_260_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st260_ho225.root
+logplotsroot_mc = raw_plots_MC_st260_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st260_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st260_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_260_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_260_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st260_ho250.root
+logplotsroot_mc = raw_plots_MC_st260_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st260_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st260_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_285_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_285_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st285_ho150.root
+logplotsroot_mc = raw_plots_MC_st285_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st285_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st285_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_285_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_285_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st285_ho175.root
+logplotsroot_mc = raw_plots_MC_st285_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st285_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st285_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_285_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_285_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st285_ho200.root
+logplotsroot_mc = raw_plots_MC_st285_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st285_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st285_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_285_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_285_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st285_ho225.root
+logplotsroot_mc = raw_plots_MC_st285_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st285_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st285_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_285_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_285_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st285_ho250.root
+logplotsroot_mc = raw_plots_MC_st285_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st285_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st285_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_285_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_285_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st285_ho275.root
+logplotsroot_mc = raw_plots_MC_st285_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st285_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st285_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_310_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_310_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st310_ho150.root
+logplotsroot_mc = raw_plots_MC_st310_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st310_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st310_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_310_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_310_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st310_ho175.root
+logplotsroot_mc = raw_plots_MC_st310_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st310_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st310_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_310_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_310_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st310_ho200.root
+logplotsroot_mc = raw_plots_MC_st310_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st310_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st310_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_310_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_310_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st310_ho225.root
+logplotsroot_mc = raw_plots_MC_st310_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st310_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st310_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_310_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_310_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st310_ho250.root
+logplotsroot_mc = raw_plots_MC_st310_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st310_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st310_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_310_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_310_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st310_ho275.root
+logplotsroot_mc = raw_plots_MC_st310_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st310_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st310_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_310_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_310_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st310_ho300.root
+logplotsroot_mc = raw_plots_MC_st310_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st310_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st310_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st335_ho150.root
+logplotsroot_mc = raw_plots_MC_st335_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st335_ho175.root
+logplotsroot_mc = raw_plots_MC_st335_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st335_ho200.root
+logplotsroot_mc = raw_plots_MC_st335_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st335_ho225.root
+logplotsroot_mc = raw_plots_MC_st335_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st335_ho250.root
+logplotsroot_mc = raw_plots_MC_st335_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st335_ho275.root
+logplotsroot_mc = raw_plots_MC_st335_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st335_ho300.root
+logplotsroot_mc = raw_plots_MC_st335_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_335_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_335_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st335_ho325.root
+logplotsroot_mc = raw_plots_MC_st335_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st335_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st335_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st360_ho150.root
+logplotsroot_mc = raw_plots_MC_st360_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st360_ho175.root
+logplotsroot_mc = raw_plots_MC_st360_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st360_ho200.root
+logplotsroot_mc = raw_plots_MC_st360_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st360_ho225.root
+logplotsroot_mc = raw_plots_MC_st360_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st360_ho250.root
+logplotsroot_mc = raw_plots_MC_st360_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st360_ho275.root
+logplotsroot_mc = raw_plots_MC_st360_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st360_ho300.root
+logplotsroot_mc = raw_plots_MC_st360_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_360_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_360_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st360_ho325.root
+logplotsroot_mc = raw_plots_MC_st360_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st360_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st360_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st385_ho150.root
+logplotsroot_mc = raw_plots_MC_st385_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st385_ho175.root
+logplotsroot_mc = raw_plots_MC_st385_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st385_ho200.root
+logplotsroot_mc = raw_plots_MC_st385_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st385_ho225.root
+logplotsroot_mc = raw_plots_MC_st385_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st385_ho250.root
+logplotsroot_mc = raw_plots_MC_st385_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st385_ho275.root
+logplotsroot_mc = raw_plots_MC_st385_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st385_ho300.root
+logplotsroot_mc = raw_plots_MC_st385_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st385_ho325.root
+logplotsroot_mc = raw_plots_MC_st385_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_385_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_385_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st385_ho375.root
+logplotsroot_mc = raw_plots_MC_st385_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st385_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st385_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st410_ho150.root
+logplotsroot_mc = raw_plots_MC_st410_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st410_ho175.root
+logplotsroot_mc = raw_plots_MC_st410_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st410_ho200.root
+logplotsroot_mc = raw_plots_MC_st410_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st410_ho225.root
+logplotsroot_mc = raw_plots_MC_st410_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st410_ho250.root
+logplotsroot_mc = raw_plots_MC_st410_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st410_ho275.root
+logplotsroot_mc = raw_plots_MC_st410_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st410_ho300.root
+logplotsroot_mc = raw_plots_MC_st410_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st410_ho325.root
+logplotsroot_mc = raw_plots_MC_st410_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_410_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_410_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st410_ho375.root
+logplotsroot_mc = raw_plots_MC_st410_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st410_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st410_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st460_ho150.root
+logplotsroot_mc = raw_plots_MC_st460_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st460_ho175.root
+logplotsroot_mc = raw_plots_MC_st460_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st460_ho200.root
+logplotsroot_mc = raw_plots_MC_st460_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st460_ho225.root
+logplotsroot_mc = raw_plots_MC_st460_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st460_ho250.root
+logplotsroot_mc = raw_plots_MC_st460_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st460_ho275.root
+logplotsroot_mc = raw_plots_MC_st460_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st460_ho300.root
+logplotsroot_mc = raw_plots_MC_st460_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st460_ho325.root
+logplotsroot_mc = raw_plots_MC_st460_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st460_ho375.root
+logplotsroot_mc = raw_plots_MC_st460_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_460_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_460_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st460_ho425.root
+logplotsroot_mc = raw_plots_MC_st460_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st460_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st460_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st510_ho150.root
+logplotsroot_mc = raw_plots_MC_st510_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st510_ho175.root
+logplotsroot_mc = raw_plots_MC_st510_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st510_ho200.root
+logplotsroot_mc = raw_plots_MC_st510_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st510_ho225.root
+logplotsroot_mc = raw_plots_MC_st510_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st510_ho250.root
+logplotsroot_mc = raw_plots_MC_st510_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st510_ho275.root
+logplotsroot_mc = raw_plots_MC_st510_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st510_ho300.root
+logplotsroot_mc = raw_plots_MC_st510_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st510_ho325.root
+logplotsroot_mc = raw_plots_MC_st510_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st510_ho375.root
+logplotsroot_mc = raw_plots_MC_st510_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st510_ho425.root
+logplotsroot_mc = raw_plots_MC_st510_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_510_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_510_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st510_ho475.root
+logplotsroot_mc = raw_plots_MC_st510_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st510_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st510_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st610_ho150.root
+logplotsroot_mc = raw_plots_MC_st610_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st610_ho175.root
+logplotsroot_mc = raw_plots_MC_st610_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st610_ho200.root
+logplotsroot_mc = raw_plots_MC_st610_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st610_ho225.root
+logplotsroot_mc = raw_plots_MC_st610_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st610_ho250.root
+logplotsroot_mc = raw_plots_MC_st610_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st610_ho275.root
+logplotsroot_mc = raw_plots_MC_st610_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st610_ho300.root
+logplotsroot_mc = raw_plots_MC_st610_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st610_ho325.root
+logplotsroot_mc = raw_plots_MC_st610_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st610_ho375.root
+logplotsroot_mc = raw_plots_MC_st610_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st610_ho425.root
+logplotsroot_mc = raw_plots_MC_st610_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st610_ho475.root
+logplotsroot_mc = raw_plots_MC_st610_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st610_ho525.root
+logplotsroot_mc = raw_plots_MC_st610_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_610_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_610_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st610_ho575.root
+logplotsroot_mc = raw_plots_MC_st610_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st610_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st610_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st660_ho150.root
+logplotsroot_mc = raw_plots_MC_st660_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st660_ho175.root
+logplotsroot_mc = raw_plots_MC_st660_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st660_ho200.root
+logplotsroot_mc = raw_plots_MC_st660_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st660_ho225.root
+logplotsroot_mc = raw_plots_MC_st660_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st660_ho250.root
+logplotsroot_mc = raw_plots_MC_st660_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st660_ho275.root
+logplotsroot_mc = raw_plots_MC_st660_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st660_ho300.root
+logplotsroot_mc = raw_plots_MC_st660_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st660_ho325.root
+logplotsroot_mc = raw_plots_MC_st660_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st660_ho375.root
+logplotsroot_mc = raw_plots_MC_st660_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st660_ho425.root
+logplotsroot_mc = raw_plots_MC_st660_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st660_ho475.root
+logplotsroot_mc = raw_plots_MC_st660_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st660_ho525.root
+logplotsroot_mc = raw_plots_MC_st660_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st660_ho575.root
+logplotsroot_mc = raw_plots_MC_st660_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_660_mu_625
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_660_M3_5050_mu_625.root
+plotsroot_mc = raw_plots_MC_st660_ho625.root
+logplotsroot_mc = raw_plots_MC_st660_ho625.log
+plotsAndBackground_mc = plotsWithBackground_MC_st660_ho625.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st660_ho625.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st710_ho150.root
+logplotsroot_mc = raw_plots_MC_st710_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st710_ho175.root
+logplotsroot_mc = raw_plots_MC_st710_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st710_ho200.root
+logplotsroot_mc = raw_plots_MC_st710_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st710_ho225.root
+logplotsroot_mc = raw_plots_MC_st710_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st710_ho250.root
+logplotsroot_mc = raw_plots_MC_st710_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st710_ho275.root
+logplotsroot_mc = raw_plots_MC_st710_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st710_ho300.root
+logplotsroot_mc = raw_plots_MC_st710_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st710_ho325.root
+logplotsroot_mc = raw_plots_MC_st710_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st710_ho375.root
+logplotsroot_mc = raw_plots_MC_st710_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st710_ho425.root
+logplotsroot_mc = raw_plots_MC_st710_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st710_ho475.root
+logplotsroot_mc = raw_plots_MC_st710_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st710_ho525.root
+logplotsroot_mc = raw_plots_MC_st710_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st710_ho575.root
+logplotsroot_mc = raw_plots_MC_st710_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_625
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_625.root
+plotsroot_mc = raw_plots_MC_st710_ho625.root
+logplotsroot_mc = raw_plots_MC_st710_ho625.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho625.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho625.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_710_mu_675
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_710_M3_5050_mu_675.root
+plotsroot_mc = raw_plots_MC_st710_ho675.root
+logplotsroot_mc = raw_plots_MC_st710_ho675.log
+plotsAndBackground_mc = plotsWithBackground_MC_st710_ho675.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st710_ho675.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st810_ho150.root
+logplotsroot_mc = raw_plots_MC_st810_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st810_ho175.root
+logplotsroot_mc = raw_plots_MC_st810_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st810_ho200.root
+logplotsroot_mc = raw_plots_MC_st810_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st810_ho225.root
+logplotsroot_mc = raw_plots_MC_st810_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st810_ho250.root
+logplotsroot_mc = raw_plots_MC_st810_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st810_ho275.root
+logplotsroot_mc = raw_plots_MC_st810_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st810_ho300.root
+logplotsroot_mc = raw_plots_MC_st810_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st810_ho325.root
+logplotsroot_mc = raw_plots_MC_st810_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st810_ho375.root
+logplotsroot_mc = raw_plots_MC_st810_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st810_ho425.root
+logplotsroot_mc = raw_plots_MC_st810_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st810_ho475.root
+logplotsroot_mc = raw_plots_MC_st810_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st810_ho525.root
+logplotsroot_mc = raw_plots_MC_st810_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st810_ho575.root
+logplotsroot_mc = raw_plots_MC_st810_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_625
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_625.root
+plotsroot_mc = raw_plots_MC_st810_ho625.root
+logplotsroot_mc = raw_plots_MC_st810_ho625.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho625.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho625.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_675
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_675.root
+plotsroot_mc = raw_plots_MC_st810_ho675.root
+logplotsroot_mc = raw_plots_MC_st810_ho675.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho675.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho675.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_810_mu_725
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_810_M3_5050_mu_725.root
+plotsroot_mc = raw_plots_MC_st810_ho725.root
+logplotsroot_mc = raw_plots_MC_st810_ho725.log
+plotsAndBackground_mc = plotsWithBackground_MC_st810_ho725.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st810_ho725.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st910_ho150.root
+logplotsroot_mc = raw_plots_MC_st910_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st910_ho175.root
+logplotsroot_mc = raw_plots_MC_st910_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st910_ho200.root
+logplotsroot_mc = raw_plots_MC_st910_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st910_ho225.root
+logplotsroot_mc = raw_plots_MC_st910_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st910_ho250.root
+logplotsroot_mc = raw_plots_MC_st910_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st910_ho275.root
+logplotsroot_mc = raw_plots_MC_st910_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st910_ho300.root
+logplotsroot_mc = raw_plots_MC_st910_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st910_ho325.root
+logplotsroot_mc = raw_plots_MC_st910_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st910_ho375.root
+logplotsroot_mc = raw_plots_MC_st910_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st910_ho425.root
+logplotsroot_mc = raw_plots_MC_st910_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st910_ho475.root
+logplotsroot_mc = raw_plots_MC_st910_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st910_ho525.root
+logplotsroot_mc = raw_plots_MC_st910_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st910_ho575.root
+logplotsroot_mc = raw_plots_MC_st910_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_625
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_625.root
+plotsroot_mc = raw_plots_MC_st910_ho625.root
+logplotsroot_mc = raw_plots_MC_st910_ho625.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho625.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho625.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_675
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_675.root
+plotsroot_mc = raw_plots_MC_st910_ho675.root
+logplotsroot_mc = raw_plots_MC_st910_ho675.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho675.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho675.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_725
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_725.root
+plotsroot_mc = raw_plots_MC_st910_ho725.root
+logplotsroot_mc = raw_plots_MC_st910_ho725.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho725.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho725.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_910_mu_825
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_910_M3_5050_mu_825.root
+plotsroot_mc = raw_plots_MC_st910_ho825.root
+logplotsroot_mc = raw_plots_MC_st910_ho825.log
+plotsAndBackground_mc = plotsWithBackground_MC_st910_ho825.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st910_ho825.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st1010_ho150.root
+logplotsroot_mc = raw_plots_MC_st1010_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st1010_ho175.root
+logplotsroot_mc = raw_plots_MC_st1010_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st1010_ho200.root
+logplotsroot_mc = raw_plots_MC_st1010_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st1010_ho225.root
+logplotsroot_mc = raw_plots_MC_st1010_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st1010_ho250.root
+logplotsroot_mc = raw_plots_MC_st1010_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st1010_ho275.root
+logplotsroot_mc = raw_plots_MC_st1010_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st1010_ho300.root
+logplotsroot_mc = raw_plots_MC_st1010_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st1010_ho325.root
+logplotsroot_mc = raw_plots_MC_st1010_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st1010_ho375.root
+logplotsroot_mc = raw_plots_MC_st1010_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st1010_ho425.root
+logplotsroot_mc = raw_plots_MC_st1010_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st1010_ho475.root
+logplotsroot_mc = raw_plots_MC_st1010_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st1010_ho525.root
+logplotsroot_mc = raw_plots_MC_st1010_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st1010_ho575.root
+logplotsroot_mc = raw_plots_MC_st1010_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_625
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_625.root
+plotsroot_mc = raw_plots_MC_st1010_ho625.root
+logplotsroot_mc = raw_plots_MC_st1010_ho625.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho625.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho625.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_675
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_675.root
+plotsroot_mc = raw_plots_MC_st1010_ho675.root
+logplotsroot_mc = raw_plots_MC_st1010_ho675.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho675.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho675.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_725
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_725.root
+plotsroot_mc = raw_plots_MC_st1010_ho725.root
+logplotsroot_mc = raw_plots_MC_st1010_ho725.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho725.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho725.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_825
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_825.root
+plotsroot_mc = raw_plots_MC_st1010_ho825.root
+logplotsroot_mc = raw_plots_MC_st1010_ho825.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho825.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho825.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1010_mu_925
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1010_M3_5050_mu_925.root
+plotsroot_mc = raw_plots_MC_st1010_ho925.root
+logplotsroot_mc = raw_plots_MC_st1010_ho925.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1010_ho925.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1010_ho925.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_1025
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_1025.root
+plotsroot_mc = raw_plots_MC_st1510_ho1025.root
+logplotsroot_mc = raw_plots_MC_st1510_ho1025.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho1025.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho1025.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_1125
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_1125.root
+plotsroot_mc = raw_plots_MC_st1510_ho1125.root
+logplotsroot_mc = raw_plots_MC_st1510_ho1125.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho1125.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho1125.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_1225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_1225.root
+plotsroot_mc = raw_plots_MC_st1510_ho1225.root
+logplotsroot_mc = raw_plots_MC_st1510_ho1225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho1225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho1225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st1510_ho150.root
+logplotsroot_mc = raw_plots_MC_st1510_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st1510_ho175.root
+logplotsroot_mc = raw_plots_MC_st1510_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st1510_ho200.root
+logplotsroot_mc = raw_plots_MC_st1510_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st1510_ho225.root
+logplotsroot_mc = raw_plots_MC_st1510_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st1510_ho250.root
+logplotsroot_mc = raw_plots_MC_st1510_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st1510_ho275.root
+logplotsroot_mc = raw_plots_MC_st1510_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st1510_ho300.root
+logplotsroot_mc = raw_plots_MC_st1510_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st1510_ho325.root
+logplotsroot_mc = raw_plots_MC_st1510_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st1510_ho375.root
+logplotsroot_mc = raw_plots_MC_st1510_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st1510_ho425.root
+logplotsroot_mc = raw_plots_MC_st1510_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st1510_ho475.root
+logplotsroot_mc = raw_plots_MC_st1510_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st1510_ho525.root
+logplotsroot_mc = raw_plots_MC_st1510_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st1510_ho575.root
+logplotsroot_mc = raw_plots_MC_st1510_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_625
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_625.root
+plotsroot_mc = raw_plots_MC_st1510_ho625.root
+logplotsroot_mc = raw_plots_MC_st1510_ho625.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho625.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho625.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_675
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_675.root
+plotsroot_mc = raw_plots_MC_st1510_ho675.root
+logplotsroot_mc = raw_plots_MC_st1510_ho675.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho675.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho675.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_725
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_725.root
+plotsroot_mc = raw_plots_MC_st1510_ho725.root
+logplotsroot_mc = raw_plots_MC_st1510_ho725.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho725.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho725.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_825
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_825.root
+plotsroot_mc = raw_plots_MC_st1510_ho825.root
+logplotsroot_mc = raw_plots_MC_st1510_ho825.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho825.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho825.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_1510_mu_925
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_1510_M3_5050_mu_925.root
+plotsroot_mc = raw_plots_MC_st1510_ho925.root
+logplotsroot_mc = raw_plots_MC_st1510_ho925.log
+plotsAndBackground_mc = plotsWithBackground_MC_st1510_ho925.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st1510_ho925.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_1025
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_1025.root
+plotsroot_mc = raw_plots_MC_st2010_ho1025.root
+logplotsroot_mc = raw_plots_MC_st2010_ho1025.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1025.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1025.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_1125
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_1125.root
+plotsroot_mc = raw_plots_MC_st2010_ho1125.root
+logplotsroot_mc = raw_plots_MC_st2010_ho1125.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1125.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1125.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_1225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_1225.root
+plotsroot_mc = raw_plots_MC_st2010_ho1225.root
+logplotsroot_mc = raw_plots_MC_st2010_ho1225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_150
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_150.root
+plotsroot_mc = raw_plots_MC_st2010_ho150.root
+logplotsroot_mc = raw_plots_MC_st2010_ho150.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho150.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho150.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_1525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_1525.root
+plotsroot_mc = raw_plots_MC_st2010_ho1525.root
+logplotsroot_mc = raw_plots_MC_st2010_ho1525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho1525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_175
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_175.root
+plotsroot_mc = raw_plots_MC_st2010_ho175.root
+logplotsroot_mc = raw_plots_MC_st2010_ho175.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho175.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho175.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_200
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_200.root
+plotsroot_mc = raw_plots_MC_st2010_ho200.root
+logplotsroot_mc = raw_plots_MC_st2010_ho200.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho200.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho200.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_225
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_225.root
+plotsroot_mc = raw_plots_MC_st2010_ho225.root
+logplotsroot_mc = raw_plots_MC_st2010_ho225.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho225.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho225.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_250
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_250.root
+plotsroot_mc = raw_plots_MC_st2010_ho250.root
+logplotsroot_mc = raw_plots_MC_st2010_ho250.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho250.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho250.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_275
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_275.root
+plotsroot_mc = raw_plots_MC_st2010_ho275.root
+logplotsroot_mc = raw_plots_MC_st2010_ho275.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho275.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho275.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_300
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_300.root
+plotsroot_mc = raw_plots_MC_st2010_ho300.root
+logplotsroot_mc = raw_plots_MC_st2010_ho300.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho300.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho300.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_325
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_325.root
+plotsroot_mc = raw_plots_MC_st2010_ho325.root
+logplotsroot_mc = raw_plots_MC_st2010_ho325.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho325.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho325.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_375
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_375.root
+plotsroot_mc = raw_plots_MC_st2010_ho375.root
+logplotsroot_mc = raw_plots_MC_st2010_ho375.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho375.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho375.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_425
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_425.root
+plotsroot_mc = raw_plots_MC_st2010_ho425.root
+logplotsroot_mc = raw_plots_MC_st2010_ho425.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho425.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho425.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_475
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_475.root
+plotsroot_mc = raw_plots_MC_st2010_ho475.root
+logplotsroot_mc = raw_plots_MC_st2010_ho475.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho475.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho475.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_525
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_525.root
+plotsroot_mc = raw_plots_MC_st2010_ho525.root
+logplotsroot_mc = raw_plots_MC_st2010_ho525.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho525.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho525.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_575
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_575.root
+plotsroot_mc = raw_plots_MC_st2010_ho575.root
+logplotsroot_mc = raw_plots_MC_st2010_ho575.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho575.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho575.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_625
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_625.root
+plotsroot_mc = raw_plots_MC_st2010_ho625.root
+logplotsroot_mc = raw_plots_MC_st2010_ho625.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho625.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho625.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_675
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_675.root
+plotsroot_mc = raw_plots_MC_st2010_ho675.root
+logplotsroot_mc = raw_plots_MC_st2010_ho675.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho675.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho675.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_725
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_725.root
+plotsroot_mc = raw_plots_MC_st2010_ho725.root
+logplotsroot_mc = raw_plots_MC_st2010_ho725.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho725.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho725.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_825
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_825.root
+plotsroot_mc = raw_plots_MC_st2010_ho825.root
+logplotsroot_mc = raw_plots_MC_st2010_ho825.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho825.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho825.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = mst_2010_mu_925
+MCfilepath = dcache:/pnfs/cms/WAX/resilient/lpcpjm/PrivateMC/FastSim/533p3_full/naturalHiggsinoNLSP_try4/SusyNtuple/cms533v3_v2/naturalHiggsinoNLSPout_mst_2010_M3_5050_mu_925.root
+plotsroot_mc = raw_plots_MC_st2010_ho925.root
+logplotsroot_mc = raw_plots_MC_st2010_ho925.log
+plotsAndBackground_mc = plotsWithBackground_MC_st2010_ho925.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st2010_ho925.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+

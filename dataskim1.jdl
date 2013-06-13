@@ -1,0 +1,15 @@
+universe = vanilla
+Executable = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/runskim.sh
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+# This sets up where your log files go
+# Also make sure that the directoy where your log files will go exists
+transfer_input_files=/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/tar_for_condor.tar,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/params_arg.h
+Outputdir = /uscmst1b_scratch/lpc1/3DayLifetime/abarker/gridout
+
+Output = $(Outputdir)/condor_0.stdout
+Error  = $(Outputdir)/condor_0.stderr
+Log    = $(Outputdir)/condor_0.stdlog
+Arguments = 0
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_0.root
+Queue 1

@@ -1,0 +1,21 @@
+ # To use condor Universe = vanilla 
+ 
+ # This specifies your executable file 
+ Executable = run_test.sh 
+ 
+ # Account requirements 
+ +AccountingGroup = "group_rutgers.chrisjcc" 
+ Requirements = (Arch == "X86_64") 
+ 
+ Notify_User = chrisjcc@physics.rutgers.edu 
+ should_transfer_files = NO 
+ 
+ # This sets up where your log files go 
+ # Also make sure that the directoy where your log files will go exists
+ Outputdir = /cms/chrisjcc/2013Bprime/macro
+                
+ Output = $(Outputdir)/condor_test_$(Cluster)_$(Process).stdout                 
+ Error  = $(Outputdir)/condor_test_$(Cluster)_$(Process).stderr                 
+ Log    = $(Outputdir)/condor_test_$(Cluster)_$(Process).stdlog                 
+ Arguments = xseclist.txt		
+ Queue

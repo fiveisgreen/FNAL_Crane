@@ -1,0 +1,814 @@
+universe = vanilla
+Executable = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/run.sh
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+# This sets up where your log files go
+# Also make sure that the directoy where your log files will go exists
+transfer_input_files=/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/tar_for_condor.tar,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/plotsWithBackground_dataGLL12.root,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/params_arg.h,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/MCpoint.h
+Outputdir = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/gridout
+
+MClable = st_200_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop200_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st200_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st200_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st200_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st200_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_200_mu_175_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop200_chargino175_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st200_ho175_bbaa.root
+logplotsroot_mc = raw_plots_MC_st200_ho175_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st200_ho175_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st200_ho175_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_225_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop225_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st225_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st225_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st225_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st225_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_225_mu_175_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop225_chargino175_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st225_ho175_bbaa.root
+logplotsroot_mc = raw_plots_MC_st225_ho175_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st225_ho175_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st225_ho175_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_225_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop225_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st225_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st225_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st225_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st225_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_225_mu_215_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop225_chargino215_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st225_ho215_bbaa.root
+logplotsroot_mc = raw_plots_MC_st225_ho215_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st225_ho215_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st225_ho215_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_250_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop250_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st250_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st250_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st250_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st250_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_250_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop250_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st250_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st250_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st250_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st250_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_250_mu_175_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop250_chargino175_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st250_ho175_bbaa.root
+logplotsroot_mc = raw_plots_MC_st250_ho175_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st250_ho175_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st250_ho175_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_250_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop250_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st250_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st250_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st250_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st250_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_250_mu_225_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop250_chargino225_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st250_ho225_bbaa.root
+logplotsroot_mc = raw_plots_MC_st250_ho225_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st250_ho225_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st250_ho225_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_250_mu_240_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop250_chargino240_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st250_ho240_bbaa.root
+logplotsroot_mc = raw_plots_MC_st250_ho240_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st250_ho240_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st250_ho240_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_275_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop275_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st275_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st275_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st275_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st275_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_275_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop275_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st275_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st275_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st275_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st275_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_275_mu_175_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop275_chargino175_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st275_ho175_bbaa.root
+logplotsroot_mc = raw_plots_MC_st275_ho175_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st275_ho175_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st275_ho175_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_275_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop275_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st275_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st275_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st275_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st275_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_275_mu_225_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop275_chargino225_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st275_ho225_bbaa.root
+logplotsroot_mc = raw_plots_MC_st275_ho225_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st275_ho225_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st275_ho225_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_275_mu_250_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop275_chargino250_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st275_ho250_bbaa.root
+logplotsroot_mc = raw_plots_MC_st275_ho250_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st275_ho250_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st275_ho250_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_275_mu_265_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop275_chargino265_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st275_ho265_bbaa.root
+logplotsroot_mc = raw_plots_MC_st275_ho265_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st275_ho265_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st275_ho265_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_175_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino175_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho175_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho175_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho175_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho175_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_225_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino225_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho225_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho225_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho225_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho225_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_250_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino250_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho250_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho250_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho250_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho250_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_275_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino275_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho275_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho275_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho275_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho275_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_300_mu_290_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop300_chargino290_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st300_ho290_bbaa.root
+logplotsroot_mc = raw_plots_MC_st300_ho290_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st300_ho290_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st300_ho290_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_175_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino175_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho175_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho175_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho175_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho175_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_225_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino225_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho225_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho225_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho225_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho225_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_250_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino250_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho250_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho250_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho250_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho250_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_275_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino275_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho275_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho275_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho275_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho275_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_300_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino300_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho300_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho300_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho300_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho300_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_325_mu_315_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop325_chargino315_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st325_ho315_bbaa.root
+logplotsroot_mc = raw_plots_MC_st325_ho315_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st325_ho315_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st325_ho315_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_175_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino175_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho175_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho175_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho175_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho175_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_225_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino225_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho225_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho225_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho225_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho225_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_250_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino250_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho250_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho250_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho250_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho250_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_275_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino275_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho275_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho275_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho275_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho275_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_350_mu_300_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop350_chargino300_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st350_ho300_bbaa.root
+logplotsroot_mc = raw_plots_MC_st350_ho300_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st350_ho300_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st350_ho300_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_375_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop375_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st375_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st375_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st375_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st375_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_400_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop400_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st400_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st400_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st400_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st400_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_400_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop400_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st400_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st400_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st400_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st400_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_400_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop400_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st400_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st400_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st400_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st400_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_400_mu_250_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop400_chargino250_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st400_ho250_bbaa.root
+logplotsroot_mc = raw_plots_MC_st400_ho250_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st400_ho250_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st400_ho250_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_400_mu_300_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop400_chargino300_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st400_ho300_bbaa.root
+logplotsroot_mc = raw_plots_MC_st400_ho300_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st400_ho300_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st400_ho300_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_400_mu_350_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop400_chargino350_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st400_ho350_bbaa.root
+logplotsroot_mc = raw_plots_MC_st400_ho350_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st400_ho350_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st400_ho350_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_425_mu_135_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop425_chargino135_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st425_ho135_bbaa.root
+logplotsroot_mc = raw_plots_MC_st425_ho135_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st425_ho135_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st425_ho135_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_450_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop450_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st450_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st450_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st450_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st450_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_450_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop450_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st450_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st450_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st450_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st450_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_450_mu_250_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop450_chargino250_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st450_ho250_bbaa.root
+logplotsroot_mc = raw_plots_MC_st450_ho250_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st450_ho250_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st450_ho250_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_450_mu_300_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop450_chargino300_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st450_ho300_bbaa.root
+logplotsroot_mc = raw_plots_MC_st450_ho300_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st450_ho300_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st450_ho300_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_450_mu_350_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop450_chargino350_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st450_ho350_bbaa.root
+logplotsroot_mc = raw_plots_MC_st450_ho350_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st450_ho350_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st450_ho350_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_500_mu_150_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop500_chargino150_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st500_ho150_bbaa.root
+logplotsroot_mc = raw_plots_MC_st500_ho150_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st500_ho150_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st500_ho150_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_500_mu_200_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop500_chargino200_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st500_ho200_bbaa.root
+logplotsroot_mc = raw_plots_MC_st500_ho200_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st500_ho200_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st500_ho200_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_500_mu_250_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop500_chargino250_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st500_ho250_bbaa.root
+logplotsroot_mc = raw_plots_MC_st500_ho250_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st500_ho250_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st500_ho250_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_500_mu_300_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop500_chargino300_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st500_ho300_bbaa.root
+logplotsroot_mc = raw_plots_MC_st500_ho300_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st500_ho300_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st500_ho300_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1
+
+MClable = st_500_mu_350_bbaa
+MCfilepath = /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop500_chargino350_15_hh_bbaa.root
+plotsroot_mc = raw_plots_MC_st500_ho350_bbaa.root
+logplotsroot_mc = raw_plots_MC_st500_ho350_bbaa.log
+plotsAndBackground_mc = plotsWithBackground_MC_st500_ho350_bbaa.root
+logplotsAndBackground_mc = plotsWithBackground_MC_st500_ho350_bbaa.log
+Output = $(Outputdir)/condor_$(MClable)_$(Cluster).stdout
+Error  = $(Outputdir)/condor_$(MClable)_$(Cluster).stderr
+Log    = $(Outputdir)/condor_$(MClable)_$(Cluster).stdlog
+Arguments = $(MClable) $(MCfilepath) $(plotsroot_mc) $(logplotsroot_mc) $(plotsAndBackground_mc) $(logplotsAndBackground_mc)
+transfer_output_files =$(MClable).tar
+Queue 1

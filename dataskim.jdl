@@ -1,0 +1,709 @@
+universe = vanilla
+Executable = /uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/runskim.sh
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+# This sets up where your log files go
+# Also make sure that the directoy where your log files will go exists
+transfer_input_files=/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/tar_for_condor.tar,/uscms_data/d2/abarker/CMSSW_5_3_3/src/SusyAnalysis/SusyNtuplizer/macro/params_arg.h
+Outputdir = /uscmst1b_scratch/lpc1/3DayLifetime/abarker/gridout
+
+Output = $(Outputdir)/condor_0.stdout
+Error  = $(Outputdir)/condor_0.stderr
+Log    = $(Outputdir)/condor_0.stdlog
+Arguments = 0
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_0.root
+Queue 1
+
+Output = $(Outputdir)/condor_1.stdout
+Error  = $(Outputdir)/condor_1.stderr
+Log    = $(Outputdir)/condor_1.stdlog
+Arguments = 1
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_1.root
+Queue 1
+
+Output = $(Outputdir)/condor_2.stdout
+Error  = $(Outputdir)/condor_2.stderr
+Log    = $(Outputdir)/condor_2.stdlog
+Arguments = 2
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_2.root
+Queue 1
+
+Output = $(Outputdir)/condor_3.stdout
+Error  = $(Outputdir)/condor_3.stderr
+Log    = $(Outputdir)/condor_3.stdlog
+Arguments = 3
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_3.root
+Queue 1
+
+Output = $(Outputdir)/condor_4.stdout
+Error  = $(Outputdir)/condor_4.stderr
+Log    = $(Outputdir)/condor_4.stdlog
+Arguments = 4
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_4.root
+Queue 1
+
+Output = $(Outputdir)/condor_5.stdout
+Error  = $(Outputdir)/condor_5.stderr
+Log    = $(Outputdir)/condor_5.stdlog
+Arguments = 5
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_5.root
+Queue 1
+
+Output = $(Outputdir)/condor_6.stdout
+Error  = $(Outputdir)/condor_6.stderr
+Log    = $(Outputdir)/condor_6.stdlog
+Arguments = 6
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_6.root
+Queue 1
+
+Output = $(Outputdir)/condor_7.stdout
+Error  = $(Outputdir)/condor_7.stderr
+Log    = $(Outputdir)/condor_7.stdlog
+Arguments = 7
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_7.root
+Queue 1
+
+Output = $(Outputdir)/condor_8.stdout
+Error  = $(Outputdir)/condor_8.stderr
+Log    = $(Outputdir)/condor_8.stdlog
+Arguments = 8
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_8.root
+Queue 1
+
+Output = $(Outputdir)/condor_9.stdout
+Error  = $(Outputdir)/condor_9.stderr
+Log    = $(Outputdir)/condor_9.stdlog
+Arguments = 9
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_9.root
+Queue 1
+
+Output = $(Outputdir)/condor_10.stdout
+Error  = $(Outputdir)/condor_10.stderr
+Log    = $(Outputdir)/condor_10.stdlog
+Arguments = 10
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_10.root
+Queue 1
+
+Output = $(Outputdir)/condor_11.stdout
+Error  = $(Outputdir)/condor_11.stderr
+Log    = $(Outputdir)/condor_11.stdlog
+Arguments = 11
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_11.root
+Queue 1
+
+Output = $(Outputdir)/condor_12.stdout
+Error  = $(Outputdir)/condor_12.stderr
+Log    = $(Outputdir)/condor_12.stdlog
+Arguments = 12
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_12.root
+Queue 1
+
+Output = $(Outputdir)/condor_13.stdout
+Error  = $(Outputdir)/condor_13.stderr
+Log    = $(Outputdir)/condor_13.stdlog
+Arguments = 13
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_13.root
+Queue 1
+
+Output = $(Outputdir)/condor_14.stdout
+Error  = $(Outputdir)/condor_14.stderr
+Log    = $(Outputdir)/condor_14.stdlog
+Arguments = 14
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_14.root
+Queue 1
+
+Output = $(Outputdir)/condor_15.stdout
+Error  = $(Outputdir)/condor_15.stderr
+Log    = $(Outputdir)/condor_15.stdlog
+Arguments = 15
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_15.root
+Queue 1
+
+Output = $(Outputdir)/condor_16.stdout
+Error  = $(Outputdir)/condor_16.stderr
+Log    = $(Outputdir)/condor_16.stdlog
+Arguments = 16
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_16.root
+Queue 1
+
+Output = $(Outputdir)/condor_17.stdout
+Error  = $(Outputdir)/condor_17.stderr
+Log    = $(Outputdir)/condor_17.stdlog
+Arguments = 17
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_17.root
+Queue 1
+
+Output = $(Outputdir)/condor_18.stdout
+Error  = $(Outputdir)/condor_18.stderr
+Log    = $(Outputdir)/condor_18.stdlog
+Arguments = 18
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_18.root
+Queue 1
+
+Output = $(Outputdir)/condor_19.stdout
+Error  = $(Outputdir)/condor_19.stderr
+Log    = $(Outputdir)/condor_19.stdlog
+Arguments = 19
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_19.root
+Queue 1
+
+Output = $(Outputdir)/condor_20.stdout
+Error  = $(Outputdir)/condor_20.stderr
+Log    = $(Outputdir)/condor_20.stdlog
+Arguments = 20
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_20.root
+Queue 1
+
+Output = $(Outputdir)/condor_21.stdout
+Error  = $(Outputdir)/condor_21.stderr
+Log    = $(Outputdir)/condor_21.stdlog
+Arguments = 21
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_21.root
+Queue 1
+
+Output = $(Outputdir)/condor_22.stdout
+Error  = $(Outputdir)/condor_22.stderr
+Log    = $(Outputdir)/condor_22.stdlog
+Arguments = 22
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_22.root
+Queue 1
+
+Output = $(Outputdir)/condor_23.stdout
+Error  = $(Outputdir)/condor_23.stderr
+Log    = $(Outputdir)/condor_23.stdlog
+Arguments = 23
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_23.root
+Queue 1
+
+Output = $(Outputdir)/condor_24.stdout
+Error  = $(Outputdir)/condor_24.stderr
+Log    = $(Outputdir)/condor_24.stdlog
+Arguments = 24
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_24.root
+Queue 1
+
+Output = $(Outputdir)/condor_25.stdout
+Error  = $(Outputdir)/condor_25.stderr
+Log    = $(Outputdir)/condor_25.stdlog
+Arguments = 25
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_25.root
+Queue 1
+
+Output = $(Outputdir)/condor_26.stdout
+Error  = $(Outputdir)/condor_26.stderr
+Log    = $(Outputdir)/condor_26.stdlog
+Arguments = 26
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_26.root
+Queue 1
+
+Output = $(Outputdir)/condor_27.stdout
+Error  = $(Outputdir)/condor_27.stderr
+Log    = $(Outputdir)/condor_27.stdlog
+Arguments = 27
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_27.root
+Queue 1
+
+Output = $(Outputdir)/condor_28.stdout
+Error  = $(Outputdir)/condor_28.stderr
+Log    = $(Outputdir)/condor_28.stdlog
+Arguments = 28
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_28.root
+Queue 1
+
+Output = $(Outputdir)/condor_29.stdout
+Error  = $(Outputdir)/condor_29.stderr
+Log    = $(Outputdir)/condor_29.stdlog
+Arguments = 29
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_29.root
+Queue 1
+
+Output = $(Outputdir)/condor_30.stdout
+Error  = $(Outputdir)/condor_30.stderr
+Log    = $(Outputdir)/condor_30.stdlog
+Arguments = 30
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_30.root
+Queue 1
+
+Output = $(Outputdir)/condor_31.stdout
+Error  = $(Outputdir)/condor_31.stderr
+Log    = $(Outputdir)/condor_31.stdlog
+Arguments = 31
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_31.root
+Queue 1
+
+Output = $(Outputdir)/condor_32.stdout
+Error  = $(Outputdir)/condor_32.stderr
+Log    = $(Outputdir)/condor_32.stdlog
+Arguments = 32
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_32.root
+Queue 1
+
+Output = $(Outputdir)/condor_33.stdout
+Error  = $(Outputdir)/condor_33.stderr
+Log    = $(Outputdir)/condor_33.stdlog
+Arguments = 33
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_33.root
+Queue 1
+
+Output = $(Outputdir)/condor_34.stdout
+Error  = $(Outputdir)/condor_34.stderr
+Log    = $(Outputdir)/condor_34.stdlog
+Arguments = 34
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_34.root
+Queue 1
+
+Output = $(Outputdir)/condor_35.stdout
+Error  = $(Outputdir)/condor_35.stderr
+Log    = $(Outputdir)/condor_35.stdlog
+Arguments = 35
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_35.root
+Queue 1
+
+Output = $(Outputdir)/condor_36.stdout
+Error  = $(Outputdir)/condor_36.stderr
+Log    = $(Outputdir)/condor_36.stdlog
+Arguments = 36
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_36.root
+Queue 1
+
+Output = $(Outputdir)/condor_37.stdout
+Error  = $(Outputdir)/condor_37.stderr
+Log    = $(Outputdir)/condor_37.stdlog
+Arguments = 37
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_37.root
+Queue 1
+
+Output = $(Outputdir)/condor_38.stdout
+Error  = $(Outputdir)/condor_38.stderr
+Log    = $(Outputdir)/condor_38.stdlog
+Arguments = 38
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_38.root
+Queue 1
+
+Output = $(Outputdir)/condor_39.stdout
+Error  = $(Outputdir)/condor_39.stderr
+Log    = $(Outputdir)/condor_39.stdlog
+Arguments = 39
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_39.root
+Queue 1
+
+Output = $(Outputdir)/condor_40.stdout
+Error  = $(Outputdir)/condor_40.stderr
+Log    = $(Outputdir)/condor_40.stdlog
+Arguments = 40
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_40.root
+Queue 1
+
+Output = $(Outputdir)/condor_41.stdout
+Error  = $(Outputdir)/condor_41.stderr
+Log    = $(Outputdir)/condor_41.stdlog
+Arguments = 41
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_41.root
+Queue 1
+
+Output = $(Outputdir)/condor_42.stdout
+Error  = $(Outputdir)/condor_42.stderr
+Log    = $(Outputdir)/condor_42.stdlog
+Arguments = 42
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_42.root
+Queue 1
+
+Output = $(Outputdir)/condor_43.stdout
+Error  = $(Outputdir)/condor_43.stderr
+Log    = $(Outputdir)/condor_43.stdlog
+Arguments = 43
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_43.root
+Queue 1
+
+Output = $(Outputdir)/condor_44.stdout
+Error  = $(Outputdir)/condor_44.stderr
+Log    = $(Outputdir)/condor_44.stdlog
+Arguments = 44
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_44.root
+Queue 1
+
+Output = $(Outputdir)/condor_45.stdout
+Error  = $(Outputdir)/condor_45.stderr
+Log    = $(Outputdir)/condor_45.stdlog
+Arguments = 45
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_45.root
+Queue 1
+
+Output = $(Outputdir)/condor_46.stdout
+Error  = $(Outputdir)/condor_46.stderr
+Log    = $(Outputdir)/condor_46.stdlog
+Arguments = 46
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_46.root
+Queue 1
+
+Output = $(Outputdir)/condor_47.stdout
+Error  = $(Outputdir)/condor_47.stderr
+Log    = $(Outputdir)/condor_47.stdlog
+Arguments = 47
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_47.root
+Queue 1
+
+Output = $(Outputdir)/condor_48.stdout
+Error  = $(Outputdir)/condor_48.stderr
+Log    = $(Outputdir)/condor_48.stdlog
+Arguments = 48
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_48.root
+Queue 1
+
+Output = $(Outputdir)/condor_49.stdout
+Error  = $(Outputdir)/condor_49.stderr
+Log    = $(Outputdir)/condor_49.stdlog
+Arguments = 49
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_49.root
+Queue 1
+
+Output = $(Outputdir)/condor_50.stdout
+Error  = $(Outputdir)/condor_50.stderr
+Log    = $(Outputdir)/condor_50.stdlog
+Arguments = 50
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_50.root
+Queue 1
+
+Output = $(Outputdir)/condor_51.stdout
+Error  = $(Outputdir)/condor_51.stderr
+Log    = $(Outputdir)/condor_51.stdlog
+Arguments = 51
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_51.root
+Queue 1
+
+Output = $(Outputdir)/condor_52.stdout
+Error  = $(Outputdir)/condor_52.stderr
+Log    = $(Outputdir)/condor_52.stdlog
+Arguments = 52
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_52.root
+Queue 1
+
+Output = $(Outputdir)/condor_53.stdout
+Error  = $(Outputdir)/condor_53.stderr
+Log    = $(Outputdir)/condor_53.stdlog
+Arguments = 53
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_53.root
+Queue 1
+
+Output = $(Outputdir)/condor_54.stdout
+Error  = $(Outputdir)/condor_54.stderr
+Log    = $(Outputdir)/condor_54.stdlog
+Arguments = 54
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_54.root
+Queue 1
+
+Output = $(Outputdir)/condor_55.stdout
+Error  = $(Outputdir)/condor_55.stderr
+Log    = $(Outputdir)/condor_55.stdlog
+Arguments = 55
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_55.root
+Queue 1
+
+Output = $(Outputdir)/condor_56.stdout
+Error  = $(Outputdir)/condor_56.stderr
+Log    = $(Outputdir)/condor_56.stdlog
+Arguments = 56
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_56.root
+Queue 1
+
+Output = $(Outputdir)/condor_57.stdout
+Error  = $(Outputdir)/condor_57.stderr
+Log    = $(Outputdir)/condor_57.stdlog
+Arguments = 57
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_57.root
+Queue 1
+
+Output = $(Outputdir)/condor_58.stdout
+Error  = $(Outputdir)/condor_58.stderr
+Log    = $(Outputdir)/condor_58.stdlog
+Arguments = 58
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_58.root
+Queue 1
+
+Output = $(Outputdir)/condor_59.stdout
+Error  = $(Outputdir)/condor_59.stderr
+Log    = $(Outputdir)/condor_59.stdlog
+Arguments = 59
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_59.root
+Queue 1
+
+Output = $(Outputdir)/condor_60.stdout
+Error  = $(Outputdir)/condor_60.stderr
+Log    = $(Outputdir)/condor_60.stdlog
+Arguments = 60
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_60.root
+Queue 1
+
+Output = $(Outputdir)/condor_61.stdout
+Error  = $(Outputdir)/condor_61.stderr
+Log    = $(Outputdir)/condor_61.stdlog
+Arguments = 61
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_61.root
+Queue 1
+
+Output = $(Outputdir)/condor_62.stdout
+Error  = $(Outputdir)/condor_62.stderr
+Log    = $(Outputdir)/condor_62.stdlog
+Arguments = 62
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_62.root
+Queue 1
+
+Output = $(Outputdir)/condor_63.stdout
+Error  = $(Outputdir)/condor_63.stderr
+Log    = $(Outputdir)/condor_63.stdlog
+Arguments = 63
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_63.root
+Queue 1
+
+Output = $(Outputdir)/condor_64.stdout
+Error  = $(Outputdir)/condor_64.stderr
+Log    = $(Outputdir)/condor_64.stdlog
+Arguments = 64
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_64.root
+Queue 1
+
+Output = $(Outputdir)/condor_65.stdout
+Error  = $(Outputdir)/condor_65.stderr
+Log    = $(Outputdir)/condor_65.stdlog
+Arguments = 65
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_65.root
+Queue 1
+
+Output = $(Outputdir)/condor_66.stdout
+Error  = $(Outputdir)/condor_66.stderr
+Log    = $(Outputdir)/condor_66.stdlog
+Arguments = 66
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_66.root
+Queue 1
+
+Output = $(Outputdir)/condor_67.stdout
+Error  = $(Outputdir)/condor_67.stderr
+Log    = $(Outputdir)/condor_67.stdlog
+Arguments = 67
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_67.root
+Queue 1
+
+Output = $(Outputdir)/condor_68.stdout
+Error  = $(Outputdir)/condor_68.stderr
+Log    = $(Outputdir)/condor_68.stdlog
+Arguments = 68
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_68.root
+Queue 1
+
+Output = $(Outputdir)/condor_69.stdout
+Error  = $(Outputdir)/condor_69.stderr
+Log    = $(Outputdir)/condor_69.stdlog
+Arguments = 69
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_69.root
+Queue 1
+
+Output = $(Outputdir)/condor_70.stdout
+Error  = $(Outputdir)/condor_70.stderr
+Log    = $(Outputdir)/condor_70.stdlog
+Arguments = 70
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_70.root
+Queue 1
+
+Output = $(Outputdir)/condor_71.stdout
+Error  = $(Outputdir)/condor_71.stderr
+Log    = $(Outputdir)/condor_71.stdlog
+Arguments = 71
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_71.root
+Queue 1
+
+Output = $(Outputdir)/condor_72.stdout
+Error  = $(Outputdir)/condor_72.stderr
+Log    = $(Outputdir)/condor_72.stdlog
+Arguments = 72
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_72.root
+Queue 1
+
+Output = $(Outputdir)/condor_73.stdout
+Error  = $(Outputdir)/condor_73.stderr
+Log    = $(Outputdir)/condor_73.stdlog
+Arguments = 73
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_73.root
+Queue 1
+
+Output = $(Outputdir)/condor_74.stdout
+Error  = $(Outputdir)/condor_74.stderr
+Log    = $(Outputdir)/condor_74.stdlog
+Arguments = 74
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_74.root
+Queue 1
+
+Output = $(Outputdir)/condor_75.stdout
+Error  = $(Outputdir)/condor_75.stderr
+Log    = $(Outputdir)/condor_75.stdlog
+Arguments = 75
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_75.root
+Queue 1
+
+Output = $(Outputdir)/condor_76.stdout
+Error  = $(Outputdir)/condor_76.stderr
+Log    = $(Outputdir)/condor_76.stdlog
+Arguments = 76
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_76.root
+Queue 1
+
+Output = $(Outputdir)/condor_77.stdout
+Error  = $(Outputdir)/condor_77.stderr
+Log    = $(Outputdir)/condor_77.stdlog
+Arguments = 77
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_77.root
+Queue 1
+
+Output = $(Outputdir)/condor_78.stdout
+Error  = $(Outputdir)/condor_78.stderr
+Log    = $(Outputdir)/condor_78.stdlog
+Arguments = 78
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_78.root
+Queue 1
+
+Output = $(Outputdir)/condor_79.stdout
+Error  = $(Outputdir)/condor_79.stderr
+Log    = $(Outputdir)/condor_79.stdlog
+Arguments = 79
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_79.root
+Queue 1
+
+Output = $(Outputdir)/condor_80.stdout
+Error  = $(Outputdir)/condor_80.stderr
+Log    = $(Outputdir)/condor_80.stdlog
+Arguments = 80
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_80.root
+Queue 1
+
+Output = $(Outputdir)/condor_81.stdout
+Error  = $(Outputdir)/condor_81.stderr
+Log    = $(Outputdir)/condor_81.stdlog
+Arguments = 81
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_81.root
+Queue 1
+
+Output = $(Outputdir)/condor_82.stdout
+Error  = $(Outputdir)/condor_82.stderr
+Log    = $(Outputdir)/condor_82.stdlog
+Arguments = 82
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_82.root
+Queue 1
+
+Output = $(Outputdir)/condor_83.stdout
+Error  = $(Outputdir)/condor_83.stderr
+Log    = $(Outputdir)/condor_83.stdlog
+Arguments = 83
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_83.root
+Queue 1
+
+Output = $(Outputdir)/condor_84.stdout
+Error  = $(Outputdir)/condor_84.stderr
+Log    = $(Outputdir)/condor_84.stdlog
+Arguments = 84
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_84.root
+Queue 1
+
+Output = $(Outputdir)/condor_85.stdout
+Error  = $(Outputdir)/condor_85.stderr
+Log    = $(Outputdir)/condor_85.stdlog
+Arguments = 85
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_85.root
+Queue 1
+
+Output = $(Outputdir)/condor_86.stdout
+Error  = $(Outputdir)/condor_86.stderr
+Log    = $(Outputdir)/condor_86.stdlog
+Arguments = 86
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_86.root
+Queue 1
+
+Output = $(Outputdir)/condor_87.stdout
+Error  = $(Outputdir)/condor_87.stderr
+Log    = $(Outputdir)/condor_87.stdlog
+Arguments = 87
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_87.root
+Queue 1
+
+Output = $(Outputdir)/condor_88.stdout
+Error  = $(Outputdir)/condor_88.stderr
+Log    = $(Outputdir)/condor_88.stdlog
+Arguments = 88
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_88.root
+Queue 1
+
+Output = $(Outputdir)/condor_89.stdout
+Error  = $(Outputdir)/condor_89.stderr
+Log    = $(Outputdir)/condor_89.stdlog
+Arguments = 89
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_89.root
+Queue 1
+
+Output = $(Outputdir)/condor_90.stdout
+Error  = $(Outputdir)/condor_90.stderr
+Log    = $(Outputdir)/condor_90.stdlog
+Arguments = 90
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_90.root
+Queue 1
+
+Output = $(Outputdir)/condor_91.stdout
+Error  = $(Outputdir)/condor_91.stderr
+Log    = $(Outputdir)/condor_91.stdlog
+Arguments = 91
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_91.root
+Queue 1
+
+Output = $(Outputdir)/condor_92.stdout
+Error  = $(Outputdir)/condor_92.stderr
+Log    = $(Outputdir)/condor_92.stdlog
+Arguments = 92
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_92.root
+Queue 1
+
+Output = $(Outputdir)/condor_93.stdout
+Error  = $(Outputdir)/condor_93.stderr
+Log    = $(Outputdir)/condor_93.stdlog
+Arguments = 93
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_93.root
+Queue 1
+
+Output = $(Outputdir)/condor_94.stdout
+Error  = $(Outputdir)/condor_94.stderr
+Log    = $(Outputdir)/condor_94.stdlog
+Arguments = 94
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_94.root
+Queue 1
+
+Output = $(Outputdir)/condor_95.stdout
+Error  = $(Outputdir)/condor_95.stderr
+Log    = $(Outputdir)/condor_95.stdlog
+Arguments = 95
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_95.root
+Queue 1
+
+Output = $(Outputdir)/condor_96.stdout
+Error  = $(Outputdir)/condor_96.stderr
+Log    = $(Outputdir)/condor_96.stdlog
+Arguments = 96
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_96.root
+Queue 1
+
+Output = $(Outputdir)/condor_97.stdout
+Error  = $(Outputdir)/condor_97.stderr
+Log    = $(Outputdir)/condor_97.stdlog
+Arguments = 97
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_97.root
+Queue 1
+
+Output = $(Outputdir)/condor_98.stdout
+Error  = $(Outputdir)/condor_98.stderr
+Log    = $(Outputdir)/condor_98.stdlog
+Arguments = 98
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_98.root
+Queue 1
+
+Output = $(Outputdir)/condor_99.stdout
+Error  = $(Outputdir)/condor_99.stderr
+Log    = $(Outputdir)/condor_99.stdlog
+Arguments = 99
+transfer_output_files =SuperSkim53X_data_bf1_12Dr_99.root
+Queue 1
+
