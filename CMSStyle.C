@@ -44,7 +44,7 @@ TLegend* newTLegend();
 void UnitNorm(TH1F* hist);
 void MatchArea(TH1F* toScale, TH1F* toMatch);
 void SameRange(TH1F* hist1, TH1F* hist2);
-void SetRange(TH1F* hist, float min = 0.0f, float max = -1.15);
+void SetRange(TH1F* hist, float _min = 0.0f, float _max = -1.15);
 float RaiseRangeRoof(TH1F* hist, float mult=1.2);
 float highestErrorBar(TH1F *h);
 float lowestErrorBar(TH1F *h);
@@ -361,33 +361,34 @@ void MatchArea(TH1F* toScale, TH1F* toMatch){
 	float normS = toScale->Integral();
 	toScale->Scale(normM/normS);
 }
-void SetRange(TH1F* hist, float min, float max){
-		//set histogram range. max = -1.15 -> max is 115% highest bin.
-	if (max<-1 && max > -1.2) max = 1.15*hist->GetMaximum();
-	hist->SetMaximum(max);
-	hist->SetMinimum(min);
+void SetRange(TH1F* hist, float _min, float _max){
+//void SetRange(TH1F* hist, float min = 0.0f, float Max = -1.15);
+		//set histogram range. Max = -1.15 -> Max is 115% highest bin.
+	if(_max < -1 && _max > -1.2) _max = 1.15*hist->GetMaximum();
+	hist->SetMaximum(_max);
+	hist->SetMinimum(_min);
 }
 void SameRange(TH1F* hist1, TH1F* hist2){
 		//sets makes the range of both histograms accomodate either histogram.
-	float max = TMath::Max(hist1->GetMaximum(),hist2->GetMaximum());
-	float min = TMath::Min(hist1->GetMinimum(),hist2->GetMinimum());
-	hist1->SetMaximum(max);
-	hist1->SetMinimum(min);
-	hist2->SetMaximum(max);
-	hist2->SetMinimum(min);
+	float _max = TMath::Max(hist1->GetMaximum(),hist2->GetMaximum());
+	float _min = TMath::Min(hist1->GetMinimum(),hist2->GetMinimum());
+	hist1->SetMaximum(_max);
+	hist1->SetMinimum(_min);
+	hist2->SetMaximum(_max);
+	hist2->SetMinimum(_min);
 }
 void SameRange(TH1F* hist1, TH1F* hist2, TH1F* hist3){
 		//sets makes the range of both histograms accomodate either histogram.
-	float max = TMath::Max((float)hist1->GetMaximum(),(float)hist2->GetMaximum());
-	max = TMath::Max((float)max,(float)hist3->GetMaximum());
-	float min = TMath::Min((float)hist1->GetMinimum(),(float)hist2->GetMinimum());
-	min = TMath::Min((float)min,(float)hist3->GetMinimum());
-	hist1->SetMaximum(max);
-	hist1->SetMinimum(min);
-	hist2->SetMaximum(max);
-	hist2->SetMinimum(min);
-	hist3->SetMaximum(max);
-	hist3->SetMinimum(min);
+	float _max = TMath::Max((float)hist1->GetMaximum(),(float)hist2->GetMaximum());
+	_max = TMath::Max((float)_max,(float)hist3->GetMaximum());
+	float _min = TMath::Min((float)hist1->GetMinimum(),(float)hist2->GetMinimum());
+	_min = TMath::Min((float)_min,(float)hist3->GetMinimum());
+	hist1->SetMaximum(_max);
+	hist1->SetMinimum(_min);
+	hist2->SetMaximum(_max);
+	hist2->SetMinimum(_min);
+	hist3->SetMaximum(_max);
+	hist3->SetMinimum(_min);
 }
 float RaiseRangeRoof(TH1F* hist, float mult){
 		//takes the existing max range and multiplies it by mult. Default is 1.2

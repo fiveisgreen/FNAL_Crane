@@ -26,22 +26,11 @@
 #include "MCpoint.h"
 #include <algorithm>    // std::sort
 #include <vector>
+#include "Interpolate.h"
 
 
 using namespace std;
 using namespace params;
-
-/*
-Objectives: 
- 1. Retrieve limits from whatever files are created
- 2. For each topo, for each kinvar, make an exclusion curve. 
- 3. Put the expected limits on your format_plots_combined Design plots.
- 4. Put both limits on your format_plots_combined SigComp plots.
- 5. Have the ability within fomat_plots_combined to tell what topo + kinvar gives the best limit for any given point. 
- 
- So all this must be integrated with format_plots_combined. So you need to be able to export the results in a loopable format
- */
-
 
 struct limit{
 	float Observed;
@@ -57,8 +46,6 @@ struct limit{
 	~limit(){}
 };
 
-
-
 typedef std::map<string,float> Labeledflaot;
 typedef std::map<string,int> Labeledint;
 //typedef std::map<string,TFile*> TFileMap;
@@ -72,17 +59,17 @@ typedef std::map<string,TH2F*> LableHist2;
 
 //void RetrieveLimit();
 TString makeFileName(MCpoint* thispoint);
-void suckinfile(Label2Lim* contianer, string pointName);		//working!
-void suckinfile(Label2Lim* contianer, MCpoint* thispoint);		//working!
-void suckinallfiles(int type, Label3Lim* allLims); //seems to work. 
-void printLimit(TString MassPoint, TString topo, TString kinvar, bool show_observed = false); 		//working!
+void suckinfile(Label2Lim* contianer, string pointName);
+void suckinfile(Label2Lim* contianer, MCpoint* thispoint);
+void suckinallfiles(int type, Label3Lim* allLims);
+void printLimit(TString MassPoint, TString topo, TString kinvar, bool show_observed = false);
 bool checkin(Label2Lim* contianer,TString topo, TString kinvar);
-bool checkin(Label3Lim* contianers,TString MassPoint, TString topo, TString kinvar);//working!
+bool checkin(Label3Lim* contianers,TString MassPoint, TString topo, TString kinvar);
 //void MakeLimitPlot(Labeledflaot& ObservedLimit);
-void GetBestLim(TString MassPoint);//working!
-limit * GetBestLim(Label2Lim* contianer, TString MassPoint, bool announceIt=false);//working!
-void WhatCanExclude(TString MassPoint,int max = -1,bool sort = true); //working!
-bool betterlim(limit* a,limit* b); //working!
+void GetBestLim(TString MassPoint);
+limit * GetBestLim(Label2Lim* contianer, TString MassPoint, bool announceIt=false);
+void WhatCanExclude(TString MassPoint,int max = -1,bool sort = true);
+bool betterlim(limit* a,limit* b);
 
 TCanvas* MakeLimitPlot(TString topo, TString kinvar, bool showData=false, bool saveplot = true);
 TCanvas* MakeLimitPlot(Label3Lim* allLims, TString topo, TString kinvar, bool showData=false, bool saveplot = true);
@@ -196,7 +183,7 @@ void suckinallfiles(int type, Label3Lim* allLims){
 	std::vector<MCpoint*> vp = setupMCpoints();
 	std::vector<MCpoint*>::iterator thispoint = vp.begin();
 	while (thispoint != vp.end() ){
-		if((*thispoint)->gettype()==type){
+		if((*thispoint)->gettype()==type_to_run){
 			Label2Lim * contianer = new Label2Lim();
 			suckinfile(contianer,*thispoint);
 			(*allLims)[(*thispoint)->pointName] = *contianer;
@@ -377,19 +364,31 @@ TCanvas* MakeLimitPlot(Label3Lim* allLims, TString topo, TString kinvar, bool sh
 //	const int nH = 21;
 //	float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510,1010,1510,2010};//nominal mass points.
 //	float mHVals[nH] = {150,175,225,250,275,300,325,375,425,475,525,575,625,675,725,825,925,1025,1125,1225 ,1525};
-	const int nS = 12;
-	const int nH = 11;
-	float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
-	float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+	const int nS = 11; //xBinning
+	const int nH = 19;
+	/*if(type_to_run == 2){
+		nS = 12;
+		nH = 11;
+		float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
+		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+	}
+	if(type_to_run >= 10){
+		nS = 11;
+		nH = 11;*/
+//		float mSVals[nS] = {185,210,260,285,310,335,360,385,410,460,510,660,710};
+//		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475,525,575,625,675};
+	float mSBins[nS+1] = {187.5, 212.5, 237.5 ,262.5 ,287.5, 312.5, 337.5, 362.5,    375, 425, 475, 525};
+	float mHBins[nH+1] = {130, 140, 160, 190, 210,    220, 230, 235,245, 255,     260, 270, 280, 285,295,     305, 310,320, 330,370};
 
-	float* mSBins = new float[nS+1];
+
+	/*float* mSBins = new float[nS+1];
 	float* mHBins = new float[nH+1];
 	mSBins[0] = mSVals[0] - 12.5;
 	mHBins[0] = mHVals[0] - 12.5;
 	mSBins[nS] = mSVals[nS-1] + 25;//250;
 	mHBins[nH] = mHVals[nH-1] + 25;//150;
 	for(int i=1; i<nS; i++) mSBins[i] = 0.5*(mSVals[i-1]+mSVals[i]);
-	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);
+	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);*/
 
 		//Make the hists and canvas
 	TString plotname = "Limits_"+topo+kinvar;
@@ -409,8 +408,11 @@ TCanvas* MakeLimitPlot(Label3Lim* allLims, TString topo, TString kinvar, bool sh
 	suckinallfiles(2, allLims); //xxx this doesn't work right. allLimits comes back quite incomplete.
 	std::vector<MCpoint*> points = setupMCpoints();
 	for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
-		if((*it)->gettype() != 2) continue;
-		if ((*it)->Mstop > 520) continue;
+		if((*it)->gettype() != type_to_run) continue;
+		if ((*it)->Mstop > 510) continue;
+		int temp =(*it)->Mstop;
+		if((*it)->Mstop == 325 && (*it)->Mhiggsino == 315) continue; 
+		if(temp == 375 || temp == 425) continue;
 		if (!checkin(allLims,(*it)->pointName, topo, kinvar)) continue;
 		limit *thislim = (*allLims)[(*it)->pointName][kinvar.Data()][topo.Data()];
 /*O*/	h_limit[0]->Fill((*it)->Mstop,(*it)->Mhiggsino,thislim->Observed);
@@ -430,6 +432,10 @@ TCanvas* MakeLimitPlot(Label3Lim* allLims, TString topo, TString kinvar, bool sh
 
 	}
 	//fill pot holes
+		//interpolate collumns, keeping triangularity
+	for (int i=0; i<7; i++) interpolate_Zywicki(h_limit[i]);
+	for (int i=0; i<6; i++) interpolate_Zywicki(h_limit_cs[i]);
+
 /*	for(int i= 0;i<7;i++){
 		//this compensates for the missing points (385,275),(410,300),(460,325)
 		//h_limit[i]->SetBinContent(9,4, h_limit[i]->GetBinContent(9,5));//fake pothol
@@ -437,6 +443,8 @@ TCanvas* MakeLimitPlot(Label3Lim* allLims, TString topo, TString kinvar, bool sh
 		h_limit[i]->SetBinContent(10,7, h_limit[i]->GetBinContent(10,8));
 		h_limit[i]->SetBinContent(11,8, h_limit[i]->GetBinContent(11,9));
 	}*/
+
+	h_limit[0]->SaveAs("probeExclusion.root");//xxx
 
 	TGraph* curve[6];//6 ~= nlimit
 	TH1F* legcurve[6];
@@ -467,8 +475,8 @@ TCanvas* MakeLimitPlot(Label3Lim* allLims, TString topo, TString kinvar, bool sh
 	gStyle->SetPalette(1);
 	h_limit[0]->SetMaximum(1.2);//main background color is observed
 	h_limit[0]->SetMinimum(0);
-	h_limit[0]->GetXaxis()->SetRangeUser(190,400);
-	h_limit[0]->GetYaxis()->SetRangeUser(140,400);
+	h_limit[0]->GetXaxis()->SetRangeUser(180,510);
+	h_limit[0]->GetYaxis()->SetRangeUser(130,500);
 	PrettyFonts(h_limit[0]);
 	h_limit[0]->Draw("COL Z");
 	if (showData) {
@@ -520,8 +528,8 @@ TCanvas* MakeLimitPlot(Label3Lim* allLims, TString topo, TString kinvar, bool sh
 	gStyle->SetPalette(1);
 //	h_limit_cs[0]->SetMaximum(1.2);//main background color is observed
 	h_limit_cs[0]->SetMinimum(0);
-	h_limit_cs[0]->GetXaxis()->SetRangeUser(190,400);
-	h_limit_cs[0]->GetYaxis()->SetRangeUser(140,400);
+	h_limit_cs[0]->GetXaxis()->SetRangeUser(180,510);
+	h_limit_cs[0]->GetYaxis()->SetRangeUser(130,500);
 	PrettyFonts(h_limit_cs[0]);
 	h_limit_cs[0]->Draw("COL Z");
 	if (showData) {
@@ -573,19 +581,34 @@ TCanvas* MakeXSecPlot(bool saveplot ){
 //	const int nH = 21;
 //	float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510,1010,1510,2010};//nominal mass points.
 //	float mHVals[nH] = {150,175,225,250,275,300,325,375,425,475,525,575,625,675,725,825,925,1025,1125,1225 ,1525};
-	const int nS = 12;
-	const int nH = 11;
-	float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
-	float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+	const int nS = 11; //xBinning
+	const int nH = 19;
+	/*if(type_to_run == 2){
+		nS = 12;
+		nH = 11;
+		float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
+		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+	}
+	if(type_to_run >= 10){
+		nS = 11;
+		nH = 11;*/
+//		float mSVals[nS] = {185,210,260,285,310,335,360,385,410,460,510,660,710};
+//		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475,525,575,625,675};
+			//		float mSVals[nS] = {185,210,260,285,310,335,360,385,410,460,510,610,660,710,810,910,1010,1510,2010};
+			//		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475,525,575,625,675,825,925,1025,1125,1225};
+	//}
+	float mSBins[nS+1] = {187.5, 212.5, 237.5 ,262.5 ,287.5, 312.5, 337.5, 362.5,    375, 425, 475, 525};
+	float mHBins[nH+1] = {130, 140, 160, 190, 210,    220, 230, 235,245, 255,     260, 270, 280, 285,295,     305, 310,320, 330,370};
 
-	float* mSBins = new float[nS+1];
+
+/*	float* mSBins = new float[nS+1];
 	float* mHBins = new float[nH+1];
 	mSBins[0] = mSVals[0] - 12.5;
 	mHBins[0] = mHVals[0] - 12.5;
 	mSBins[nS] = mSVals[nS-1] + 25;//250;
 	mHBins[nH] = mHVals[nH-1] + 25;//150;
 	for(int i=1; i<nS; i++) mSBins[i] = 0.5*(mSVals[i-1]+mSVals[i]);
-	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);
+	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);*/
 //Make the hists and canvas
 	TString plotname = "XSec";
 	TCanvas* canv = new TCanvas(plotname.Data(),plotname.Data(),800,600);
@@ -595,7 +618,11 @@ TCanvas* MakeXSecPlot(bool saveplot ){
 	//const int nlimit = 7;
 	//TString limitname[nlimit] = {"limit", "exp", "exp_1L","exp_1H","exp_2L","exp_2H","xsec"};
 	//TString limitname2[nlimit] = {"observed", "exp", "exp_1L","exp_1H","exp_2L","exp_2H","xsec"};
-	TH2F *h_xsec = new TH2F("h_xsec","Stop-Higgsino Cross Sections;Stop Mass (GeV);Higgsino Mass (GeV);Cross Section (fb)",nS,mSBins,nH,mHBins);
+	TH2F *h_xsec = new TH2F("h_xsec","Stop-Higgsino Cross Sections;Stop Mass (GeV);Higgsino Mass (GeV);Cross Section X Br (fb)",nS,mSBins,nH,mHBins);
+        float bbaa_br = 2*0.561*0.00229;
+        float wwaa_br = 2*0.231*0.00229;
+        float zzaa_br = 2*0.0289*0.00229;
+        float ttaa_br = 2*0.0615*0.00229;
 
 		//Fetch all data:
 	std::vector<MCpoint*> points = setupMCpoints();
@@ -603,13 +630,22 @@ TCanvas* MakeXSecPlot(bool saveplot ){
 		int temp = (*it)->Mstop;
 		int tempH = (*it)->Mhiggsino;
 		//cout<<(*it)->Mstop<<endl;
-		if((*it)->gettype() != 2) continue;
+		if(temp == 375 || temp == 425) continue;
+		if((*it)->gettype() != type_to_run) continue;
 		//if ((*it)->Mstop > 520) { //this segfaults
 		//if (temp > 520) { continue; }
 		//h_xsec->Fill((*it)->Mstop,(*it)->Mhiggsino,(*it)->cs_fb());
 		float tempcs = (*it)->cs_fb();
+		if(type_to_run%10 == 0) tempcs *= (bbaa_br+wwaa_br+zzaa_br+ttaa_br)/bbaa_br;
+		if(type_to_run%10 == 1) tempcs *= (bbaa_br+wwaa_br+zzaa_br+ttaa_br)/wwaa_br;
+		if(type_to_run%10 == 2) tempcs *= (bbaa_br+wwaa_br+zzaa_br+ttaa_br)/zzaa_br;
+		if(type_to_run%10 == 3) tempcs *= (bbaa_br+wwaa_br+zzaa_br+ttaa_br)/ttaa_br;
+
 		h_xsec->Fill(temp,tempH,tempcs);
 	}
+
+	interpolate_Zywicki(h_xsec);
+
 
 	//fill in potholes
 	/*for(int i= 0;i<7;i++){
@@ -626,8 +662,10 @@ TCanvas* MakeXSecPlot(bool saveplot ){
 	h_xsec->GetYaxis()->SetTitleOffset(1.2);
 	h_xsec->GetZaxis()->SetTitleOffset(1.3);
 	PrettyHist(h_xsec);
-	h_xsec->GetXaxis()->SetRangeUser(190,400);
-	h_xsec->GetYaxis()->SetRangeUser(140,400);
+	h_xsec->GetXaxis()->SetRangeUser(180,510);
+	h_xsec->GetYaxis()->SetRangeUser(130,500);
+
+
 
 		//	h_limit[0]->SetTitle(title);
 //	if(showData) h_limit[0]->Draw("COL Z");
@@ -693,19 +731,38 @@ TCanvas* MakeEffPlot(string topo, bool saveplot){
 	gStyle->SetPadLeftMargin(0.15);
 	CMSStyle();
 		//setup bins
-	const int nS = 12;
-	const int nH = 11;
-	float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
-	float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+//	const int nS = 12;
+//	const int nH = 11;
+	const int nS = 11; //xBinning
+	const int nH = 19;
+	/*if(type_to_run == 2){
+		nS = 12;
+		nH = 11;
+		float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
+		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+	}
+	if(type_to_run >= 10){
+		nS = 11;
+		nH = 11;*/
+//		float mSVals[nS] = {185,210,260,285,310,335,360,385,410,460,510,660,710};
+//		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475,525,575,625,675};
+//		float mSVals[nS] = {185,210,260,285,310,335,360,385,410,460,510,610,660,710,810,910,1010,1510,2010};
+//		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475,525,575,625,675,825,925,1025,1125,1225};
+	//}
 
-	float* mSBins = new float[nS+1];
+	float mSBins[nS+1] = {187.5, 212.5, 237.5 ,262.5 ,287.5, 312.5, 337.5, 362.5,    375, 425, 475, 525};
+	float mHBins[nH+1] = {130, 140, 160, 190, 210,    220, 230, 235,245, 255,     260, 270, 280, 285,295,     305, 310,320, 330,370};
+
+
+
+/*	float* mSBins = new float[nS+1];
 	float* mHBins = new float[nH+1];
 	mSBins[0] = mSVals[0] - 12.5;
 	mHBins[0] = mHVals[0] - 12.5;
 	mSBins[nS] = mSVals[nS-1] + 25;//250;
 	mHBins[nH] = mHVals[nH-1] + 25;//150;
 	for(int i=1; i<nS; i++) mSBins[i] = 0.5*(mSVals[i-1]+mSVals[i]);
-	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);
+	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);*/
 //Make the hists and canvas
 	TString plotname = Form("Eff_%s",topo.data());
 	TCanvas* canv = new TCanvas(plotname.Data(),plotname.Data(),800,600);
@@ -720,12 +777,15 @@ TCanvas* MakeEffPlot(string topo, bool saveplot){
 	for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
 		int temp = (*it)->Mstop;
 		int tempH = (*it)->Mhiggsino;
-		if((*it)->gettype() != 2) continue;
-		if (temp > 500) continue;
+		if((*it)->gettype() != type_to_run) continue;
+		if (temp > 510) continue;
+		if(temp == 375 || temp == 425) continue;
 		Labeledint nPass;
 		int n2pho = suckinRawLogFile(*it, nPass);
 		h_eff->Fill(temp,tempH,100.0*((float)nPass[topo])/(0.00229*2.0*((float)(*it)->NGenPoints)));
 	}
+	interpolate_Zywicki(h_eff);
+
 
 	canv->SetRightMargin(0.2);
 	h_eff->GetXaxis()->SetNdivisions(505);
@@ -733,8 +793,8 @@ TCanvas* MakeEffPlot(string topo, bool saveplot){
 	h_eff->GetYaxis()->SetTitleOffset(1.2);
 	h_eff->GetZaxis()->SetTitleOffset(1.3);
 	PrettyHist(h_eff);
-	h_eff->GetXaxis()->SetRangeUser(190,400);
-	h_eff->GetYaxis()->SetRangeUser(140,400);
+	h_eff->GetXaxis()->SetRangeUser(180,510);
+	h_eff->GetYaxis()->SetRangeUser(130,500);
 
 	gStyle->SetPalette(1);
 	//h_eff->SetMaximum(1.2);
@@ -757,19 +817,34 @@ void MakeEffPlots(bool saveplot){
 	gStyle->SetPadLeftMargin(0.15);
 	CMSStyle();
 		//setup bins
-	const int nS = 12;
-	const int nH = 11;
-	float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
-	float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+	const int nS = 11; //xBinning
+	const int nH = 19;
+	/*if(type_to_run == 2){
+		nS = 12;
+		nH = 11;
+		float mSVals[nS] = {185,210,235,260,285,310,335,360,385,410,460,510};//nominal mass points.
+		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475};
+	}
+	if(type_to_run >= 10){
+		nS = 11;
+		nH = 11;*/
+//		float mSVals[nS] = {185,210,260,285,310,335,360,385,410,460,510,660,710};
+//		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475,525,575,625,675};
+			//		float mSVals[nS] = {185,210,260,285,310,335,360,385,410,460,510,610,660,710,810,910,1010,1510,2010};
+			//		float mHVals[nH] = {150,175,200,225,250,275,300,325,375,425,475,525,575,625,675,825,925,1025,1125,1225};
+	//}
+	float mSBins[nS+1] = {187.5, 212.5, 237.5 ,262.5 ,287.5, 312.5, 337.5, 362.5,    375, 425, 475, 525};
+	float mHBins[nH+1] = {130, 140, 160, 190, 210,    220, 230, 235,245, 255,     260, 270, 280, 285,295,     305, 310,320, 330,370};
 
-	float* mSBins = new float[nS+1];
+
+/*	float* mSBins = new float[nS+1];
 	float* mHBins = new float[nH+1];
 	mSBins[0] = mSVals[0] - 12.5;
 	mHBins[0] = mHVals[0] - 12.5;
 	mSBins[nS] = mSVals[nS-1] + 25;//250;
 	mHBins[nH] = mHVals[nH-1] + 25;//150;
 	for(int i=1; i<nS; i++) mSBins[i] = 0.5*(mSVals[i-1]+mSVals[i]);
-	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);
+	for(int i=1; i<nH; i++) mHBins[i] = 0.5*(mHVals[i-1]+mHVals[i]);*/
 
 	LableHist2 h_eff;
 	for (int iTopo = 0; iTopo<nEventTopologies_limit; iTopo++) {
@@ -780,13 +855,18 @@ void MakeEffPlots(bool saveplot){
 	for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
 		int temp = (*it)->Mstop;
 		int tempH = (*it)->Mhiggsino;
-		if((*it)->gettype() != 2) continue;
-		if (temp > 500) continue;
+		if((*it)->gettype() != type_to_run) continue;
+		if(temp == 375 || temp == 425) continue;
+		if (temp > 510) continue;
 		Labeledint nPass;
 		int n2pho = suckinRawLogFile(*it, nPass);
 		for (int iTopo = 0; iTopo<nEventTopologies_limit; iTopo++) {
 			h_eff[s_EventTopology[iTopo]]->Fill(temp,tempH,100.0*((float)nPass[s_EventTopology[iTopo]])/(0.00229*2.0*((float)(*it)->NGenPoints)));
 		}
+	}
+		//fill in the potholes.
+	for (int iTopo = 0; iTopo<nEventTopologies_limit; iTopo++) {
+		interpolate_Zywicki(h_eff[s_EventTopology[iTopo]]);
 	}
 
 	for (int iTopo = 0; iTopo<nEventTopologies_limit; iTopo++) {
@@ -802,8 +882,8 @@ void MakeEffPlots(bool saveplot){
 		h_eff[s_EventTopology[iTopo]]->GetYaxis()->SetTitleOffset(1.2);
 		h_eff[s_EventTopology[iTopo]]->GetZaxis()->SetTitleOffset(1.3);
 		PrettyHist(h_eff[s_EventTopology[iTopo]]);
-		h_eff[s_EventTopology[iTopo]]->GetXaxis()->SetRangeUser(190,400);
-		h_eff[s_EventTopology[iTopo]]->GetYaxis()->SetRangeUser(140,400);
+		h_eff[s_EventTopology[iTopo]]->GetXaxis()->SetRangeUser(180,510);
+		h_eff[s_EventTopology[iTopo]]->GetYaxis()->SetRangeUser(130,500);
 
 		gStyle->SetPalette(1);
 			//h_eff->SetMaximum(1.2);

@@ -39,7 +39,7 @@ void find_preset_params(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, i
 void find_preset_params_powerlaw(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin,float &param0,float &param1);
 bool check_statistics(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin);
 //***	
-void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float lsb_int, float usb_int);
+void nLep(TH1F** h, float B_integral, float B_integral_error, float lsb_int, float usb_int);
 //***
 void fitmgg(TH1F* hmgg, float lb, float ub, TGraphAsymmErrors** g, TF1** fitcurve, float& chi2, float * fit_parameters, float * covarianceMx, bool preset_fitter = true); //currently orphaned and unused
 void get_bkg_integral(float* fit_parameters, float* covarianceMx, float & B_integral, float & B_integral_error);//made obsolete by fitmgg_simple, orphaned, unused. 
@@ -648,7 +648,9 @@ void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float
 	h[3]->Add(h[5],h[6]);
 	h[3]->Scale(0.5);//finish the average
 	for (int ibin = 0; ibin <= h[3]->GetNbinsX()+1; ibin++) { //make error for combined bkg. 
-		h[3]->SetBinError(ibin,sqrt(pow(h[3]->GetBinError(ibin),2)+pow(0.5*(h[5]->GetBinContent(ibin) - h[6]->GetBinContent(ibin)),2)));
+		h[3]->SetBinError(ibin,sqrt(pow(h[3]->GetBinError(ibin),2)+pow(0.5*(h[5]->GetBinContent(ibin) - h[6]->GetBinContent(ibin)),2))); //add systematic error
+
+		if(fabs(h[3]->GetBinContent(ibin) )< 0.0001 ) h[3]->SetBinError(ibin, 0.5*B_integral/lsb_int ); //insert an uncertainty on zero = lsb has 1 and usb has 0. 
 	}
 	h[4]->Add(h[1],h[3],1.,-1.); //subtract the bkg.
 
@@ -896,6 +898,66 @@ LabelKinVars setupKinematicVar(){
 
         allKinVars["dPhiHG_prime"] = new KinematicVar("dPhiHG_prime",  "Mass of the leding bb and h->gg System, from lep+MET", "#Delta Phi(Jets,#gamma0 #gamma1) (GeV)",false, 12, 0.f, 3.1416f);
         allKinVars["HLMGt"] = new KinematicVar("HLMGt",  "Transverse Energy of all Objects and MET", "Pt(all particles and met) (GeV)",false, 30, 0.f, 300.f);
+
+
+	{ KinematicVar* temp = new KinematicVar("BPtGG",  "Bness-weighted Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 4);
+			//allKinVars["PtGG"] = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 25., 0.f, 250.f);
+			//	float a[] = {0,10,20,30,40,50,60,70,80,90,120,150,180,210,240};// 14 bins
+		float a[] = {0,15,90,135,180};
+		temp->usearray(a);
+        allKinVars["BPtGG"] = temp;}
+
+	{ KinematicVar* temp = new KinematicVar("BMET","Bness-weighted Missing Transverse Energy","#slash{E}_{T} (GeV)",true,5);
+			//KinematicVar* temp = new KinematicVar("MET","Missing Transverse Energy","#slash{E}_{T} (GeV)",false,6,0,150);
+		float a[] = {0,20,45,60,90,210};
+		temp->usearray(a);
+		allKinVars["BMET"] = temp; }
+
+	{ KinematicVar* temp = new KinematicVar("BnBjets",  "B weighted nBjets (Sum of B-ness)", "#Sigma B(csv)",true,5);
+			//KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
+		float a[] = {0,0.91,1.61,2.31,3,4}; //0, M, ML, MML, LLLL
+		temp->usearray(a);
+		allKinVars["BnBjets"] = temp; }
+
+	{ KinematicVar* temp = new KinematicVar("Bunjets",  "Bu weighted nJets (Sum of Beautifullness)", "#Sigma Bu(csv)",true,5);
+			//KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
+		float a[] = {0,0.96,1.62,2.29,3,4}; //0, M, ML, MML, LLLL
+		temp->usearray(a);
+		allKinVars["Bunjets"] = temp; }
+
+
+	allKinVars["nLFjets"] = new KinematicVar("nLFjets",  "", "Number of light flavor Jets",false, 8, 0.f, 8);
+
+	{ KinematicVar* temp = new KinematicVar("phoHness",  "Weighted Di-Photon Pt Sectrum", "Photon Higgs-likeness (GeV)",true, 4);
+			//allKinVars["PtGG"] = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 25., 0.f, 250.f);
+			//	float a[] = {0,10,20,30,40,50,60,70,80,90,120,150,180,210,240};// 14 bins
+		float a[] = {0,30,60,90,120};
+		temp->usearray(a);
+        allKinVars["phoHness"] = temp;}
+
+
+	{ KinematicVar* temp = new KinematicVar("BuHT","Scalar Sum of all Beautifulness Weighted Hadronic Transverse Energy","#Sigma Bu(csv) * #Sigma H_{T} (GeV)",true,5);
+			//KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
+		float a[] = {0,225,375,525,750,1500};
+		temp->usearray(a);
+		allKinVars["BuHT"] = temp; }
+
+
+	{ KinematicVar* temp = new KinematicVar("BBt",  "Scalar Sum of all B-jet B-ness weighted Transverse Momentum", "#Sigma_{B} B(csv)*P_{T} (GeV)",true, 10);
+			//allKinVars["Bt"] = new KinematicVar("Bt",  "Scalar Sum of all B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 20, 0.f, 800.f);
+		float a[] = {0,40,80,120,160,200,240,280,320,480,800};
+		temp->usearray(a);
+		allKinVars["BBt"] = temp; }
+
+	{ KinematicVar* temp = new KinematicVar("BST","B-ness Weighted Scalar Sum of all Calorimeter Energy","#Sigma B(csv) * #Sigma E_{T} (GeV)",true,4);
+			// KinematicVar* temp = new KinematicVar("ST","Scalar Sum of all Calorimeter Energy","#SigmaE_{E}_{T} (GeV)",false,30,0,1500);
+		float a[] = {0,357,525,825,1500};
+		temp->usearray(a);
+		allKinVars["BST"] = temp; }
+
+
+
+
 
 	//now trim it down to those you care about
 	LabelKinVars retKinVars;

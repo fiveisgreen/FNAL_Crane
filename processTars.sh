@@ -20,19 +20,25 @@ ls -1tr raw_plots_M*BtagEff* > killBtagEff.txt
 ls -1tr raw_plots_MC*JEC* > killJEC.txt
 sed -i 's/killBtagEff.txt//g' killBtagEff.txt
 sed -i 's/killJEC.txt//g' killJEC.txt
-
 sed -i 's/raw_/rm raw_/g' killBtagEff.txt
 sed -i 's/raw_/rm raw_/g' killJEC.txt
-sed -i 's/plotsWith/rm plotsWith/g' killBtagEff.txt
-sed -i 's/plotsWith/rm plotsWith/g' killJEC.txt
 sc killBtagEff.txt
 sc killJEC.txt
 
-tar -xvf Cards_mst_185_mu_150.tar LimitCard_mst_185_mu_150_2JbMLgbar2_MET.txt
-tar -xvf Cards_mst_210_mu_150.tar LimitCard_mst_210_mu_150_2JbMLgbar2_MET.txt
-tar -xvf Cards_mst_235_mu_150.tar LimitCard_mst_235_mu_150_2JbMLgbar2_MET.txt
-tar -xvf Cards_mst_185_mu_150.tar LimitCard_mst_185_mu_150_bbin3_MET.txt
-tar -xvf Cards_mst_210_mu_150.tar LimitCard_mst_210_mu_150_bbin3_MET.txt
-tar -xvf Cards_mst_235_mu_150.tar LimitCard_mst_235_mu_150_bbin3_MET.txt
+ls -1tr plotsWithBackground_M*BtagEff* > killBtagEff.txt
+ls -1tr plotsWithBackground_M*JEC* > killJEC.txt
+sed -i 's/plotsWith/rm plotsWith/g' killBtagEff.txt
+sed -i 's/plotsWith/rm plotsWith/g' killJEC.txt
+sed -i 's/raw_/rm raw_/g' killBtagEff.txt
+sed -i 's/raw_/rm raw_/g' killJEC.txt
+sc killBtagEff.txt
+sc killJEC.txt
+
+tar -xvf Cards_st_200_mu_150_bbaa.tar LimitCard_st_200_mu_150_bbaa_2JbMLgbar2_MET.txt
+tar -xvf Cards_st_225_mu_215_bbaa.tar LimitCard_st_225_mu_215_bbaa_2JbMLgbar2_MET.txt
+tar -xvf Cards_st_250_mu_150_bbaa.tar LimitCard_st_250_mu_150_bbaa_2JbMLgbar2_MET.txt
+tar -xvf Cards_st_200_mu_150_bbaa.tar LimitCard_st_200_mu_150_bbaa_bbin3_MET.txt
+tar -xvf Cards_st_225_mu_215_bbaa.tar LimitCard_st_225_mu_215_bbaa_bbin3_MET.txt
+tar -xvf Cards_st_250_mu_150_bbaa.tar LimitCard_st_250_mu_150_bbaa_bbin3_MET.txt
 root -l -b -q format_plots_combined.C+
 python makeTable.py

@@ -49,7 +49,8 @@ typedef std::map<string,LableHistArr> Lable2HistArr;
 typedef std::map<string,Lable2HistArr> Lable3HistArr;
 
 typedef std::map<string,float> Labledflaot;
-typedef std::map<string,TFile*> TFileMap;
+typedef std::map<string,TFile*>   TFileMap;
+typedef std::map<string,TFileMap> TFileMap2;
 
 void format_plots_combined(){
 	cout<<"hello world"<<endl;
@@ -58,11 +59,11 @@ void format_plots_combined(){
 	CMSStyle();
 
 		///////////////////////////// Switcehs //////////////////////////////////////
-	int printlevel = 1;
+	int printlevel = 3;
 
 	bool saveImages = true;
 	bool writeRootFile = true;
-	string savewhat = "ggifpdfC";//ggifpdfeps
+	string savewhat = "ggifpdf";//ggifpdfeps
 //	string savewhat = "ggifpdfepsjpgpng";//ggifpdfeps
 	bool divideOutBinWidths = true;
 	float nominalBinWidth = 10;//GeV, for those measured in GeV
@@ -74,8 +75,8 @@ void format_plots_combined(){
 
 	bool makeSigcompFullLinPlots = 0;
 	bool makeSigcompFullLogPlots = 0;
-	bool makeSigComp1 = 0;
-	bool makeSigComp1log = 0;
+	bool makeSigComp1 = 1;
+	bool makeSigComp1log = 1;
 
 	bool makeBkgSubPlots = false; //keep this false
 	bool makeTagToBkgRatPlots = false;//keep false
@@ -95,28 +96,44 @@ void format_plots_combined(){
 	const int nDataAndMcFiles = 4;
 	string Data = "Data";
 
-	MCpoint* MCpoints[nDataAndMcFiles];//the 0th is going to be the data.
-		//string indexNames[nDataAndMcFiles] = {Data,"mst_350_mu_200","mst_250_mu_200","mst_250_mu_150","ho_140"};//** FOR INEDEXING
-		//	string indexNames[nDataAndMcFiles] = {Data,"n2n1_135_8_hh_bbaa","n2n1_145_8_hh_bbaa","n2n1_155_8_hh_bbaa"};//** FOR INEDEXING
-		//string indexNames[nDataAndMcFiles] = {Data, "mst_210_mu_150", "mst_310_mu_300", "mst_410_mu_325", "mst_510_mu_425"};
-	string indexNames[nDataAndMcFiles] = {Data,"mst_185_mu_150", "mst_235_mu_225",  "mst_235_mu_150"};
-		//string indexNames[nDataAndMcFiles] = {Data, "mst_210_mu_150", "mst_310_mu_150", "mst_410_mu_175", "mst_510_mu_200"};
-		//string indexNames[nDataAndMcFiles] = {Data, "n2n1_135_8_hh_bbaa"};
+	const int nchannels = 4;
+	string channel[nchannels] = {"bbaa","wwaa","zzaa","ttaa"};
+
+	MCpoint* MCpoints[nDataAndMcFiles][nchannels];//the 0th is going to be the data.
+	/*
+	 MCpoint is going to have the following structure: 
+	 [0][0]  = data
+	 [1][0] = st_###_mu_###_bbaa, [1][1] = st_###_mu_###_wwaa, [1][2] = st_###_mu_###_zzaa, [1][3] = st_###_mu_###_ttaa
+	 [2][0] = st_###_mu_###_bbaa, [2][1] = st_###_mu_###_wwaa, [2][2] = st_###_mu_###_zzaa, [2][3] = st_###_mu_###_ttaa
+	 ...
+	 Then just promise to never call MCpoint[0][>0].
+	 I don't fill the rest of the first row with pointers to data for fear that some bug may multiply the data by nDataAndMcFiles
+	 */
+
+		//	string indexNames[nDataAndMcFiles] = {Data,"st_200_mu_150_bbaa", "st_225_mu_215_bbaa",  "st_250_mu_150_bbaa"};
+	string indexNames[nDataAndMcFiles] = {Data,"st_350_mu_135", "st_400_mu_300",  "st_300_mu_290"};
+	//string indexNames[nDataAndMcFiles] = {Data,"st_200_mu_150", "st_225_mu_215",  "st_250_mu_150"};
 
 
-		//int type[nDataAndMcFiles] = {-1,0,0,0,1};
-
-	string s_DataAndMcFiles[nDataAndMcFiles];//    = {Data,"mst_350_M3_5025_mu_200","mst_250_M3_5025_mu_200","mst_250_M3_5025_mu_150","ho_140"};//formerly FOR INEDEXING
-	string s_DataAndMcFiles_v4[nDataAndMcFiles];// = {Data,"M_{sTop}=350, M_{Higgsino}=200","M_{sTop}=250, M_{Higgsino}=200", "M_{sTop}=250, M_{Higgsino}=150", "M_{Higgsino}=140"};//M_{Gluino}=5025,
-	for(int i=0;i<nDataAndMcFiles;i++) MCpoints[i] = setupMCpoint(indexNames[i],"");
-	for(int i=0;i<nDataAndMcFiles;i++) s_DataAndMcFiles[i] = MCpoints[i]->s_DataAndMcFiles;
-	for(int i=0;i<nDataAndMcFiles;i++) s_DataAndMcFiles_v4[i] = MCpoints[i]->s_DataAndMcFiles_v4;
-
-	/* naturalHiggsinoNLSPout_mst_500_M3_5025_mu_375.root
-	 mst_(stop mass)
-	 M3_(gluino mass)
-	 mu_(higgsino mass) */
-
+		//setup MC points and acouple associated strings. 
+//	string s_DataAndMcFiles[nDataAndMcFiles][nchannels];
+//	string s_DataAndMcFiles_v4[nDataAndMcFiles][nchannels];
+	for(int i=0;i<nDataAndMcFiles;i++){
+		if(i==0){//do data
+			printf("asking for %s\n",(indexNames[i]).data());
+			MCpoints[i][0] = setupMCpoint(indexNames[i],"");
+//			s_DataAndMcFiles[i][0] = MCpoints[i][0]->s_DataAndMcFiles;
+//			s_DataAndMcFiles_v4[i][0] = MCpoints[i][0]->s_DataAndMcFiles_v4;
+			continue;
+		}
+			//do MC
+		for(int j=0;j<nchannels;j++){
+			printf("asking for MCpoint %s\n",(indexNames[i]+"_"+channel[j]).data());
+			MCpoints[i][j] = setupMCpoint(indexNames[i]+"_"+channel[j],"");
+//			s_DataAndMcFiles[i][j] = MCpoints[i][j]->s_DataAndMcFiles;
+//			s_DataAndMcFiles_v4[i][j] = MCpoints[i][j]->s_DataAndMcFiles_v4;
+		}
+	}
 
 		///Fetch Limit Results
 	Label2Lim* LimitContainers[nDataAndMcFiles-1];
@@ -126,7 +143,7 @@ void format_plots_combined(){
 		cout<<"Reach For Limit Files: Marko"<<endl;
 		for (int i=1;i<nDataAndMcFiles;i++){
 			cout<<"i "<<i<<endl;
-			suckinfile(LimitContainers[i-1],indexNames[i]); //index name indexes the mass point.
+			suckinfile(LimitContainers[i-1],(indexNames[i]+"_bbaa").data()); //index name indexes the mass point.
 		}
 		cout<<"Polo: Got all limit files"<<endl;
 	}
@@ -137,20 +154,37 @@ void format_plots_combined(){
 	TFile* fplots = new TFile(formatedplotsroot_combined.c_str(),"RECREATE");
 	cout<<"that worked"<<endl;
 
-	TFileMap PostAnaAnaFiles;
-	TFileMap MainAnaFiles;
+	TFileMap2 PostAnaAnaFiles;//[point][channel]
+	/*
+	 Structure: 
+	 [Data]:[Data]
+	 [st_200_mu_150]:["bbaa","wwaa","zzaa","ttaa"]
+	 [st_250_mu_150]:["bbaa","wwaa","zzaa","ttaa"]
+	 ...
+	 */
+//	TFileMap MainAnaFiles;
 	cout<<endl<<"Reading in data file "<<plotsAndBackground_data<<endl<<endl;
 
 	cout<<"open post ana files"<<endl;
 	for(int i=0;i<nDataAndMcFiles;i++){
-		cout<<"Try to open "<<MCpoints[i]->plotsAndBackground_mc.c_str()<<endl;
-		PostAnaAnaFiles[indexNames[i]] = new TFile(MCpoints[i]->plotsAndBackground_mc.c_str());
+		TFileMap temp;
+		if (i==0) {
+			cout<<"Try to open "<<MCpoints[0][0]->plotsAndBackground_mc.c_str()<<endl;
+			temp[Data] = new TFile(MCpoints[0][0]->plotsAndBackground_mc.c_str());
+		}
+		else{
+			for (int jchan=0; jchan<nchannels; jchan++) {
+				cout<<"Try to open "<<MCpoints[i][jchan]->plotsAndBackground_mc.c_str()<<endl;
+				temp[channel[jchan]]= new TFile(MCpoints[i][jchan]->plotsAndBackground_mc.c_str());
+			}
+		}
+		PostAnaAnaFiles[indexNames[i]] = temp;
 	}
-	cout<<"that worked, now try main ana files"<<endl;
+/*	cout<<"that worked, now try main ana files"<<endl;
 	for(int i=0;i<nDataAndMcFiles;i++){
 		cout<<"Try to open "<<MCpoints[i]->plotsroot_mc.c_str()<<endl;
 		MainAnaFiles[indexNames[i]] = new TFile(MCpoints[i]->plotsroot_mc.c_str());
-	}
+	}*/
 	cout<<endl<<"Writing finished plots to file "<<plotsroot_data<<endl<<endl;
 
 		///////////////////////////// Other Lists ///////////////////////////////////////
@@ -161,7 +195,7 @@ void format_plots_combined(){
 		/// string s_KinemVars[nKinemVars]={"MET","ST","PtGG","HT","MHT"};
 		/// string s_DataAndMcFiles[nDataAndMcFiles]={Data,"MC_mst_350_M3_5025_mu_225"...}
 		/////////////////////////////////////////////////////////////////
-	/*Debug*/ if(printlevel > 0) cout << "Make Other Lists" << endl;
+	/*Debug*/ if(printlevel > 4) cout << "Make Other Lists" << endl;
 		//	const int nEventTopologies = 5; // the number of types of cuts selected, like 1JB...
 		//string s_EventTopology[nEventTopologies] = {"","1Jb","3J","3Jb","metCut"};//** FOR INEDEXING
 	string s_EventTopology_v2[nEventTopologies];//{"","_1Jb","_3J","_3Jb","_metCut"};
@@ -172,7 +206,7 @@ void format_plots_combined(){
 	for (int i=0; i<nEventTopologies; i++) {
 		s_EventTopology_v2[i] = string("_")+s_EventTopology[i];
 		s_EventTopology_v3[i] = string("_")+s_EventTopology[i]+"_";
-		cout<<"making v2 "<<s_EventTopology_v2[i]<<" v3 "<<s_EventTopology_v3[i]<<endl;
+		/*Debug*/ if(printlevel > 4) cout<<"making v2 "<<s_EventTopology_v2[i]<<" v3 "<<s_EventTopology_v3[i]<<endl;
 	}
 
 		//const int nPhoMassAndBkgDists //lsb, tag, usb...
@@ -186,34 +220,12 @@ void format_plots_combined(){
 		iMassDist++;
 	}
 
-	string s_DataAndMcFiles_v2[nDataAndMcFiles];
-	string s_DataAndMcFiles_v3[nDataAndMcFiles];
-	for(int i=0;i<nDataAndMcFiles;i++) s_DataAndMcFiles_v2[i] = MCpoints[i]->s_DataAndMcFiles_v2;
-	for(int i=0;i<nDataAndMcFiles;i++) s_DataAndMcFiles_v3[i] = MCpoints[i]->s_DataAndMcFiles_v3;
-		//s_DataAndMcFiles_v2[0]=Data;///{Data,"MC_mst_350_M3_5025_mu_225"...}
-		//s_DataAndMcFiles_v3[0]=Data;///{Data,"MC","MC","MC"...}
-		//for (int i=1; i<nDataAndMcFiles; i++) {s_DataAndMcFiles_v2[i]=string("MC_")+s_DataAndMcFiles[i];}
-		//for (int i=1; i<nDataAndMcFiles; i++) {s_DataAndMcFiles_v3[i]=string("MC");}
-
-		///////////////////////////// LUMI SCALES ///////////////////////////////////////
-	/*Debug*/ if(printlevel > 0) cout << "Set Lumi Scales" << endl;
-	Labledflaot lumiscalemap;
-		//const float Integrated_Luminosity_Data = 12.; /*fb^-1*/ //moved to params.h
-	for(int i=0;i<nDataAndMcFiles;i++){
-		cout<<"setting the lumi scale factor to "<<MCpoints[i]->lumiscalefactor(Integrated_Luminosity_Data)<<" for "<<indexNames[i]<<endl;
-		lumiscalemap[indexNames[i]] = MCpoints[i]->lumiscalefactor(Integrated_Luminosity_Data);
-	}
-		//lumiscalemap[Data] = 1.;
-		//lumiscalemap["new_natural_mst_350_M3_5025_mu_225"] = (Integrated_Luminosity_Data * 517.0/*fb*/)/((float) 2500000/*events*/);
-		//lumiscalemap["mst_250_M3_5025_mu_200"] = (Integrated_Luminosity_Data * 3311.0/*fb*/)/((float) 2500000/*events*/);
-		//lumiscalemap["mst_250_M3_5025_mu_150"] = (Integrated_Luminosity_Data * 2000.0/*fb*/)/((float) 2500000/*events*/);
-		//lumiscalemap["mst_350_M3_5025_mu_200"] = (Integrated_Luminosity_Data * 864.0/*fb*/)/((float) 2500000/*events*/);
-		//lumiscalemap["ho_140"] = (Integrated_Luminosity_Data * 1833.0/*fb*/)/((float) 2500000/*events*/);
-		//lumiscalemap["ho_200"] = (Integrated_Luminosity_Data * 463.0/*fb*/)/((float) 2500000/*events*/);
-		//lumiscalemap["mst_100_M3_5025_mu_175"] = (Integrated_Luminosity_Data * 6372.0/*fb*/)/((float) 2500000/*events*/);
+//	string s_DataAndMcFiles_v2[nDataAndMcFiles];
+//	string s_DataAndMcFiles_v3[nDataAndMcFiles];
+//	for(int i=0;i<nDataAndMcFiles;i++) s_DataAndMcFiles_v2[i] = MCpoints[i]->s_DataAndMcFiles_v2;
+//	for(int i=0;i<nDataAndMcFiles;i++) s_DataAndMcFiles_v3[i] = MCpoints[i]->s_DataAndMcFiles_v3;
 
 		///////////////////////////// Color Scheme //////////////////////////////////////
-
 	int dataColor = kBlack;
 	int dgBkgBoxColor = kRed;
 	int dgBkgThatchColor = kRed;
@@ -237,33 +249,32 @@ void format_plots_combined(){
 	PrettyLatex(TEX_lumi_fb,0.03);
 		////////////////////////////////////////////////////////////////////
 		///////////////////////////////Load h_mGG/////////////////////////////////////
-	/*Debug*/ if(printlevel > 0) cout << "Load h_mGG" << endl;
+/*	if(printlevel > 0) cout << "Load h_mGG" << endl;
 		//load mGG_unsliced histograms from all files.
 	Lable2Hist h_mGG_unsliced;
 	for (int jFile=0; jFile<nDataAndMcFiles; jFile++) { //loop over all files
 		LableHist tmp; // this is the collection of histograms, indexed by topology name
-		/*Debug*/ if(printlevel > 2) cout << "first loop, jFile = "<<jFile << endl;
+		if(printlevel > 2) cout << "first loop, jFile = "<<jFile << endl;
 		for (int iTop = 0; iTop<nEventTopologies; iTop++) {
-			/*Debug*/ if(printlevel > 4) cout << "second loop, iTop = "<<iTop <<endl;
+			if(printlevel > 4) cout << "second loop, iTop = "<<iTop <<endl;
 			string instring = string("h_mGG") +s_EventTopology[iTop] + "_unsliced";
-			/*Debug*/ if(printlevel > 4) cout << "loading "<<instring<< " from file " << indexNames[jFile] << " for topology "<<s_EventTopology[iTop] <<endl;
+			if(printlevel > 4) cout << "loading "<<instring<< " from file " << indexNames[jFile] << " for topology "<<s_EventTopology[iTop] <<endl;
 			tmp[s_EventTopology[iTop]] = (TH1F*)PostAnaAnaFiles[indexNames[jFile]]->Get(instring.c_str());
-			/*Debug*/ if(printlevel > 4) cout << "succeeded"<<endl;
+			if(printlevel > 4) cout << "succeeded"<<endl;
 
 				//fix the root names
 			string newname = instring+"_"+s_DataAndMcFiles[jFile];
-			/*Debug*/ if(printlevel > 4) cout << "resetting name to "<<newname<<" for topology "<<s_EventTopology[iTop]<<endl;
-				//			/*Debug*/ if(printlevel > 6) cout << tmp[s_EventTopology[iTop]]->Integral()<<endl;
+			if(printlevel > 4) cout << "resetting name to "<<newname<<" for topology "<<s_EventTopology[iTop]<<endl;
+
 
 			tmp[s_EventTopology[iTop]]->SetName((newname).c_str());
-			/*Debug*/ if(printlevel > 4) cout << "succeeded"<<endl;
+			if(printlevel > 4) cout << "succeeded"<<endl;
 		}
-		/*Debug*/ if(printlevel > 2) cout << "Attempting to write tmp to h_mGG_unsliced with tag "<<s_DataAndMcFiles[jFile] << endl;
+		if(printlevel > 2) cout << "Attempting to write tmp to h_mGG_unsliced with tag "<<s_DataAndMcFiles[jFile] << endl;
 		h_mGG_unsliced[indexNames[jFile]] = tmp;
-		/*Debug*/ if(printlevel > 2) cout << "succeeded"<<endl;
+		if(printlevel > 2) cout << "succeeded"<<endl;
 	}
-		//	TH1F* h_mGG_unsliced = (TH1F*)fin.Get("h_mGG_unsliced");
-		//	TH1F* h_mGG_1Jb_unsliced = (TH1F*)fin.Get("h_mGG_1Jb_unsliced");
+*/
 		////////////////////////////// MAKE EXCLUSION PLOTS //////////////////////////////////////
 
 	if(makeExclusionPlots){
@@ -326,52 +337,98 @@ void format_plots_combined(){
 				if (s_EventTopology[iTop].compare("metCut") == 0 && strCmp(s_KinemVars[kKinVar],"MET") ) continue;
 
 				TH1F** tmpHistArray = new TH1F*[nPhoMassAndBkgDists];
-					//LoadHistSet(hMET, &fin, "MET");
-				for (int lMassDist=0; lMassDist < nPhoMassAndBkgDists; lMassDist++){
-					/*Debug*/ if(printlevel >8) cout << "forth loop, lMassDist = "<<lMassDist <<endl;
-					string instring = string("h")+s_KinemVars[kKinVar]+s_EventTopology[iTop]+"_"+s_MassBkgDists[lMassDist];
-					if(lMassDist == 0 || lMassDist == 2 || lMassDist == 4){
-						string newname = instring+"_"+s_DataAndMcFiles[jFile];
-						/*Debug*/ if(printlevel >8) cout << "Making dummy histogram "<<newname<<" for tmpHistArray["<<lMassDist<<"]"<<endl;
-						//clone a good histogram
-						string instring_dummy = string("h")+s_KinemVars[kKinVar]+s_EventTopology[iTop]+"_"+s_MassBkgDists[1];
-						/*Debug*/ if(printlevel >8) cout << "attempting to clone "<<instring_dummy << "from  "<<indexNames[jFile] <<endl;
-						TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames[jFile]]->Get( instring_dummy.c_str() );
-						/*Debug*/ if(printlevel >8) cout << "rename hist "<<newname <<endl;
-						tmpHistArray[lMassDist] = (TH1F*) temp->Clone((newname).c_str());
-						tmpHistArray[lMassDist]->Reset();
-						//tmpHistArray[lMassDist]->SetName((newname).c_str()); //this segfaults!! for hMETNULL_lowSB_mst_185_M3_5050_mu_150
-						/*Debug*/ if(printlevel >8) cout << "success" <<endl;
-						tmpHistArray[lMassDist]->SetTitle("dummy hist");
-					}
-					else{
-						/*Debug*/ if(printlevel >8) cout << "Load hist "<<instring<< " from file "<< indexNames[jFile] << " into tmpHistArray["<<lMassDist<<"]"<<endl;
-
-						tmpHistArray[lMassDist] = (TH1F*) PostAnaAnaFiles[indexNames[jFile]]->Get( instring.c_str() );
-						//fix the root name
-						string newname = instring+"_"+s_DataAndMcFiles[jFile];
-						/*Debug*/ if(printlevel >8) cout << "rename hist "<<newname <<endl;
-						tmpHistArray[lMassDist]->SetName((newname).c_str()); //this segfaults!! for hMETNULL_lowSB_mst_185_M3_5050_mu_150
-						/*Debug*/ if(printlevel >8) cout << "success" <<endl;
-						string newtitle; 
-						if(s_KinemVars[kKinVar].compare("Phi") >=0 || 
-								s_KinemVars[kKinVar].compare("Eta") >=0 || 
-								s_KinemVars[kKinVar][0] == 'n' ||
-								strCmp(s_KinemVars[kKinVar],"cosThetaStar") ||
-								strCmp(s_KinemVars[kKinVar],"SumRootCSV")){
-							newtitle = string(";")+s_KinemVars[kKinVar];
+				if (jFile == 0) {
+						//LoadHistSet(hMET, &fin, "MET");
+					for (int lMassDist=0; lMassDist < nPhoMassAndBkgDists; lMassDist++){
+						/*Debug*/ if(printlevel >8) cout << "forth loop, lMassDist = "<<lMassDist <<endl;
+						string instring = string("h")+s_KinemVars[kKinVar]+s_EventTopology[iTop]+"_"+s_MassBkgDists[lMassDist];
+						if(lMassDist == 0 || lMassDist == 2 || lMassDist == 4){
+							string newname = instring+"_"+MCpoints[jFile][0]->s_DataAndMcFiles;
+							/*Debug*/ if(printlevel >8) cout << "Making dummy histogram "<<newname<<" for tmpHistArray["<<lMassDist<<"]"<<endl;
+								//clone a good histogram
+							string instring_dummy = string("h")+s_KinemVars[kKinVar]+s_EventTopology[iTop]+"_"+s_MassBkgDists[1];
+							/*Debug*/ if(printlevel >8) cout << "attempting to clone "<<instring_dummy << "from  "<<indexNames[jFile] <<endl;
+							TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames[jFile]][Data]->Get( instring_dummy.c_str() );
+							/*Debug*/ if(printlevel >8) cout << "rename hist "<<newname <<endl;
+							tmpHistArray[lMassDist] = (TH1F*) temp->Clone((newname).c_str());
+							tmpHistArray[lMassDist]->Reset();
+								//tmpHistArray[lMassDist]->SetName((newname).c_str()); //this segfaults!! for hMETNULL_lowSB_mst_185_M3_5050_mu_150
+							/*Debug*/ if(printlevel >8) cout << "success" <<endl;
+							tmpHistArray[lMassDist]->SetTitle("dummy hist");
 						}
 						else{
-							newtitle = string(";")+s_KinemVars[kKinVar]+" (GeV)";
-							if(divideOutBinWidths && (lMassDist<4 || lMassDist == 5 || lMassDist == 6)){
-								DivideOutBinWidths(tmpHistArray[lMassDist],nominalBinWidth);
-								newtitle = newtitle + Form("Events per %.0f GeV",nominalBinWidth);
-							}	
+							/*Debug*/ if(printlevel >8) cout << "Load hist "<<instring<< " from file "<< indexNames[jFile] << " into tmpHistArray["<<lMassDist<<"]"<<endl;
+
+							tmpHistArray[lMassDist] = (TH1F*) PostAnaAnaFiles[indexNames[jFile]][Data]->Get( instring.c_str() );
+								//fix the root name
+							string newname = instring+"_"+MCpoints[jFile][0]->s_DataAndMcFiles;
+							/*Debug*/ if(printlevel >8) cout << "rename hist "<<newname <<endl;
+							tmpHistArray[lMassDist]->SetName((newname).c_str()); //this segfaults!! for hMETNULL_lowSB_mst_185_M3_5050_mu_150
+							/*Debug*/ if(printlevel >8) cout << "success" <<endl;
+							string newtitle;
+							if(s_KinemVars[kKinVar].compare("Phi") >=0 ||
+							   s_KinemVars[kKinVar].compare("Eta") >=0 ||
+							   s_KinemVars[kKinVar][0] == 'n' ||
+							   strCmp(s_KinemVars[kKinVar],"cosThetaStar") ||
+							   strCmp(s_KinemVars[kKinVar],"SumRootCSV")){
+								newtitle = string(";")+s_KinemVars[kKinVar];
+							}
+							else{
+								newtitle = string(";")+s_KinemVars[kKinVar]+" (GeV)";
+								if(divideOutBinWidths && (lMassDist<4 || lMassDist == 5 || lMassDist == 6)){
+									DivideOutBinWidths(tmpHistArray[lMassDist],nominalBinWidth);
+									newtitle = newtitle + Form(";Events per %.0f GeV",nominalBinWidth);
+								}
+							}
+							tmpHistArray[lMassDist]->SetTitle((char*)newtitle.c_str());
 						}
-						tmpHistArray[lMassDist]->SetTitle((char*)newtitle.c_str());
+					}//end for every Mass Dist
+					/*Debug*/ if(printlevel >6) cout << "load hist array into tmpMapKinVar for "<< s_KinemVars[kKinVar] <<endl;
+				}
+				else{
+						//else you're on MC and you only care about the tag region.
+					int lMassDist = 1;
+					string instring = string("h")+s_KinemVars[kKinVar]+s_EventTopology[iTop]+"_"+s_MassBkgDists[lMassDist];
+						/////////////////////
+					for (int ichan = 0; ichan < nchannels; ichan++) {
+						/*Debug*/ if(printlevel >8) cout << "Load and scale hist "<<instring<< " from file "<< indexNames[jFile]<<"_"<<channel[ichan] << " into tmpHistArray["<<lMassDist<<"]"<<endl;
+
+						if (ichan == 0) {
+							TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames[jFile]][channel[ichan]]->Get( instring.c_str() );
+							temp->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );
+							tmpHistArray[lMassDist] = temp;
+						}
+						else{
+							TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames[jFile]][channel[ichan]]->Get( instring.c_str() ); 
+							temp->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );
+							tmpHistArray[lMassDist]->Add(temp);
+						}
+					}//end for each channel
+						//so all histograms come in from here summed and loaded.
+
+						//fix the root name
+					string newname = instring+"_"+indexNames[jFile]; //MCpoints[jFile][0]->s_DataAndMcFiles;
+					/*Debug*/ if(printlevel >8) cout << "rename hist "<<newname <<endl;
+					tmpHistArray[lMassDist]->SetName((newname).c_str()); //this segfaults!! for hMETNULL_lowSB_mst_185_M3_5050_mu_150
+					/*Debug*/ if(printlevel >8) cout << "success" <<endl;
+					string newtitle;
+					if(s_KinemVars[kKinVar].compare("Phi") >=0 ||
+					   s_KinemVars[kKinVar].compare("Eta") >=0 ||
+					   s_KinemVars[kKinVar][0] == 'n' ||
+					   strCmp(s_KinemVars[kKinVar],"cosThetaStar") ||
+					   strCmp(s_KinemVars[kKinVar],"SumRootCSV")){
+						newtitle = string(";")+s_KinemVars[kKinVar];
 					}
-				}//end for every Mass Dist
-				/*Debug*/ if(printlevel >6) cout << "load hist array into tmpMapKinVar for "<< s_KinemVars[kKinVar] <<endl;
+					else{
+						newtitle = string(";")+s_KinemVars[kKinVar]+" (GeV)";
+						if(divideOutBinWidths && (lMassDist<4 || lMassDist == 5 || lMassDist == 6)){
+							DivideOutBinWidths(tmpHistArray[lMassDist],nominalBinWidth);
+							newtitle = newtitle + Form(";Events per %.0f GeV",nominalBinWidth);
+						}
+					}
+					tmpHistArray[lMassDist]->SetTitle((char*)newtitle.c_str());
+
+				}//if MC
 				tmpMapKinVar[s_KinemVars[kKinVar]] = tmpHistArray;
 
 			}//End for each kinematic varraible
@@ -408,7 +465,7 @@ void format_plots_combined(){
 		string instring = string("mgg") + s_EventTopology_v3[iTop] + "fit";
 		if(printlevel > 1)cout<<"format_plots_combined curve fitting sees s_EventTopology_v3 as "<<s_EventTopology_v3[iTop]<<endl;
 		/*Debug*/ if(printlevel > 1) cout << "instring = "<<instring <<endl;
-		mgg_fit_curve[iTop] = (TF1*)PostAnaAnaFiles[Data]->Get(instring.c_str());
+		mgg_fit_curve[iTop] = (TF1*)PostAnaAnaFiles[Data][Data]->Get(instring.c_str());
 		/*Debug*/ if(printlevel > 1) cout << "supposidly loaded it, try it "<<endl;
 		/*Debug*/ if(printlevel > 1) cout << mgg_fit_curve[iTop]->GetProb() <<endl;
 	}
@@ -446,7 +503,7 @@ void format_plots_combined(){
 
 				TLegend* l1=makeL1_v2(0.443467,0.869171,0.643216,0.914508);
 				PrettyLegend(l1);
-				l1->SetTextSize(0.03367876);
+				l1->SetTextSize(0.03067876);
 				l1->AddEntry(h[4],"Background Subtracted");
 				h[4]->GetYaxis()->SetRangeUser(0.,3.);
 				h[4]->Draw("ep");
@@ -481,7 +538,8 @@ void format_plots_combined(){
 
 		TH2F* DesignWalls[nDataAndMcFiles-1];//do not make this for data!!
 		for (int jFile=1; jFile<nDataAndMcFiles; jFile++) {
-			DesignWalls[jFile-1] = new TH2F(Form("DesignWallLin_%s",s_DataAndMcFiles[jFile].data() ),Form("Expected 50% 1/r-Values for %s;Topology;Kinematic Variable",s_DataAndMcFiles[jFile].data()),nEventTopologies_limit,0,nEventTopologies_limit,nKinemVars_limit,0,nKinemVars_limit);
+//			DesignWalls[jFile-1] = new TH2F(Form("DesignWallLin_%s",MCpoints[jFile][0]->s_DataAndMcFiles.data() ),Form("Expected 50% 1/r-Values for %s;Topology;Kinematic Variable",MCpoints[jFile]->s_DataAndMcFiles.data()),nEventTopologies_limit,0,nEventTopologies_limit,nKinemVars_limit,0,nKinemVars_limit);
+			DesignWalls[jFile-1] = new TH2F(Form("DesignWallLin_%s",indexNames[jFile].data() ),Form("Expected 50% 1/r-Values for %s;Topology;Kinematic Variable",indexNames[jFile].data()),nEventTopologies_limit,0,nEventTopologies_limit,nKinemVars_limit,0,nKinemVars_limit);
 				//set text labels
 			for (int iTopo = 0; iTopo<nEventTopologies_limit; iTopo++) {
 				DesignWalls[jFile-1]->GetXaxis()->SetBinLabel(iTopo+1,s_EventTopology_limit[iTopo].data());
@@ -512,7 +570,8 @@ void format_plots_combined(){
 			maxlim = 0.1*floor(10*maxlim) + 0.1;
 
 			PrettyHist(DesignWalls[jFile-1]);
-			TCanvas * canv = new TCanvas(Form("c_DesignSummaryLin_%s",s_DataAndMcFiles[jFile].data() ),Form("Expected 50% 1/r -Values for %s;Topology",s_DataAndMcFiles[jFile].data()),149,473,1000,700);
+			TCanvas * canv = new TCanvas(Form("c_DesignSummaryLin_%s",indexNames[jFile].data() ),Form("Expected 50% 1/r -Values for %s;Topology",indexNames[jFile].data()),149,473,1000,700);
+//			TCanvas * canv = new TCanvas(Form("c_DesignSummaryLin_%s",MCpoints[jFile]->s_DataAndMcFiles.data() ),Form("Expected 50% 1/r -Values for %s;Topology",MCpoints[jFile]->s_DataAndMcFiles.data()),149,473,1000,700);
 			gStyle->SetPaintTextFormat("3.2f");
 //			gStyle->SetPalette(1);
 			gStyle->SetNumberContours(NCont);
@@ -562,14 +621,12 @@ void format_plots_combined(){
 
 				//make an array of the signal dists in the tag region.
 			TH1F* MC_hists[nDataAndMcFiles-1];
-			float lumiscales[nDataAndMcFiles-1];
 			int iter = 0;
 			for (int jFile = 0; jFile < nDataAndMcFiles; jFile++) { //for each file
 				if (indexNames[jFile].compare(Data) == 0 ) continue; // skip the data file, so really for each MC file
 				MC_hists[iter] = KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1];
 				if(printlevel > 2) cout << "jFile = "<<jFile<<" MC_histe " <<KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1]->GetName()<<" integral:"<<KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1]->Integral()<<endl;
 
-				lumiscales[iter] = lumiscalemap[indexNames[jFile]];
 				iter++;
 			}
 				//pull out the limit files.
@@ -584,7 +641,7 @@ void format_plots_combined(){
 					textlims->AddText("Expected Limits"); //Limit
 					for (int i=0; i<nDataAndMcFiles-1; i++){
 						if (checkin(LimitContainers[i],s_EventTopology[iTop],s_KinemVars[kKinVar])) {
-							textlims->AddText(Form("r < %f",theseLimits[i]->Expected50)); //Limit
+							textlims->AddText(Form("r < %.2f",theseLimits[i]->Expected50)); //Limit
 						}
 						else textlims->AddText("   "); //Limit
 					}
@@ -633,8 +690,6 @@ void format_plots_combined(){
 			playNiceWithLegend(h[5],0.30,0.0);
 				//			for (int i=0; i<nDataAndMcFiles-1; i++) SameRange(h[3],MC_hists[i]);
 			for (int i=0; i<nDataAndMcFiles-1; i++){
-				if(printlevel>2 ) cout<<"scaling histogram by lumiscale "<<lumiscales[i]<<endl;
-				MC_hists[i]->Scale(lumiscales[i]);
 				playNiceWithLegend(MC_hists[i],0.30,0.0);
 				SameRange(h[3],MC_hists[i]);//WARNING--pattern is normal, huge on upper side.
 			}
@@ -650,7 +705,7 @@ void format_plots_combined(){
 			l1->AddEntry(h[6],"USB Bkg Estimate");
 
 			for (int i=0; i<nDataAndMcFiles-1; i++){
-				string lablestring = string("MC Signal: ")+s_DataAndMcFiles_v4[i+1];
+				string lablestring = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
 				l1->AddEntry(MC_hists[i],lablestring.c_str());
 			}
 			l1->Draw("same");
@@ -704,7 +759,6 @@ void format_plots_combined(){
 			h[3]->Draw("e2p");
 			h[5]->Draw("e2psame");
 			h[6]->Draw("e2psame");
-			/*Already Done*/ //for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Scale(lumiscales[i]); //adjust integral for their luminoscity
 				//	cout << "final MC integral "<<MC_hists[0]->Integral()<<endl;
 			for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");//e1psame
 			h[3]->Draw("e2psame");
@@ -713,7 +767,7 @@ void format_plots_combined(){
 			l2->AddEntry(h[5],"LSB Bkg Estimate");
 			l2->AddEntry(h[6],"USB Bkg Estimate");
 			for (int i=0; i<nDataAndMcFiles-1; i++){
-				string lablestring2 = string("MC Signal: ")+s_DataAndMcFiles_v4[i+1];
+				string lablestring2 = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
 				l2->AddEntry(MC_hists[i],lablestring2.c_str());
 			}
 			l2->Draw("same");
@@ -754,13 +808,12 @@ void format_plots_combined(){
 
 					//make an array of the signal dists in the tag region.
 				TH1F* MC_hists[nDataAndMcFiles-1];
-				//float lumiscales[nDataAndMcFiles-1];
 				int iter = 0;
 				for (int jFile = 0; jFile < nDataAndMcFiles; jFile++) { //for each file
 					if (indexNames[jFile].compare(Data) == 0 ) continue; // skip the data file, so really for each MC file
 					MC_hists[iter] = KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1];
 					if(printlevel>2)cout << "jFile = "<<jFile<<" MC_hist " <<KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1]->GetName()<<" integral:"<<KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1]->Integral()<<endl;
-					//lumiscales[iter] = lumiscalemap[indexNames[jFile]];
+
 					iter++;
 				}
 
@@ -776,7 +829,7 @@ void format_plots_combined(){
 						textlims->AddText("Observed Limits");
 						for (int i=0; i<nDataAndMcFiles-1; i++){
 							if (checkin(LimitContainers[i],s_EventTopology[iTop],s_KinemVars[kKinVar])) {
-								textlims->AddText(Form("r < %f",theseLimits[i]->Observed)); //Limit
+								textlims->AddText(Form("r < %.2f",theseLimits[i]->Observed)); //Limit
 							}
 							else textlims->AddText("   "); //Limit
 						}
@@ -816,8 +869,6 @@ void format_plots_combined(){
 				playNiceWithLegend(h[6],0.30,0.0);
 
 				for (int i=0; i<nDataAndMcFiles-1; i++){
-					//if(printlevel>2 ) cout<<"scaling histogram by lumiscale "<<lumiscales[i]<<endl;
-					//MC_hists[i]->Scale(lumiscales[i]);
 					playNiceWithLegend(MC_hists[i],0.30,0.0);
 					SameRange(h[3],MC_hists[i]);//WARNING--pattern is normal, huge on upper side.
 					playNiceWithLegend(MC_hists[i],0.30,0.0);  
@@ -828,17 +879,15 @@ void format_plots_combined(){
 
 				h[3]->Draw("e2p");
 				if(showTag) h[1]->Draw("e1psame");//tag
-					//				for (int i=0; i<nDataAndMcFiles-1; i++){ MC_hists[i]->Scale(lumiscales[i]); //adjust integral for their luminoscity
-					//already done
 
-					//				if(printlevel>2) cout<<"scaling histogramms by factor "<<lumiscales[i]<<endl;}
+
 				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
 				h[3]->Draw("e2psame");
 				h[1]->Draw("e1psame");
 				l1->AddEntry(h[1],"Higgs Mass Region");
 				l1->AddEntry(h[3],"Data Driven Background");
 				for (int i=0; i<nDataAndMcFiles-1; i++){
-					string lablestring = string("MC Signal: ")+s_DataAndMcFiles_v4[i+1];
+					string lablestring = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
 					l1->AddEntry(MC_hists[i],lablestring.c_str());
 				}
 				l1->Draw("same");
@@ -918,7 +967,6 @@ void format_plots_combined(){
 				p1log->SetLogy();
 				h[3]->Draw("e2p");
 				h[1]->Draw("e1psame");//tag
-				/*Already Done*/ //	for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Scale(lumiscales[i]); //adjust integral for their luminoscity
 					//	cout << "final MC integral "<<MC_hists[0]->Integral()<<endl;
 				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
 				h[3]->Draw("e2psame");
@@ -927,7 +975,7 @@ void format_plots_combined(){
 				l2->AddEntry(h[1],"Higgs Mass Region");
 				l2->AddEntry(h[3],"Data Driven Background");
 				for (int i=0; i<nDataAndMcFiles-1; i++){
-					string lablestring2 = string("MC Signal: ")+s_DataAndMcFiles_v4[i+1];
+					string lablestring2 = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
 					l2->AddEntry(MC_hists[i],lablestring2.c_str());
 				}
 				l2->Draw("same");
@@ -969,12 +1017,11 @@ void format_plots_combined(){
 
 					//make an array of the signal dists in the tag region.
 				TH1F* MC_hists[nDataAndMcFiles-1];
-				//float lumiscales[nDataAndMcFiles-1];
 				int iter = 0;
 				for (int jFile = 0; jFile < nDataAndMcFiles; jFile++) { //for each file
 					if (indexNames[jFile].compare(Data) == 0 ) continue; // skip the data file, so really for each MC file
 					MC_hists[iter] = KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1];
-					//lumiscales[iter] = lumiscalemap[indexNames[jFile]];
+
 					iter++;
 				}
 					//pull out the limit files.
@@ -1038,16 +1085,14 @@ void format_plots_combined(){
 
 				h[3]->Draw("e2p");
 				if(showTag) h[1]->Draw("e1psame");//tag
-					//				for (int i=0; i<nDataAndMcFiles-1; i++){ MC_hists[i]->Scale(lumiscales[i]); //adjust integral for their luminoscity
 					//already done
-					//			if(printlevel>2) cout<<"again scaling histograms by sclae factor "<<lumiscales[i]<<endl;
 				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
 				h[3]->Draw("e2psame");
 				h[1]->Draw("e1psame");
 				l1->AddEntry(h[1],"Higgs Mass Region");
 				l1->AddEntry(h[3],"Data Driven Background");
 				for (int i=0; i<nDataAndMcFiles-1; i++){
-					string lablestring = string("MC Signal: ")+s_DataAndMcFiles_v4[i+1];
+					string lablestring = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
 					l1->AddEntry(MC_hists[i],lablestring.c_str());
 				}
 				l1->Draw("same");
@@ -1096,7 +1141,6 @@ void format_plots_combined(){
 				tempCanv2->SetLogy();
 				h[3]->Draw("e2p");
 				h[1]->Draw("e1psame");//tag
-				/*Already Done*/ //	for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Scale(lumiscales[i]); //adjust integral for their luminoscity
 					//	cout << "final MC integral "<<MC_hists[0]->Integral()<<endl;
 				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
 				h[3]->Draw("e2psame");
@@ -1105,7 +1149,7 @@ void format_plots_combined(){
 				l2->AddEntry(h[1],"Higgs Mass Region");
 				l2->AddEntry(h[3],"Data Driven Background");
 				for (int i=0; i<nDataAndMcFiles-1; i++){
-					string lablestring2 = string("MC Signal: ")+s_DataAndMcFiles_v4[i+1];
+					string lablestring2 = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
 					l2->AddEntry(MC_hists[i],lablestring2.c_str());
 				}
 				l2->Draw("same");
@@ -1180,12 +1224,12 @@ void format_plots_combined(){
 
 					//make an array of the signal dists in the tag region.
 				TH1F* MC_hists[nDataAndMcFiles-1];
-				//float lumiscales[nDataAndMcFiles-1];
+
 				int iter = 0;
 				for (int jFile = 0; jFile < nDataAndMcFiles; jFile++) { //for each file
 					if (indexNames[jFile].compare(Data) == 0 ) continue; // skip the data file, so really for each MC file
 					MC_hists[iter] = KinVarHistMap[indexNames[jFile]][s_EventTopology[iTop]][s_KinemVars[kKinVar]][1];
-					//lumiscales[iter] = lumiscalemap[indexNames[jFile]];
+
 					iter++;
 				}
 
@@ -1238,7 +1282,7 @@ void format_plots_combined(){
 					SameRange(h[3],MC_hists[i]);
 				}
 				h[3]->Draw("e2p");
-					//			for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Scale(lumiscales[i]); //adjust integral for their luminoscity
+
 				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
 				h[5]->Draw("e2psame");
 				h[6]->Draw("e2psame");
@@ -1248,7 +1292,7 @@ void format_plots_combined(){
 				l1->AddEntry(h[6],"USB Bkg Estimate");
 
 				for (int i=0; i<nDataAndMcFiles-1; i++){
-					string lablestring = string("MC Signal: ")+s_DataAndMcFiles_v4[i+1];
+					string lablestring = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
 					l1->AddEntry(MC_hists[i],lablestring.c_str());
 				}
 				l1->Draw("same");
@@ -1269,14 +1313,38 @@ void format_plots_combined(){
 
 		///END MAKE PLOTS
 	/*Debug*/ if(printlevel > 0) cout << "Close Files" << endl;
+	printf("Closing output root file\n");
 	fplots->Close();
+
+	printf("Closing PostAnaAna files\n");
 		//itterate over the map. close everything.
-	for( TFileMap::iterator i=PostAnaAnaFiles.begin(); i!=PostAnaAnaFiles.end(); ++i){
-		(*i).second->Close();
+	for(int i=1;i<nDataAndMcFiles;i++) printf(".");
+	printf("\n");
+	PostAnaAnaFiles[Data][Data]->Close();
+	for(int i=1;i<nDataAndMcFiles;i++){
+		for (int jchan=0; jchan<nchannels; jchan++) {
+			PostAnaAnaFiles[indexNames[i]][channel[jchan]]->Close();
+		}
+		printf(".");
+		fflush(stdout);
 	}
+	printf("\n");
+
+/*	printf("Closing raw files\n");
+	iii=0;
+	for( TFileMap::iterator i=MainAnaFiles.begin(); i!=MainAnaFiles.end(); ++i){
+		if(iii%5==0) printf(".");
+		i++;
+	}
+	printf(".\n");
+	iii=0;
 	for( TFileMap::iterator i=MainAnaFiles.begin(); i!=MainAnaFiles.end(); ++i){
 		(*i).second->Close();
+		if(iii%5==0) printf(".");
+		fflush(stdout);
+		iii++;
 	}
+	printf(".\n");*/
 
 
 }//end format plots
@@ -1324,7 +1392,7 @@ TLegend* makeL1(float f1,float f2,float f3,float f4){
 		//TLegend* makeL1(float f1=0.652548,float f2=0.663899,float f3=0.852528,float f4=0.864219){
 	TLegend * l1 = new TLegend(f1, f2, f3, f4);
 	PrettyLegend(l1);
-	l1->SetTextSize(0.03367876);
+	l1->SetTextSize(0.03067876);
 	return l1;
 }
 TLegend* makeL1_v2(float f1,float f2,float f3,float f4){ return makeL1(f1, f2, f3, f4); }
@@ -1332,7 +1400,7 @@ TLegend* makeL2(float f1,float f2,float f3,float f4){
 		//TLegend* makeL2(float f1=0.651267,float f2=0.660256,float f3=0.851246,float f4=0.860577){
 	TLegend * l2 = new TLegend(f1, f2, f3, f4);
 	PrettyLegend(l2);
-	l2->SetTextSize(0.03367876);
+	l2->SetTextSize(0.03067876);
 	return l2;
 }
 

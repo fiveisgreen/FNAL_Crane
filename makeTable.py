@@ -3,8 +3,10 @@ import os,sys
 import math
 
 nMCpoints = 3
-MCstopMasses =     [185,210,235]
-MChiggsinoMasses = [150,150,150]
+MCstopMasses =     [200,225,250]
+MChiggsinoMasses = [150,215,150]
+#MCstopMasses =     [185,210,235]
+#MChiggsinoMasses = [150,150,150]
 #nMCpoints = 2
 #MCstopMasses =     [185,235]
 #MChiggsinoMasses = [150,150]
@@ -24,8 +26,10 @@ if len(MChiggsinoMasses) != nMCpoints:
 #for a,b in zip(MCstopMasses, MChiggsinoMasses):
 #	bbin_cards.append( "LimitCard_mst_%i_mu_%i_bbin3_MET.txt"%(a,b) )
 
-bbin_cards =   [ "LimitCard_mst_%i_mu_%i_bbin3_MET.txt"%(a,b)         for a,b in zip(MCstopMasses,MChiggsinoMasses) ]
-simple_cards = [ "LimitCard_mst_%i_mu_%i_2JbMLgbar2_MET.txt"%(a,b) for a,b in zip(MCstopMasses,MChiggsinoMasses) ]
+bbin_cards =   [ "LimitCard_st_%i_mu_%i_bbaa_bbin3_MET.txt"%(a,b)         for a,b in zip(MCstopMasses,MChiggsinoMasses) ]
+simple_cards = [ "LimitCard_st_%i_mu_%i_bbaa_2JbMLgbar2_MET.txt"%(a,b) for a,b in zip(MCstopMasses,MChiggsinoMasses) ]
+#bbin_cards =   [ "LimitCard_mst_%i_mu_%i_bbin3_MET.txt"%(a,b)         for a,b in zip(MCstopMasses,MChiggsinoMasses) ]
+#simple_cards = [ "LimitCard_mst_%i_mu_%i_2JbMLgbar2_MET.txt"%(a,b) for a,b in zip(MCstopMasses,MChiggsinoMasses) ]
 
 allthere = True
 for card in bbin_cards:
@@ -86,6 +90,7 @@ for imc in range(nMCpoints):
 
 #print table
 print ""
+print "Table for M_stop = %i, M_higgsino = %i"%(MCstopMasses[imc],MChiggsinoMasses[imc])
 print ""
 print "\\begin{table*}[htbp]"
 print "\\begin{center}"
@@ -109,7 +114,8 @@ print "\end{center}"
 print "\end{table*}"
 print ""
 print ""
-#were going to take in the card 
+
+#check that everything makes sense, yell if it doesn't 
 sumbkg = bkg[0]+bkg[1]+bkg[2] 
 if abs(sumbkg-bkg[3]) > 0.15:
 	print "WARNING!! bkg does not add up! Total %s vs supposed sum %f"%(sumbkg,bkg[3])

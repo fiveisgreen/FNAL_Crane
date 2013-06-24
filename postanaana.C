@@ -55,68 +55,113 @@ void postanaana(){
 	for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {s_EventTopology_v2[iTopo] = string("_")+s_EventTopology[iTopo]+"_";} //{"","_1Jb_","_3J_"...
 
 	//make some nice titles
-	string s_EventTopology_v4[nEventTopologies]={   "with no extra cuts",
-							  "with 2 Jets, B-tags:ML",
-							  "with 2 Jets, B-tags:ML, and both pho in the barrel",
-							  "with 2 Jets, B-tags:ML, and MET>20",
-							  "with 2 Jets, B-tags:ML, and 1 pho in the barrel",
-							  "with 2 Jets, B-tags:ML, both pho in the barrel, and MET>20",
-                                                        "with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 95<Mbb<155",
-                                                        "with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !95<Mbb<155",
-                                                        "with 3 Jets, B-tags 3+L with M, both pho in the barrel",
-                                                        "with 4 Jets, B-tags 4+L with M, both pho in the barrel"
-                                                        "with 2 Jets, B-tags 2!L with M, and both pho in the barrel",
-							  "with 2 Jets, B-tags:TL, and both pho in the barrel",
-							"with Tight Photons, 2 Jets, B-tags:ML, and both pho in the barrel",
-							"with Tight Photons, 2 Jets, B-tags:TL, and both pho in the barrel",
-							"with Medium Photons, 2 Jets, B-tags:ML, and both pho in the barrel",
-							"with Medium Photons, 2 Jets, B-tags:TL, and both pho in the barrel",
-							 // "with 2 Jets, B-tags:TL, and MET>20",
-							//  "with 2 Jets, B-tags:TL, 1 pho in the barrel, and MET>20",
-							  //"with 3 Jets, B-tags:M, and MET>20",
-							  //"with 3 Jets, B-tags:T, and MET>20",
 
-							//"with 2 Jets, B-tags:ML, 1 pho in the barrel, jet dEta<1.5, and MET>20",
-							//"with 2 Jets, B-tags:ML, both pho in the barrel, jet dEta<1.5, and MET>20",
+	string s_EventTopology_v4[nEventTopologies]={
+		"with no extra cuts",
+		"with both pho in the barrel",
 
-							//"with 2 Jets that look higgs-like mass, and 1 pho in the barrel", //2JHjj
-							//"with 2 Jets that look higgs-like mass, and 2 pho in the barrel", //2JHjj
-							//"with 2 Jets that look higgs-like mass, 1 pho in the barrel, and jet dEta<1.5", //2JHjj
-							//"with 2 Jets that look higgs-like mass, 2 pho in the barrel, and jet dEta<1.5", //2JHjj
-							//"with 4 Jets, B-tags:M, 1 pho in the barrel, and MET>20",
-							//"with 4 Jets, B-tags:M, 2 pho in the barrel, and MET>20",
-							//"with 4 Jets, B-tags:T, 1 pho in the barrel, and MET>20",
-							//"with 4 Jets, B-tags:T, 2 pho in the barrel, and MET>20",
-							//"with 4 Jets, B-tags:TL, and MET>20",
+		"with at least 1 lep and both pho in the barrel",
+		"with exactly 1 lep and both pho in the barrel",//"1!lepgbar2",
+		"with at least one electron and both pho in the barrel",//"1Elegbar2",
+		"with at least one Muon and both pho in the barrel",//"1Mugbar2",
+		"with at least two leptons and both pho in the barrel",//"2lepgbar2",
+		"with exactly two same-flavor leptons that make a Z, and barrel photons",//"2!lepZgbar2",
+		"with at least 3 leptons, and both pho in the barrel",//"3lepgbar2",
+		"with 2 or 3 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"23JbML!gbar2Mbb0lep",
+		"with at least 2 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"2JbML!gbar2Mbb0lep", //2
+		"with at least 2 light flavor jets, and both pho in the barrel", //2lJgbar2",
+		"with at least 2 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"2lJEWKgbar2",
+		"with at 2 or 3 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"23lJEWKgbar2", //"2lJMWgbar2", "2lJMZgbar2", //4
+		"with 2 Jets, B-tags:ML", //"2JbML"
+		"with 2 Jets, B-tags:ML, and both pho in the barrel", //"2JbMLgbar2",
+		"with 2 Jets, B-tags:MM, and both pho in the barrel", //"2JbMMgbar2",
+		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 95<Mbb<155", //"2JbML!Gbar2Mbb"
+		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !95<Mbb<155", //2JbML!Gbar2Mbb!
+		"with 3 Jets, B-tags 3+L with M, both pho in the barrel", //3JbMLLGbar2
+		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 95<Mbb<155", //"2JbMM!Gbar2Mbb
+		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !95<Mbb<155", //2JbMM!Gbar2Mbb!
+		"with 3 Jets, B-tags 3+L with 2M, both pho in the barrel", //3JbMMLGbar2
+		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 110<bestMjj<140", //"2JbML!gbar2bestOn",
+		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !110<bestMjj<140", //"2JbML!gbar2bestOff",
+		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 110<bestMjj<140", //"2JbMM!gbar2bestOn",
+		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !110<bestMjj<140", //"2JbMM!gbar2bestOff", //4
 
-							//"with 4 Jets, B-tags:ML, 1 pho in the barrel, and MET>20",
-							//"with 4 Jets, B-tags:ML, 2 pho in the barrel, and MET>20",
-							//"with 4 Jets, B-tags:LLLL, 1 pho in the barrel, and MET>20",
-							//"with 4 Jets, B-tags:LLLL, 2 pho in the barrel, and MET>20",
+		"with 2 or 3 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"23JMllEWK0lepgbar2", //for WH
+		"with 2-5 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"0lep25JMllEWKgbar2",
+		"with 2-3 jets, light flavor jets with 70<Mljlj<110, exaclty 1 lepton, and barrel pho",//1!lep23JMllEWKgbar2",
+		"with 2-3 jets, light flavor jets with !70<Mljlj<110, exaclty 1 lepton, and barrel pho",//"1!lep23J!MllEWKgbar2"
+		"with 2 Jets, B-tags:M, 2 leptons, and both pho in the barrel",//"2JbM2lepgbar2",
+		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and exactly one lepton", //"2JbML!1lepgbar2",
 
-							//"with 4 Jets, B-tags:T, and MET>20",
+		"with 2 Jets, B-tags 2!L with M, barrel phos, no lep, and 110<bestMjj<140",//"2JbML!gbar2bestOn0lep"
+		"with 4 Jets, B-tags 2!L with M, barrel phos, no lep, EWK Mljlj, and !110<bestMjj<140", //"4JbML!gbar2 MllEWK bestOff 0lep",
+		"with 2 Jets, B-tags 2!L with M, barrel phos, no lep, no Mjj on EWK, and !110<bestMjj<140",//"2JbML!gbar2bothOff0lep"
+		"with just barrel photons: no leptons or b-jets, and at most 1 light jet"};//"01J0lep0Bgbar2"
 
-							//"with 8 Jets, and 1 pho in the barrel",
-							//"with 8 Jets, and 2 pho in the barrel",
 
-							//"with no leptons",
-							//"with exactly one lepton",
-							"with at least one lepton",
-							"with at least two leptons",
-							//"with at least three leptons",
-							//"with at least one electron and muon",
-							//"with a Z->ll",
-							//"with a muon",
-							//"with Tight Photons",
-							//"with Tight Photons, 2 Jets, B-tags:ML, both pho in the barrel, and MET>20",
-							//"with Tight Photons and a lepton",
-							//"with Tight Photons and 2+ leptons",
-							//"where both photons are tight"
-                                                        "with 2 Jets, B-tags 2L with M, both pho in the barrel, and 110<bestMjj<140",
-                                                        "with 2 Jets, B-tags 2L with M, both pho in the barrel, and !110<bestMjj<140",
-                                                        "with 2 Jets, B-tags 2L with T, both pho in the barrel, and 110<bestMjj<140",
-                                                        "with 2 Jets, B-tags 2L with T, both pho in the barrel, and !110<bestMjj<140"
-							};
+
+
+
+		/*"with 2 Jets, B-tags:ML",
+		"with 2 Jets, B-tags:ML, and both pho in the barrel",
+		"with 2 Jets, B-tags:ML, and MET>20",
+		"with 2 Jets, B-tags:ML, and 1 pho in the barrel",
+		"with 2 Jets, B-tags:ML, both pho in the barrel, and MET>20",
+		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 95<Mbb<155",
+		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !95<Mbb<155",
+		"with 3 Jets, B-tags 3+L with M, both pho in the barrel",
+		"with 4 Jets, B-tags 4+L with M, both pho in the barrel"
+		"with 2 Jets, B-tags 2!L with M, and both pho in the barrel",
+		"with 2 Jets, B-tags:TL, and both pho in the barrel",
+		"with Tight Photons, 2 Jets, B-tags:ML, and both pho in the barrel",
+		"with Tight Photons, 2 Jets, B-tags:TL, and both pho in the barrel",
+		"with Medium Photons, 2 Jets, B-tags:ML, and both pho in the barrel",
+		"with Medium Photons, 2 Jets, B-tags:TL, and both pho in the barrel",*/
+			// "with 2 Jets, B-tags:TL, and MET>20",
+			//  "with 2 Jets, B-tags:TL, 1 pho in the barrel, and MET>20",
+			//"with 3 Jets, B-tags:M, and MET>20",
+			//"with 3 Jets, B-tags:T, and MET>20",
+
+			//"with 2 Jets, B-tags:ML, 1 pho in the barrel, jet dEta<1.5, and MET>20",
+			//"with 2 Jets, B-tags:ML, both pho in the barrel, jet dEta<1.5, and MET>20",
+
+			//"with 2 Jets that look higgs-like mass, and 1 pho in the barrel", //2JHjj
+			//"with 2 Jets that look higgs-like mass, and 2 pho in the barrel", //2JHjj
+			//"with 2 Jets that look higgs-like mass, 1 pho in the barrel, and jet dEta<1.5", //2JHjj
+			//"with 2 Jets that look higgs-like mass, 2 pho in the barrel, and jet dEta<1.5", //2JHjj
+			//"with 4 Jets, B-tags:M, 1 pho in the barrel, and MET>20",
+			//"with 4 Jets, B-tags:M, 2 pho in the barrel, and MET>20",
+			//"with 4 Jets, B-tags:T, 1 pho in the barrel, and MET>20",
+			//"with 4 Jets, B-tags:T, 2 pho in the barrel, and MET>20",
+			//"with 4 Jets, B-tags:TL, and MET>20",
+
+			//"with 4 Jets, B-tags:ML, 1 pho in the barrel, and MET>20",
+			//"with 4 Jets, B-tags:ML, 2 pho in the barrel, and MET>20",
+			//"with 4 Jets, B-tags:LLLL, 1 pho in the barrel, and MET>20",
+			//"with 4 Jets, B-tags:LLLL, 2 pho in the barrel, and MET>20",
+
+			//"with 4 Jets, B-tags:T, and MET>20",
+
+			//"with 8 Jets, and 1 pho in the barrel",
+			//"with 8 Jets, and 2 pho in the barrel",
+
+			//"with no leptons",
+			//"with exactly one lepton",
+			//"with at least one lepton",
+			//"with at least two leptons",
+			//"with at least three leptons",
+			//"with at least one electron and muon",
+			//"with a Z->ll",
+			//"with a muon",
+			//"with Tight Photons",
+			//"with Tight Photons, 2 Jets, B-tags:ML, both pho in the barrel, and MET>20",
+			//"with Tight Photons and a lepton",
+			//"with Tight Photons and 2+ leptons",
+			//"where both photons are tight"
+		/*"with 2 Jets, B-tags 2L with M, both pho in the barrel, and 110<bestMjj<140",
+		"with 2 Jets, B-tags 2L with M, both pho in the barrel, and !110<bestMjj<140",
+		"with 2 Jets, B-tags 2L with T, both pho in the barrel, and 110<bestMjj<140",
+		"with 2 Jets, B-tags 2L with T, both pho in the barrel, and !110<bestMjj<140"*/
 
 
 	cout<<endl<<"Reading from file "<<plotsroot_data<<endl<<endl;
@@ -127,14 +172,14 @@ void postanaana(){
 	TH1F* h_vtxZ = (TH1F*)fin.Get("vtxZ_unsliced");
 	     if(debug>1) cout<<"loaded hist from fin"<<endl;
 	TH1F* h_bsZ = (TH1F*)fin.Get("bsZ_unsliced");
-	
+
 	if(debug>2) cout<<"am4"<<endl;
 
 	LabelHist lh_mGG_unsliced;
 	Label2Hist lh_unsliced;
 	Label2HistArr lha2;
 
-		//load your histograms for all topologies. 
+		//load your histograms for all topologies.
 	for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {
 		lh_mGG_unsliced[s_EventTopology[iTopo]] = (TH1F*)fin.Get((char*)(string("h_mGG")+s_EventTopology[iTopo]+"_unsliced").c_str());
 

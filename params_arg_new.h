@@ -22,9 +22,10 @@ bool useMVAphoP = true;
 
 //Photon Type
 //only one of these is allowed to be true at a time, otherwise it takes the first true one.
-bool useSusyLoose_EleVeto = false;//default
+bool useSusyLoose_EleVeto = true;//default
 bool useSusyLoose_PixelVeto = false;
-bool useSusyLoose_PixelSeedMatch = true;//really ele
+bool useSusyLoose_PixelSeedMatch = false;//really ele
+bool useSusyLoose_PS_ElePho= false;//one ele, one pho baised on pixel seed
 bool useSusyMedium_EleVeto = false;
 
 
@@ -34,6 +35,16 @@ bool makeEventsList = false;
 bool makeTMVAlist = false;
 bool showTag = true; //this blinds out the tag region when false;
 bool useElectroHiggs = false; //if false, throw out all the MC events without a stop in them. 
+
+int type_to_run = 10;
+//10 = bbaa strong
+//11 = wwaa strong
+//12 = zzaa strong
+//13 = ttaa strong
+//20 = bbaa weak
+//21 = bbaa weak
+//22 = bbaa weak
+//23 = bbaa weak
 
 long int probeevent = 10496;
 
@@ -56,20 +67,74 @@ string plotsdir = "plots_bbin/";
 	///LISTS FOR INDEXING
 const int nPhoMassAndBkgDists = 9;
 string s_MassBkgDists[nPhoMassAndBkgDists] = {"lowSB","tag","upperSB","bkg","tag_subbkg","lowSB_scaled","upperSB_scaled","lsb_over_usb","tag_over_bkg"};
-const int nEventTopologies = 26; // the number of types of cuts selected, like 1JB...
+const int nEventTopologies = 37; // the number of types of cuts selected, like 1JB...
 string s_EventTopology[nEventTopologies] = { 
-"NULL","2JbML","2JbMLgbar2", "2JbMLm20", "2JbMLgbar1", "2JbMLm20gbar2",
-"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2", "4JbMLLLGbar2","2JbML!Gbar2",
-"2JbTLgbar2","2JbMLgbar2Tpho", "2JbTLgbar2Tpho", "2JbMLgbar2Mpho", "2JbTLgbar2Mpho",
-"1lep", "2lep","2JbMLgbar2bestOn","2JbMLgbar2bestOff","2JbTLgbar2bestOn","2JbTLgbar2bestOff",
-"2JbTgbar2","2JbTMgbar2","2JbMMgbar2","2JbTTgbar2"};
+	"NULL","gbar2","1lepgbar2","1!lepgbar2","1Elegbar2","1Mugbar2",
+	"2lepgbar2","2!lepZgbar2","3lepgbar2", //9
+	"23JbML!gbar2Mbb0lep", "2JbML!gbar2Mbb0lep", //2
+	"2lJgbar2", "2lJEWKgbar2", "23lJEWKgbar2", //"2lJMWgbar2", "2lJMZgbar2", //4
+	"2JbML","2JbMLgbar2", "2JbMMgbar2", //3
+	"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2",//3
+	"2JbMM!Gbar2Mbb", "2JbMM!Gbar2Mbb!","3JbMMLGbar2",//3
+	"2JbML!gbar2bestOn","2JbML!gbar2bestOff", "2JbMM!gbar2bestOn","2JbMM!gbar2bestOff", //4
+	"23JMllEWK0lepgbar2", //for WH
+//	"23JMllEWK0lepgbar2", //for ZH
+	"0lep25JMllEWKgbar2", "1!lep23JMllEWKgbar2","1!lep23J!MllEWKgbar2",  //for WWbins //3
+//	"0lep25JMllEWKgbar2", "1!lep23JMllEWKgbar2","1!lep!23JMllEWKgbar2",  //for ZZbins //3
+	"2JbM2lepgbar2", "2JbML!1lepgbar2", "2JbML!gbar2bestOn0lep",
+	"4JbML!gbar2MllEWKbestOff0lep", "2JbML!gbar2bothOff0lep",
+	"01J0lep0Bgbar2"}; //5
 
-const int nEventTopologies_limit = 20; // the number of types of cuts selected, like 1JB...
+		//higgs + met only: 0lep, 0B's at most one other jet,
+
+	
+		//WH
+//"WHbins" = "1!lepgbar2", "23JMllW0lepgbar2"
+		//ZH
+//"ZHbins" = "2lepZgbar2", "23JMllZ0lepgbar2"
+		//WW
+//"WWbins" = "2lepgbar2", "1!lepgbar!23JMllW", "1!lepgbar23JMllW", "0lepgbar25JMllW"
+		//ZZ
+//"ZZbins" = "3lepgbar2", "2!lepZgbar2", "1!lep!23JMllZgbar2", "1!lep23JMllZgbar2", "0lep25JMllZgbar2"
+		//stop-higgsino done right:
+//"SHbins" = "2JbM2lepgbar2", "2JbML!1lepgbar2", "2JbML!gbar2bestOn0lep", "4JbML!gbar2MllEWKbestOff0lep", "2JbML!gbar2bothOff0lep","3JbMLLgbar2"
+	//so bestMjj is not on the Mh and no Mll combos are on the M_EWK
+
+
+//"NULL","2JbML","2JbMLgbar2", "2JbMLm20", "2JbMLgbar1", "2JbMLm20gbar2",
+//"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2", "4JbMLLLGbar2","2JbML!Gbar2",
+//"2JbTLgbar2","2JbMLgbar2Tpho", "2JbTLgbar2Tpho", "2JbMLgbar2Mpho", "2JbTLgbar2Mpho",
+//"1lep", "2lep","2JbMLgbar2bestOn","2JbMLgbar2bestOff","2JbTLgbar2bestOn","2JbTLgbar2bestOff",
+//"2JbTgbar2","2JbTMgbar2","2JbMMgbar2","2JbTTgbar2"};
+
+//"NULL","gbar2",
+//"1!lep","1lep","1ele1mu","2lep", "2lepZ","3lep", 
+//"1!lepgbar2","1lepgbar2","1ele1mugbar2","2lepgbar2", "2lepZgbar2",
+//"23JbML!gbar2Mbb0Lep", "2JbML!gbar2Mbb0Lep",
+//"2ljets", "2ljetsEWK", "2ljetsW", "2ljetsZ",
+//"2JbMLgbar2","2JbMMgbar2",
+
+const int nEventTopologies_limit = 26; // the number of types of cuts selected, like 1JB...
 string s_EventTopology_limit[nEventTopologies_limit] = {
-	"NULL","2JbML","2JbMLgbar2", "2JbMLm20", "2JbMLgbar1", "2JbMLm20gbar2",
-	"2JbTLgbar2","2JbMLgbar2Tpho", "2JbTLgbar2Tpho", "2JbMLgbar2Mpho", "2JbTLgbar2Mpho",
-	"1lep", "2lep","bbin3","bbinMLbest","bbinTLbest",
-	"2JbTgbar2","2JbTMgbar2","2JbMMgbar2","2JbTTgbar2"};
+	"NULL","gbar2","1lepgbar2","1!lepgbar2","1Elegbar2","1Mugbar2","2lepgbar2","2lepZgbar2"//8
+	"23JbML!gbar2Mbb0lep", "2JbML!gbar2Mbb0lep", //2
+	"2lJgbar2", "2lJEWKgbar2", "2lJMWgbar2", "2lJMZgbar2", //4
+	"2JbML","2JbMLgbar2", "2JbMMgbar2", //3
+	"bbin3","bbin3MM", "bbin3MLbest","bbin3MMbest", //4
+	"WHbins","ZHbins","WWbins","ZZbins","SHbins"}; //5
+
+		//build a channel to catch WW...
+		//1lep
+
+
+
+
+
+//	"NULL","2JbML","2JbMLgbar2", "2JbMLm20", "2JbMLgbar1", "2JbMLm20gbar2",
+//	"2JbTLgbar2","2JbMLgbar2Tpho", "2JbTLgbar2Tpho", "2JbMLgbar2Mpho", "2JbTLgbar2Mpho",
+//	"1lep", "2lep","bbin3","bbinMLbest","bbinTLbest",
+//	"2JbTgbar2","2JbTMgbar2","2JbMMgbar2","2JbTTgbar2"};
+
 
 
 
@@ -98,36 +163,42 @@ string s_EventTopology[nEventTopologies] = {
 "2JbML", 	"2Tphos"};
 */
 
-const int nKinemVars_all = 54;		//always keep MET in the first position, it's special.
+const int nKinemVars_all = 47;		//always keep MET in the first position, it's special.
 string s_KinemVars_all[nKinemVars_all] = {
-"MET","ST","HT","MHT","PtGG",
-"phoPt0","phoPt1","phoPhi","phoEta","phoEtaMax",
-"phoEtaMin","nJets","nLep","nMu","nEle",
-"nBjets","MTphoMET","cosThetaStar","phoDPhi","phoDEta",
-"dPhiPhoMet","jetPt","jetEta","jetPhi","phoMinR9",
-"dijetDPhi01","dijetDEta01","dijetM01","dijetPt01","dPhiJetMet", //suggest killing dijetDEta01..., consolodate it. 
-"Bt","bestMjj","bestMbb","allMjj","allMbb",
-"Mbb01","Mbb01gg01",
-"MJJ01gg01","Mleplep", "MZllHgg","MTggMET","MTlepMET",
-"HGt","HGt_prime","dPhiHG","dPhiHG_prime","HLMGt",
-"jetEtaMin","Bness1",
-"LHT","BTL","BTM","BTT","LepT"};
+"MET","ST","HT","MHT","PtGG","LHT","LepT", //7
+"phoPt0","phoPt1","phoPhi","phoEta","phoEtaMax", //5
+"nJets","nLep","nMu","nEle", "nLFjets", //5
+"nBjets","phoDPhi","phoDEta", //3
+"jetPt","jetEta","jetPhi","phoMinR9", //4
+"dijetM01","dPhiJetMet","dijetPt01",  //2
+"Bt","bestMjj","bestMbb","allMjj","allMbb", //5
+"Mbb01","Mbb01gg01", //2
+"MJJ01gg01","Mleplep", "MZllHgg","MTggMET","MTlepMET",//5
+"BMET", "BST", "BPtGG", "BnBjets", "Bunjets", "BBt","BuHT","phoHness"};//8
+//BMet = sum_bness * MET
+//BST =  sum_bness * ST
+//BPtGG= sum_bness * PtGG
+//BnBjets = sum(Bness)
+//BunBjets = sum(beautifullness)
+//BBt = sum(Bness*BjetEt)
+//BuHT = sum(beautifullness*jetEt)
+//phoSep = PtGG*(s/b phoDPhi)*(s/b phiEtaMax)*(s/b phiMinR9)
+
 
 		//Will be used if either bumpBtagEff != 0 or bumpJEC != 0. 
 		//list of kin vars to make limits on. These must be singly-filled per event and otherwise make sense.
-const int nKinemVars_limit = 41;
+const int nKinemVars_limit = 37;
 string s_KinemVars_limit[nKinemVars_limit] = {
-"MET","ST","HT","MHT","PtGG", 
-"phoPt0","phoPt1","phoEtaMax", 
-"phoEtaMin","nJets","nLep","nMu","nEle", 
-"nBjets","cosThetaStar","phoDPhi","phoDEta","phoMinR9", 
-"dijetDPhi01","dijetDEta01","dijetM01","dijetPt01", 
-"Bt","bestMjj","bestMbb", "Mbb01","Mbb01gg01", 
-"MJJ01gg01","Mleplep", "MZllHgg","MTggMET","MTlepMET", 
-"dPhiHG","dPhiHG_prime", "jetEtaMin","Bness1",
-"LHT","BTL","BTM","BTT","LepT"};
+"MET","ST","HT","MHT","PtGG","LHT","LepT", //7
+"phoPt0","phoEtaMax",  //2
+"nJets","nLep","nMu","nLFjets",  //4
+"nBjets","phoDPhi","phoDEta","phoMinR9",  //4
+	"dijetM01","dijetPt01",  //2
+"Bt","bestMjj","bestMbb", "Mbb01","Mbb01gg01",  //5
+"MJJ01gg01","Mleplep", "MZllHgg","MTggMET","MTlepMET", //5
+"BMET", "BST", "BPtGG", "BnBjets", "Bunjets", "BBt","BuHT","phoHness"}; //8
 
-
+		//news: nEle, nLFjets, and the bottom row. 
 /*
 Useless varriables that I'm tired of having in front of me: 
 MTphoMET and dPhiPhoMET -- just let there be a cominatoric bkg. 

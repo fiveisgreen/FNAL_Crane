@@ -15,6 +15,10 @@ bool is_bar(float eta);
 float phoEtThresh0 = 40.;
 float phoEtThresh1 = 25.;
 
+float higgsness(float PtGG, float phoDphi, float phoMinR9, float phoEtaMax);
+float Bness(float csv);
+float Beauty(float csv);
+
 	//Vgamma tight ID from 2011
 bool is_tight_pho(float pt,
 				  float eta,
@@ -748,4 +752,33 @@ float MCsmear(float eta, float r9,TRandom* r){
 	//TRandom r;
 	return r->Gaus(1,sigma);
 }
+
+float higgsness(float PtGG, float phoDphi, float phoMinR9, float phoEtaMax){
+	float sb_phi;
+	if(phoDphi < 1.8) sb_phi = 1.0;
+	else if(phoDphi < 2.6) sb_phi = 0.429;
+	else if(phoDphi < 2.9) sb_phi = 0.444;
+	else sb_phi = 0.25;
+
+	float sb_eta;
+	if(phoDphi < 1.0f) sb_eta = 1.0;
+	else if(phoDphi < 1.4442f) sb_eta = 0.667;
+	else if(phoDphi < 2.0f) sb_eta = 0.136;
+	else sb_phi = 0.05;
+
+	float sb_r9;
+	if(phoEtaMax > 0.92) sb_r9 = 1;
+	else sb_phi = sb_r9 = exp(2*(sb_phi-0.9));
+
+	return PtGG*sb_r9*sb_eta*sb_phi;
+}
+float Bness(float csv){
+	if(csv < 0.244) return 0;
+	return pow(csv,0.222);
+}
+float Beauty(float csv){
+	return sin(1.57079635*pow(csv,0.5435));
+}
+
+
 #endif

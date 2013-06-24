@@ -233,7 +233,7 @@ void MCpoint::setType(int type_){
 		filepath = Form("%stree_StopHiggs_stop%i_chargino%i_%i_hh_%s.root",filepath.data(),Mstop,Mhiggsino,randSeed,typelable.data());
 		pointName = Form("st_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		outroot_mc = Form("susyEvents_MC_st%i_ho%i_%s.root",Mstop,Mhiggsino,typelable.data());
-		btageff_file = Form("b_tag_eff_st%i_ho%i_bbaa.root",Mstop,Mhiggsino,typelable.data());//always bbaa to keep statistics. 
+		btageff_file = Form("b_tag_eff_st%i_ho%i_bbaa.root",Mstop,Mhiggsino);//always bbaa to keep statistics. 
 		plotsroot_mc = Form("raw_plots_MC_st%i_ho%i_%s.root",Mstop,Mhiggsino,typelable.data());
 		logplotsroot_mc = Form("raw_plots_MC_st%i_ho%i_%s.log",Mstop,Mhiggsino,typelable.data());
 		plotsAndBackground_mc = Form("plotsWithBackground_MC_st%i_ho%i_%s.root",Mstop,Mhiggsino,typelable.data());
@@ -243,7 +243,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("mst_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i, %s",Mstop,Mhiggsino, nicelable.data());
+		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i, %s",Mstop,Mhiggsino, nicelable.data());
 	}
 	
 	else if(type >= 20 && type < 30){ //new strong production
@@ -288,7 +289,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles = pointName.data();
 		s_DataAndMcFiles_v2 = Form("MC_%s",pointName.data());
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i, %s",Mhiggsino,nicelable.data());
+		s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i",Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i, %s",Mhiggsino,nicelable.data());
 	}
 	else{ //assume type 0	Stop-higgsion type
 			//     ___      ___          ____

@@ -36,6 +36,16 @@ bool makeTMVAlist = false;
 bool showTag = true; //this blinds out the tag region when false;
 bool useElectroHiggs = false; //if false, throw out all the MC events without a stop in them. 
 
+int type_to_run = 10;
+//10 = bbaa strong
+//11 = wwaa strong
+//12 = zzaa strong
+//13 = ttaa strong
+//20 = bbaa weak
+//21 = bbaa weak
+//22 = bbaa weak
+//23 = bbaa weak
+
 long int probeevent = 10496;
 
 string which_MC_to_use2 = "mst_235_mu_225";
@@ -64,13 +74,6 @@ string s_EventTopology[nEventTopologies] = {
 "2JbTLgbar2","2JbMLgbar2Tpho", "2JbTLgbar2Tpho", "2JbMLgbar2Mpho", "2JbTLgbar2Mpho",
 "1lep", "2lep","2JbMLgbar2bestOn","2JbMLgbar2bestOff","2JbTLgbar2bestOn","2JbTLgbar2bestOff",
 "2JbTgbar2","2JbTMgbar2","2JbMMgbar2","2JbTTgbar2"};
-
-//"NULL","gbar2",
-//"1!lep","1lep","1ele1mu","2lep", "2lepZ","3lep", 
-//"1!lepgbar2","1lepgbar2","1ele1mugbar2","2lepgbar2", "2lepZgbar2",
-//"23JbML!gbar2Mbb0Lep", "2JbML!gbar2Mbb0Lep",
-//"2ljets", "2ljetsEWK", "2ljetsW", "2ljetsZ",
-//"2JbMLgbar2","2JbMMgbar2",
 
 const int nEventTopologies_limit = 20; // the number of types of cuts selected, like 1JB...
 string s_EventTopology_limit[nEventTopologies_limit] = {
