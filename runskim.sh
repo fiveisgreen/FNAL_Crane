@@ -1,25 +1,24 @@
 #!/bin/csh -f
 echo "1"
-echo $1
 source /uscmst1/prod/sw/cms/cshrc prod
-echo "B"
 setenv SCRAM_ARCH slc5_amd64_gcc462
+printenv
+ls -alt
 date
 scram project CMSSW CMSSW_5_3_3
-echo "C"
 cd CMSSW_5_3_3
 cd src
 cmsenv
-echo "D"
+echo "3"
 eval `scramv1 runtime -csh`
 tar -xzvf ../../tar_for_condor.tar
 cp ../../*.h SusyNtuplizer/macro
 cd SusyNtuplizer/macro
-echo "Make BtagEff"
-root -l -b -q ana_firstskim_multisave_arg.C\(6,${1},1\)
-echo "show me the skim file:"
-ls -ltr Super*.root
-cp *.root ../../../../
+echo "4"
+#root -l -b -q ana_MC_BTagEff_arg.C\(\"$point_for_b\",\"$file_for_b\"\)
+root -l -b -q ana_firstskim.C
+echo "5"
+cp ReSkim53X_data_*.root ../../../../
 pwd
 cd ../../../../
-pwd
+lt | tail -3
