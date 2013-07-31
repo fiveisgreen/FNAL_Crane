@@ -443,6 +443,8 @@ void diphoMassPlot(TH1F* hdiPhoMass, TCanvas* canv, TF1* fitcurve){
 	L_usb_ub->Draw("same");
 	L_lsb_lb->Draw("same");
 	L_lsb_ub->Draw("same");
+	fitcurve->SetLineWidth(7);
+	fitcurve->SetLineColor(kGreen+2);
 	fitcurve->Draw("same");
 }
 

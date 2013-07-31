@@ -3,8 +3,10 @@ import os,sys
 import math
 
 nMCpoints = 3
-MCstopMasses =     [200,225,250]
-MChiggsinoMasses = [150,215,150]
+MCstopMasses =     [350,300,400]
+MChiggsinoMasses = [135,290,300]
+#MCstopMasses =     [200,225,250]
+#MChiggsinoMasses = [150,215,150]
 #MCstopMasses =     [185,210,235]
 #MChiggsinoMasses = [150,150,150]
 #nMCpoints = 2

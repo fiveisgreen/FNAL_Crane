@@ -12,6 +12,7 @@
 #include <iostream>
 //#include <ios>
 #include <fstream>
+#include <sstream>
 //#include "TF1.h"
 //#include "TLine.h"
 //#include "quicksave.C"
@@ -20,6 +21,7 @@
 #include "params_arg.h"
 //#include "params_arg.h"
 	//#include "params_arg.h"
+//#include "TString.h"
 #include<string.h>
 #include<map>
 #include "MCpoint.h"
@@ -29,27 +31,31 @@ using namespace params;
 
 	//check to see which of these you're still using. 
 typedef std::map<string,TH1F*> LableHist;
+typedef std::map<string,float> Labeledfloat;
 //typedef std::map<string,LableHist> Lable2Hist;
 //typedef map<string,Lable2Hist> Lable3Hist;
 typedef std::map<string,TH1F**> LableHistArr;
 //typedef std::map<string,LableHistArr> Lable2HistArr;
 //typedef std::map<string,Lable2HistArr> Lable3HistArr;
-typedef std::map<string,float> Labledflaot;
+typedef std::map<string,float> Labledfloat;
 typedef std::map<string,TFile*> TFileMap;
 
-void SetupLimit(string which_MC_to_use="");
-void SetupLimitsForOnePlot(TString MCname, TString topo, TString kinvar);
-void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar);
-void SetupLimitsForOneMassPoint(TString MCname);
-void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint); //add bbins here
-void SetupLimitsForOnePlot_bbin(TFile * files[],MCpoint* thisMCpoint, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName);
+void SetupLimit(string which_MC_to_use="");//no reliance
+void SetupLimitsForOnePlot(TString MCname, TString topo, TString kinvar);//originator
+void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar,Labeledfloat & integ_systs); //takes
+void SetupLimitsForOneMassPoint(TString MCname);//originator
+void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint, Labeledfloat & integ_systs); //add bbins here //takes
+void SetupLimitsForOnePlot_bbin(TFile * files[],MCpoint* thisMCpoint, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName,float f_integ_systs[]);//takes
 
 	//new guys
-void SetupSummedLimitsForStrongGrid(TString topo);
-void SetupSummedLimitsForWeakGrid(TString topo);
-void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo);
-void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar);
-void SetupSummedLimitsOnePlot_bbin(TFile* files[][6],MCpoint* points[], int nMCpoints, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName);
+void SetupSummedLimitsForStrongGrid(); //do Everything, originator
+void SetupSummedLimitsForWeakGrid();  //do Everything, originator
+void SetupSummedLimitsForStrongGrid(TString topo); //originator
+void SetupSummedLimitsForWeakGrid(TString topo); //originator
+void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo, Labeledfloat & integ_systs); //takes
+void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints, Labeledfloat & integ_systs); //This is Much faster!!, takes
+void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar, Labeledfloat & integ_systs);//takes
+void SetupSummedLimitsOnePlot_bbin(TFile* files[][6],MCpoint* points[], int nMCpoints, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName,float f_integ_systs[]);//takes
 
 
 void loadhist(TH1F** histout, TFile* PostAnaAnaFile, string basename,string suffix,int type = 1);//Done writing? Yes. Debugged? No
@@ -59,11 +65,11 @@ bool loadhistSafely(TH1F** histout, TFile* PostAnaAnaFile, string basename,strin
 	//bbin3: 3 cut categories of some kind
 	//bbin4: 4 cut categories of some kind
 
-void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, TString kinvar, bool appendCombineCommand = true);
-void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand);
-void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand);
-void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand);
-void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand);
+void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, float f_integ_systs, TString kinvar, bool appendCombineCommand = true);
+void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, MCpoint * thisMCpoint, TString* channels, TString topo,float f_integ_systs[2], TString kinvar, bool appendCombineCommand);
+void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, MCpoint * thisMCpoint, TString* channels, TString topo, float f_integ_systs[3], TString kinvar, bool appendCombineCommand);
+void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint * thisMCpoint, TString* channels, TString topo, float f_integ_systs[4], TString kinvar, bool appendCombineCommand);
+void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint * thisMCpoint, TString* channels, TString topo, float f_integ_systs[], TString kinvar, bool appendCombineCommand);
 
 
 
@@ -74,13 +80,16 @@ void repackage_Systematics_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F*
 void repackage_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], TString rootfilename);
 
 
-void makeCard_Systematics(TH1F** CardHistSet, MCpoint* thisMCpoint, TString basename, TString topo, TString kinvar);
-void makeCard_Systematics_bbin2( TH1F** CardHistSet1,TH1F**  CardHistSet2, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar);
-void makeCard_Systematics_bbin3( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar);
-void makeCard_Systematics_bbin4( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar);
-void makeCard_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar);
+void makeCard_Systematics(TH1F** CardHistSet, MCpoint* thisMCpoint, TString basename, TString topo, TString kinvar, float f_integ_systs);
+void makeCard_Systematics_bbin2( TH1F** CardHistSet1,TH1F**  CardHistSet2, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar, float f_integ_systs[2]);
+void makeCard_Systematics_bbin3( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar,float f_integ_systs[3]);
+void makeCard_Systematics_bbin4( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar, float f_integ_systs[4]);
+void makeCard_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar, float f_integ_systs[]);
 
 TString TackBeforeRoot(TString main, TString tack);
+
+void suckinIntegralSystematics( Labeledfloat & integ_systs);
+
 	////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -91,15 +100,22 @@ void SetupLimit(string which_MC_to_use)
 	cout<<"hello world"<<endl;
 //	SetupLimitsForOnePlot("mst_350_mu_200","NULL","MET");//for debug purposes only; kill before doing this for real.
 //	SetupLimitsForOneMassPoint("mst_350_mu_200");//for debug purposes only; kill before doing this for real.
+	
+	//Labledfloat integ_systs;
+	//suckinIntegralSystematics(integ_systs);
+	//SetupLimitsForOneMassPoint(which_MC_to_use,integ_systs);//runtime command
 	SetupLimitsForOneMassPoint(which_MC_to_use);//runtime command
 }
 
 void SetupLimitsForOnePlot(TString MCname, TString topo, TString kinvar){
 		//this is something we might use from the command line.
 	MCpoint * thisMCpoint = setupMCpoint(MCname.Data(), "");//this is bulky, so we're seperating it out from the rest of SetupLimitsForOnePlot.
-	SetupLimitsForOnePlot(thisMCpoint, topo, kinvar);
+	Labledfloat integ_systs;
+        suckinIntegralSystematics(integ_systs);
+	SetupLimitsForOnePlot(thisMCpoint, topo, kinvar,integ_systs);
 } //Done writing? Yes. Debugged? No
-void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar){
+//void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar){
+void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar,Labeledfloat & integ_systs){
 		//make machinery for one point, one topo, one kinvar, the point is to make you really nimble.
 		//THIS IS THE FRONT DOOR, RUNS EVERYTHING ELSE.
 
@@ -133,7 +149,13 @@ void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar){
 		  fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffUp").Data()) &&
 		  fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffDown").Data()) )){
         printf("ERROR!! Some of the input files are missing completely!\n");
-        printf("Exiting SetupLimits!!\n");
+		if (!fileExists(datapoint->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",datapoint->plotsAndBackground_mc.c_str() );
+		if (!fileExists(thisMCpoint->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",thisMCpoint->plotsAndBackground_mc.c_str());
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECUp").Data() );
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECDown").Data() );
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffUp").Data() );
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffDown").Data() );
+		printf("Exiting SetupLimits (from SetupLimitsForOnePlot)!!\n");
         return;
 	}
 
@@ -168,7 +190,7 @@ void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar){
 	}
 
 	/*Debug*/ if(printlevel > 3) cout<<"Setting up machinery for "<<thisMCpoint->pointName<<" topo "<<topo<<" kinvar "<<kinvar<<endl;
-	makeLimitSettingMachinery(CardHistSet, thisMCpoint, basename, topo, kinvar, false);
+	makeLimitSettingMachinery(CardHistSet, thisMCpoint, basename, topo, integ_systs[topo.Data()], kinvar, false);
 
 
 
@@ -188,9 +210,13 @@ void SetupLimitsForOnePlot(MCpoint * thisMCpoint, TString topo, TString kinvar){
 void SetupLimitsForOneMassPoint(TString MCname){
 		//this is something we might use from the command line.
 	MCpoint * thisMCpoint = setupMCpoint(MCname.Data(), "");//this is bulky, so we're seperating it out from the rest of SetupLimitsForOnePlot.
-	SetupLimitsForOneMassPoint(thisMCpoint);
+	Labledfloat integ_systs;
+        suckinIntegralSystematics(integ_systs);
+
+	SetupLimitsForOneMassPoint(thisMCpoint,integ_systs);
 }//end SetupLimitsForOneMassPoint
-void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint){
+//void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint){
+void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint, Labeledfloat & integ_systs){
 		//make machinery for one mass point, for every topo and kinvar.
 		//This does the file opening more efficiently than calling SetupLimitsForOnePlot a bunch of times.
 		//THIS IS THE FRONT DOOR, RUNS EVERYTHING ELSE.
@@ -220,7 +246,13 @@ void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint){
 				fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffUp").Data()) &&
 				fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffDown").Data()) )){
 		printf("ERROR!! Some of the input files are missing completely!\n");
-		printf("Exiting SetupLimits!!\n");
+		if (!fileExists(datapoint->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",datapoint->plotsAndBackground_mc.c_str() );
+		if (!fileExists(thisMCpoint->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",thisMCpoint->plotsAndBackground_mc.c_str());
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECUp").Data() );
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"JECDown").Data() );
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffUp").Data() );
+		if (!fileExists(TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(thisMCpoint->plotsAndBackground_mc,"BtagEffDown").Data() );
+		printf("Exiting SetupLimits!! (from SetupLimitsForOneMassPoint) \n");
 		return;
 	}
 
@@ -232,14 +264,20 @@ void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint){
 			TString topo =s_EventTopology[iTop];
 
 			//exclude the b-binnings.
-			if(topo.CompareTo("2JbML!Gbar2Mbb") == 0  || 
-			   topo.CompareTo("2JbML!Gbar2Mbb!") == 0 || 
+			if(topo.CompareTo("2JbML!Gbar2Mbb!") == 0 || 
 			   topo.CompareTo("3JbMLLGbar2") == 0 || 
 			   topo.CompareTo("4JbMLLLGbar2") == 0 ||
 			   topo.CompareTo("2JbMLgbar2bestOn") == 0 ||
 			   topo.CompareTo("2JbMLgbar2bestOff") == 0 ||
 			   topo.CompareTo("2JbTLgbar2bestOn") == 0 ||
-			   topo.CompareTo("2JbTLgbar2bestOff") == 0
+			   topo.CompareTo("2JbTLgbar2bestOff") == 0 ||
+			   topo.CompareTo("2JbM2lepgbar2") == 0 ||
+			   topo.CompareTo("2JbML!1lepgbar2") == 0 ||
+			   topo.CompareTo("2JbML!gbar2bestOn0lep") == 0 ||
+			   topo.CompareTo("4JbML!gbar2ewkMllbestOff0lep") == 0 ||
+			   topo.CompareTo("2JbML!gbar2bothOff0lep") == 0 ||
+			   topo.CompareTo("3JbMLLgbar2") == 0 ||
+			   topo.CompareTo("1!lep23Jb01M!ewkMllgbar2") == 0
 			   ) continue;
 
 
@@ -271,7 +309,7 @@ void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint){
 			}
 
 			/*Debug*/ if(printlevel > 3) cout<<"Setting up machinery for topo "<<topo<<" kinvar "<<kinvar<<endl;
-			makeLimitSettingMachinery(CardHistSet, thisMCpoint, basename, topo, kinvar, true);
+			makeLimitSettingMachinery(CardHistSet, thisMCpoint, basename, topo, integ_systs[topo.Data()], kinvar, true);
 		}//end for every topo
 
 		///Make Limit setting machines for b-binning
@@ -365,29 +403,126 @@ void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint){
 
 		makeLimitSettingMachinery_bbin3(CardHistSet_2bMH,CardHistSet_2bMnotH,CardHistSet_3b,thisMCpoint, channels, "bbin3", kinvar, true);
 */
+		{
+			TString channels[3];
+			channels[0] = "2JbML!Gbar2Mbb";
+			channels[1] = "2JbML!Gbar2Mbb!";
+			channels[2] = "3JbMLLGbar2";
+			float f_integ_systs[3];
+			f_integ_systs[0]=integ_systs["2JbML!Gbar2Mbb"];
+			f_integ_systs[1]=integ_systs["2JbML!Gbar2Mbb!"];
+			f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,3,kinvar,"bbin3",f_integ_systs);
+		}
+		{
+			TString channels[3];
+			channels[0] = "2JbMM!Gbar2Mbb";
+			channels[1] = "2JbMM!Gbar2Mbb!";
+			channels[2] = "3JbMMLGbar2";
+			float f_integ_systs[3];
+			f_integ_systs[0]=integ_systs["2JbMM!Gbar2Mbb"];
+			f_integ_systs[1]=integ_systs["2JbMM!Gbar2Mbb!"];
+			f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,3,kinvar,"bbin3MM",f_integ_systs);
+		}
+		{
+			TString channels[3];
+			channels[0] = "2JbML!gbar2bestOn";
+			channels[1] = "2JbML!gbar2bestOff";
+			channels[2] = "3JbMLLGbar2";
+			float f_integ_systs[3];
+			f_integ_systs[0]=integ_systs["2JbML!gbar2bestOn"];
+			f_integ_systs[1]=integ_systs["2JbML!gbar2bestOff"];
+			f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,3,kinvar,"bbin3MLbest",f_integ_systs);
+		}
+		{
+			TString channels[3];
+			channels[0] = "2JbMM!gbar2bestOn";
+			channels[1] = "2JbMM!gbar2bestOff";
+			channels[2] = "3JbMMLGbar2";
+			float f_integ_systs[3];
+			f_integ_systs[0]=integ_systs["2JbMM!gbar2bestOn"];
+			f_integ_systs[1]=integ_systs["2JbMM!gbar2bestOff"];
+			f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,3,kinvar,"bbin3MMbest",f_integ_systs);
+		}
+		{
+			TString channels[2];
+			channels[0] = "1!lepgbar2";
+			channels[1] = "23Jb01MewkMll0lepgbar2";
+			float f_integ_systs[2];
+			f_integ_systs[0]=integ_systs["1!lepgbar2"];
+			f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,2,kinvar,"WHbins",f_integ_systs);
+		}
+		{
+			TString channels[2];
+			channels[0] = "2!lepZgbar2";
+			channels[1] = "23Jb01MewkMll0lepgbar2";
+			float f_integ_systs[2];
+			f_integ_systs[0]=integ_systs["2!lepZgbar2"];
+			f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,2,kinvar,"ZHbins",f_integ_systs);
+		}
+		{
+			TString channels[4];
+			channels[0] = "2lepgbar2";
+			channels[1] = "1!lep23Jb01M!ewkMllgbar2";
+			channels[2] = "1!lep23Jb01MewkMllgbar2";
+			channels[3] = "0lep25Jb01MewkMllgbar2";
+			float f_integ_systs[4];
+			f_integ_systs[0]=integ_systs["2lepgbar2"];
+			f_integ_systs[1]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+			f_integ_systs[2]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+			f_integ_systs[3]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,4,kinvar,"WWbins",f_integ_systs);
+		}
+		{
+			TString channels[5];
+			channels[0] = "3lepgbar2";
+			channels[1] = "2!lepZgbar2";
+			channels[2] = "1!lep23Jb01M!ewkMllgbar2";
+			channels[3] = "1!lep23Jb01MewkMllgbar2";
+			channels[4] = "0lep25Jb01MewkMllgbar2";
+			float f_integ_systs[5];
+			f_integ_systs[0]=integ_systs["3lepgbar2"];
+			f_integ_systs[1]=integ_systs["2!lepZgbar2"];
+			f_integ_systs[2]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+			f_integ_systs[3]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+			f_integ_systs[4]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,5,kinvar,"ZZbins",f_integ_systs);
+		}
+		{
+			TString channels[6];
+			channels[0] = "2JbM2lepgbar2";
+			channels[1] = "2JbML!1lepgbar2";
+			channels[2] = "2JbML!gbar2bestOn0lep";
+			channels[3] = "4JbML!gbar2ewkMllbestOff0lep";
+			channels[4] = "2JbML!gbar2bothOff0lep";
+			channels[5] = "3JbMLLGbar2";
+			float f_integ_systs[6];
+			f_integ_systs[0]=integ_systs["2JbM2lepgbar2"];
+			f_integ_systs[1]=integ_systs["2JbML!1lepgbar2"];
+			f_integ_systs[2]=integ_systs["2JbML!gbar2bestOn0lep"];
+			f_integ_systs[3]=integ_systs["4JbML!gbar2ewkMllbestOff0lep"];
+			f_integ_systs[4]=integ_systs["2JbML!gbar2bothOff0lep"];
+			f_integ_systs[5]=integ_systs["3JbMLLGbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,6,kinvar,"SHbins",f_integ_systs);
+		}
 
-		TString channels[4];
-		channels[0] = "2JbML!Gbar2Mbb";
-		channels[1] = "2JbML!Gbar2Mbb!";
-		channels[2] = "3JbMLLGbar2";
-		channels[3] = "4JbMLLLGbar2";
-		SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,3,kinvar,"bbin3");
+//		printf("go do bbinTLbest\n");
+//		TString channels_TLbest[2];
+//		channels_TLbest[0] = "2JbTLgbar2bestOn";
+//		channels_TLbest[1] = "2JbTLgbar2bestOff";
+//		SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels_TLbest,2,kinvar,"bbinTLbest");
 
-		printf("go do bbinTLbest\n");
-		TString channels_TLbest[2];
-		channels_TLbest[0] = "2JbTLgbar2bestOn";
-		channels_TLbest[1] = "2JbTLgbar2bestOff";
-		SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels_TLbest,2,kinvar,"bbinTLbest");
-
-		printf("go do bbinMLbest\n");
-		TString channels_MLbest[2];
-		channels_MLbest[0] = "2JbMLgbar2bestOn";
-		channels_MLbest[1] = "2JbMLgbar2bestOff";
-		SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels_MLbest,2,kinvar,"bbinMLbest");
-
-
-
-
+//		printf("go do bbinMLbest\n");
+//		TString channels_MLbest[2];
+//		channels_MLbest[0] = "2JbMLgbar2bestOn";
+//		channels_MLbest[1] = "2JbMLgbar2bestOff";
+//		SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels_MLbest,2,kinvar,"bbinMLbest");
+	
 	}//end for every kinvar
 
 		////close all files.
@@ -400,7 +535,7 @@ void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint){
 }//end SetupLimitsForOneMassPoint
 
 
-void SetupLimitsForOnePlot_bbin(TFile * files[],MCpoint* thisMCpoint, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName){
+void SetupLimitsForOnePlot_bbin(TFile * files[],MCpoint* thisMCpoint, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName, float f_integ_systs[]){
 		//files is expected to be an array of OPEN files that will be closed later. Use only via other functions.
 		//nchannels is allowed to be 1-4, in the case of 1, use CombinedTopoName = topo and you shoud get the same result as not bbining.
 	
@@ -524,19 +659,20 @@ void SetupLimitsForOnePlot_bbin(TFile * files[],MCpoint* thisMCpoint, TString ch
 	switch(nchannels){
 		case 1:
 			basename = string("h")+kinvar.Data()+CombinedTopoName.Data()+"_"; //assumes topo = CombinedTopoName
-			makeLimitSettingMachinery(CardHistSet_bin[0], thisMCpoint, basename, CombinedTopoName, kinvar, true);
+			makeLimitSettingMachinery(CardHistSet_bin[0], thisMCpoint, basename, CombinedTopoName, f_integ_systs[0], kinvar, true);
 			break;
+
 		case 2:
-			makeLimitSettingMachinery_bbin2(CardHistSet_bin[0],CardHistSet_bin[1],thisMCpoint, channels, CombinedTopoName, kinvar, true);
+			makeLimitSettingMachinery_bbin2(CardHistSet_bin[0],CardHistSet_bin[1],thisMCpoint, channels, CombinedTopoName, f_integ_systs, kinvar, true);
 			break;
 		case 3:
-			makeLimitSettingMachinery_bbin3(CardHistSet_bin[0],CardHistSet_bin[1],CardHistSet_bin[2],thisMCpoint, channels, CombinedTopoName, kinvar, true);
+			makeLimitSettingMachinery_bbin3(CardHistSet_bin[0],CardHistSet_bin[1],CardHistSet_bin[2],thisMCpoint, channels, CombinedTopoName, f_integ_systs, kinvar, true);
 			break;
 		case 4:
-			makeLimitSettingMachinery_bbin4(CardHistSet_bin[0],CardHistSet_bin[1],CardHistSet_bin[2],CardHistSet_bin[3], thisMCpoint, channels, CombinedTopoName, kinvar, true);
+			makeLimitSettingMachinery_bbin4(CardHistSet_bin[0],CardHistSet_bin[1],CardHistSet_bin[2],CardHistSet_bin[3], thisMCpoint, channels, CombinedTopoName, f_integ_systs, kinvar, true);
 			break;
 		default:
-			makeLimitSettingMachinery_bbinN(nchannels, CardHistSet_bin, thisMCpoint, channels, CombinedTopoName, kinvar, true);
+			makeLimitSettingMachinery_bbinN(nchannels, CardHistSet_bin, thisMCpoint, channels, CombinedTopoName,f_integ_systs, kinvar, true);
 			break;
 	}//end switch
 }//end SetupLimitsForOnePlot_bbin
@@ -611,7 +747,8 @@ bool loadhistSafely(TH1F** histout, TFile* PostAnaAnaFile, string basename,strin
 }//end makeLimitSettingMachinery //obsolete
  */
 
-void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, TString kinvar, bool appendCombineCommand){
+//void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, TString kinvar, bool appendCombineCommand){
+void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, float f_integ_systs, TString kinvar, bool appendCombineCommand){
 		///This Sets up all hte machinery needed to run the point:
 		///it makes the card file, a root file bundeling the MC points, and an entry in the bash script. 
 
@@ -621,14 +758,16 @@ void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TStrin
 
 		//make the card file. 
 	TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-	makeCard_Systematics( CardHistSet , thisMCpoint, basename, topo, kinvar);//done
+	makeCard_Systematics( CardHistSet , thisMCpoint, basename, topo, kinvar,f_integ_systs);//done
 
 		//make an entry in the batch file that does the combined limits.
 	if (appendCombineCommand) {
 		ofstream CombineBatchFile;
 		//CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName());//open for appending
 		CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName(),ios_base::app);//open for appending
-		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<topo<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
+		TString toposhash = topo;
+		toposhash = toposhash.ReplaceAll('!',"\\!");
+		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
 		CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"rm temp"<<endl;
@@ -641,7 +780,8 @@ void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TStrin
 
 }//end new makeLimitSettingMachinery  //Done writing? Yes. Debugged? No
 
-void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+//void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint * thisMCpoint, TString* channels, TString topo, float f_integ_systs[4], TString kinvar, bool appendCombineCommand){
 	cout<<"makeLimitSettingMachinery for bbin4"<<endl;
                 ///This Sets up all hte machinery needed to run the b-binning set for this point:
                 ///it makes the card file, a root file bundeling the MC points, and an entry in the bash script. 
@@ -651,14 +791,16 @@ void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, T
 
                 //make the card file. 
         TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-        makeCard_Systematics_bbin4( CardHistSet1, CardHistSet2, CardHistSet3, CardHistSet4, thisMCpoint, channels, topo, kinvar);//done
+        makeCard_Systematics_bbin4( CardHistSet1, CardHistSet2, CardHistSet3, CardHistSet4, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
 
                 //make an entry in the batch file that does the combined limits.
         if (appendCombineCommand) {
                 ofstream CombineBatchFile;
                 //CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName());//open for appending
                 CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName(),ios_base::app);//open for appending
-                CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<topo<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
+			TString toposhash = topo;
+			toposhash = toposhash.ReplaceAll('!',"\\!");
+                CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
                 CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
                 CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
                 CombineBatchFile<<"rm temp"<<endl;
@@ -671,7 +813,8 @@ void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, T
 
 }//end makeLimitSettingMachinery_bbin4
 
-void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+//void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, TH1F** CardHistSet3, MCpoint * thisMCpoint, TString* channels, TString topo, float f_integ_systs[3], TString kinvar, bool appendCombineCommand){
 	cout<<"makeLimitSettingMachinery for bbin3"<<endl;
                 ///This Sets up all hte machinery needed to run the b-binning set for this point:
                 ///it makes the card file, a root file bundeling the MC points, and an entry in the bash script. 
@@ -681,14 +824,16 @@ void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, T
 
                 //make the card file. 
         TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-        makeCard_Systematics_bbin3( CardHistSet1, CardHistSet2, CardHistSet3, thisMCpoint, channels, topo, kinvar);//done
+        makeCard_Systematics_bbin3( CardHistSet1, CardHistSet2, CardHistSet3, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
 
                 //make an entry in the batch file that does the combined limits.
         if (appendCombineCommand) {
                 ofstream CombineBatchFile;
                 //CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName());//open for appending
                 CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName(),ios_base::app);//open for appending
-                CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<topo<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
+			TString toposhash = topo;
+			toposhash = toposhash.ReplaceAll('!',"\\!");
+                CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
                 CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
                 CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
                 CombineBatchFile<<"rm temp"<<endl;
@@ -701,7 +846,8 @@ void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, T
 
 }//end makeLimitSettingMachinery_bbin3
 
-void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+//void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, MCpoint * thisMCpoint, TString* channels, TString topo,float f_integ_systs[2], TString kinvar, bool appendCombineCommand){
 	cout<<"makeLimitSettingMachinery for bbin3"<<endl;
 		///This Sets up all hte machinery needed to run the b-binning set for this point:
 		///it makes the card file, a root file bundeling the MC points, and an entry in the bash script.
@@ -711,14 +857,16 @@ void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, M
 
 		//make the card file.
 	TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-	makeCard_Systematics_bbin2( CardHistSet1, CardHistSet2, thisMCpoint, channels, topo, kinvar);//done
+	makeCard_Systematics_bbin2( CardHistSet1, CardHistSet2, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
 
 		//make an entry in the batch file that does the combined limits.
 	if (appendCombineCommand) {
 		ofstream CombineBatchFile;
 			//CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName());//open for appending
 		CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName(),ios_base::app);//open for appending
-		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<topo<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
+		TString toposhash = topo;
+		toposhash = toposhash.ReplaceAll('!',"\\!");
+		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
 		CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"rm temp"<<endl;
@@ -731,9 +879,10 @@ void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, M
 
 }//end makeLimitSettingMachinery_bbin2
 
-void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+//void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint * thisMCpoint, TString* channels, TString topo, TString kinvar, bool appendCombineCommand){
+void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint * thisMCpoint, TString* channels, TString topo, float f_integ_systs[], TString kinvar, bool appendCombineCommand){
 
-	cout<<"makeLimitSettingMachinery for bbin4"<<endl;
+	cout<<"makeLimitSettingMachinery for bbinN, N="<<nchannels<<endl;
 		///This Sets up all hte machinery needed to run the b-binning set for this point:
 		///it makes the card file, a root file bundeling the MC points, and an entry in the bash script.
 
@@ -742,14 +891,16 @@ void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MC
 
 		//make the card file.
 	TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-	makeCard_Systematics_bbinN(nchannels, CardHistSet, thisMCpoint, channels, topo, kinvar);
+	makeCard_Systematics_bbinN(nchannels, CardHistSet, thisMCpoint, channels, topo, kinvar,f_integ_systs);
 
 		//make an entry in the batch file that does the combined limits.
 	if (appendCombineCommand) {
 		ofstream CombineBatchFile;
 			//CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName());//open for appending
 		CombineBatchFile.open(thisMCpoint->makeCombineBatchFileName(),ios_base::app);//open for appending
-		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<topo<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
+		TString toposhash = topo;
+		toposhash = toposhash.ReplaceAll('!',"\\!");
+		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
 		CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"rm temp"<<endl;
@@ -848,7 +999,7 @@ void repackage_Systematics_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, TStri
 }//end repackage_Systematics_bbin2
 
 void repackage_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], TString rootfilename){
-	cout<<"make package for bbin4"<<endl;
+	cout<<"make package for bbinN, N="<<nchannels<<endl;
 	TFile *f = new TFile(rootfilename,"RECREATE"); f->cd();
 	for (short ibin=0; ibin<nchannels; ibin++) {
 		CardHistSet[ibin][2]->Write();
@@ -860,7 +1011,7 @@ void repackage_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], TStrin
 	f->Close();
 }//repackage_Systematics_bbinN
 
-void makeCard_Systematics(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, TString kinvar){
+void makeCard_Systematics(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, TString kinvar,float f_integ_systs){
 		//CardHistSet:
 		//{Data_tag,  Data_bkg,	MC , MC_JECUp,  MC_JECDown, MC_BtagEffUp,	MC_BtagEffDown}
 		//{ 0      ,  1       , 2  , 3       ,  4         , 5           ,   6             }
@@ -896,7 +1047,9 @@ void makeCard_Systematics(TH1F** CardHistSet, MCpoint * thisMCpoint, TString bas
 	card<<"process  0          1"<<endl;
 	card<<"rate     "<<signalIntegral<<"        "<<bkgIntegral<<endl;
 	card<<"------------"<<endl;
+	card<<"integ    lnN   -   "<<f_integ_systs<<endl;
 	card<<"lumi    lnN   1.044    -   "<< endl;
+	card<<"hlt    lnN   1.001    -   "<< endl;
 	card<<"phoEff    lnN   1.01    -   "<< endl;
 	card<<"JEC    shape   1    -   "<< endl;
 	card<<"BtagEff shape   1    -   "<< endl;
@@ -934,7 +1087,7 @@ void makeCard_Systematics(TH1F** CardHistSet, MCpoint * thisMCpoint, TString bas
 
 }//end makeCard_Systematics //Done writing? Yes. Debugged? No
 
-void makeCard_Systematics_bbin4( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar){
+void makeCard_Systematics_bbin4( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, TH1F** CardHistSet4, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar,float f_integ_systs[4]){
                 //CardHistSet:
                 //{Data_tag,  Data_bkg, MC , MC_JECUp,  MC_JECDown, MC_BtagEffUp,       MC_BtagEffDown}
                 //{ 0      ,  1       , 2  , 3       ,  4         , 5           ,   6             }
@@ -995,14 +1148,16 @@ void makeCard_Systematics_bbin4( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F*
         card<<"process  0      1      0       1      0       1      0       1"<<endl;
         card<<"rate     "<<signalIntegral[0]<<" "<<bkgIntegral[0]<<" "<<signalIntegral[1]<<" "<<bkgIntegral[1]<<" "<<signalIntegral[2]<<" "<<bkgIntegral[2]<<" "<<signalIntegral[3]<<" "<<bkgIntegral[3]<<endl;
         card<<"------------"<<endl;
+        card<<"integ    lnN   -   "<<f_integ_systs[0]<<"  -  "<<f_integ_systs[1]<<"  -  "<<f_integ_systs[2]<<"  -  "<<f_integ_systs[3]<<endl;
         card<<"lumi    lnN   1.044    -   1.044    -  1.044    -  1.044    -  "<< endl;
-	    card<<"phoEff    lnN   1.01    -   1.01    -   1.01    -   1.01    -   "<< endl;
+        card<<"hlt    lnN   1.001    -   1.001    -  1.001    -  1.001    -  "<< endl;
+	card<<"phoEff    lnN   1.01    -   1.01    -   1.01    -   1.01    -   "<< endl;
         card<<"JEC    shape   1    -   1    -   1    -   1    -   "<< endl;
         card<<"BtagEff shape   1    -   1    -   1    -   1    -   "<< endl;
         card.close();
 }//end makeCard_Systematics_bbin4
 
-void makeCard_Systematics_bbin3( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar){
+void makeCard_Systematics_bbin3( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F** CardHistSet3, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar,float f_integ_systs[3]){
                 //CardHistSet:
                 //{Data_tag,  Data_bkg, MC , MC_JECUp,  MC_JECDown, MC_BtagEffUp,       MC_BtagEffDown}
                 //{ 0      ,  1       , 2  , 3       ,  4         , 5           ,   6             }
@@ -1059,14 +1214,16 @@ void makeCard_Systematics_bbin3( TH1F** CardHistSet1,TH1F**  CardHistSet2, TH1F*
         card<<"process  0      1      0       1      0       1 "<<endl;
         card<<"rate     "<<signalIntegral[0]<<" "<<bkgIntegral[0]<<" "<<signalIntegral[1]<<" "<<bkgIntegral[1]<<" "<<signalIntegral[2]<<" "<<bkgIntegral[2]<<endl;
         card<<"------------"<<endl;
+        card<<"integ    lnN   -   "<<f_integ_systs[0]<<"  -  "<<f_integ_systs[1]<<"  -  "<<f_integ_systs[2]<<endl;
         card<<"lumi    lnN   1.044    -   1.044    -  1.044    - "<< endl;
+        card<<"hlt    lnN   1.001    -   1.001    -  1.001    - "<< endl;
 	card<<"phoEff  lnN   1.01    -   1.01    -    1.01    - "<< endl;
         card<<"JEC    shape   1    -   1    -   1    -   "<< endl;
         card<<"BtagEff shape   1    -   1    -   1    -  "<< endl;
         card.close();
 }//end makeCard_Systematics_bbin3
 
-void makeCard_Systematics_bbin2( TH1F** CardHistSet1,TH1F**  CardHistSet2, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar){
+void makeCard_Systematics_bbin2( TH1F** CardHistSet1,TH1F**  CardHistSet2, MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar,float f_integ_systs[2]){
 		//CardHistSet:
 		//{Data_tag,  Data_bkg, MC , MC_JECUp,  MC_JECDown, MC_BtagEffUp,       MC_BtagEffDown}
 		//{ 0      ,  1       , 2  , 3       ,  4         , 5           ,   6             }
@@ -1117,19 +1274,21 @@ void makeCard_Systematics_bbin2( TH1F** CardHistSet1,TH1F**  CardHistSet2, MCpoi
 	card<<"process  0      1      0       1"<<endl;
 	card<<"rate     "<<signalIntegral[0]<<" "<<bkgIntegral[0]<<" "<<signalIntegral[1]<<" "<<bkgIntegral[1]<<endl;
 	card<<"------------"<<endl;
+	card<<"integ    lnN   -   "<<f_integ_systs[0]<<"  -  "<<f_integ_systs[1]<<endl;
 	card<<"lumi    lnN   1.044    -   1.044    - "<< endl;
+	card<<"hlt    lnN   1.001    -   1.001    - "<< endl;
 	card<<"phoEff    lnN   1.01    -   1.01    - "<< endl;
 	card<<"JEC    shape   1    -   1    - "<< endl;
 	card<<"BtagEff shape   1    -   1    - "<< endl;
 	card.close();
 }//end makeCard_Systematics_bbin2
 
-void makeCard_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar){
+void makeCard_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint* thisMCpoint, TString* channels, TString topo,TString kinvar,float f_integ_systs[]){
 		//CardHistSet:
 		//{Data_tag,  Data_bkg, MC , MC_JECUp,  MC_JECDown, MC_BtagEffUp,       MC_BtagEffDown}
 		//{ 0      ,  1       , 2  , 3       ,  4         , 5           ,   6             }
 		//assumes all MC histograms are already scaled correctly to their lumiscale
-	cout<<"makeCard for bbin2 "<<topo<<" "<<kinvar<<endl;
+	cout<<"makeCard for bbinN, N="<<nchannels<<" "<<topo<<" "<<kinvar<<endl;
 	float dataIntegral[nchannels];
 	float bkgIntegral[nchannels];
 	float signalIntegral[nchannels];
@@ -1168,7 +1327,9 @@ void makeCard_Systematics_bbinN(short nchannels, TH1F* CardHistSet[][7], MCpoint
 	card<<"process"; for (short ibin=0; ibin<nchannels; ibin++){card<<"     0     1 ";} card<<endl;//card<<"process  0      1      0       1"<<endl;
 	card<<"rate     "; for (short ibin=0; ibin<nchannels; ibin++){card<<signalIntegral[ibin]<<" "<<bkgIntegral[ibin]<<" ";} card<<endl;//	card<<"rate     "<<signalIntegral[0]<<" "<<bkgIntegral[0]<<" "<<signalIntegral[1]<<" "<<bkgIntegral[1]<<endl;
 	card<<"------------"<<endl;
+	card<<"integ    lnN"; for (short ibin=0; ibin<nchannels; ibin++){card<<"   -   "<<f_integ_systs[ibin];} card<<endl;//	card<<"lumi    lnN   1.044    -   1.044    - "<< endl;
 	card<<"lumi    lnN"; for (short ibin=0; ibin<nchannels; ibin++){card<<"   1.044    -";} card<<endl;//	card<<"lumi    lnN   1.044    -   1.044    - "<< endl;
+	card<<"hlt    lnN"; for (short ibin=0; ibin<nchannels; ibin++){card<<"   1.001    -";} card<<endl;//	card<<"hlt    lnN   1.001    -   1.001    - "<< endl;
 	card<<"phoEff    lnN"; for (short ibin=0; ibin<nchannels; ibin++){card<<"   1.01    -";} card<<endl;//card<<"phoEff   lnN   1.01    -   1.01    - "<< endl;
 	card<<"JEC    shape"; for (short ibin=0; ibin<nchannels; ibin++){card<<"   1    -";} card<<endl;//card<<"JEC    shape   1    -   1    - "<< endl;
 	card<<"BtagEff shape"; for (short ibin=0; ibin<nchannels; ibin++){card<<"   1    -";} card<<endl;//	card<<"BtagEff shape   1    -   1    - "<< endl;
@@ -1222,7 +1383,146 @@ TString TackBeforeRoot(TString main, TString tack){
 	return mantissa;
 }//Done writing? Yes. Debugged? No
 
+	//Run all topologies on the whole grid.
 	//To run these, you need all the returned files from the grid, includeing the JEC and BTag files.
+
+//void SetupSummedLimitsForStrongGrid(){
+	//DO NOT USE THIS, IT'S ABSURDLY SLOW!!
+//	for (int iTop = 0; iTop<nEventTopologies_limit; iTop++) {
+//		SetupSummedLimitsForStrongGrid(s_EventTopology_limit[iTop]);
+//	}
+//}
+	//Run all topologies on the whole grid
+//void SetupSummedLimitsForWeakGrid(){
+	//DO NOT USE THIS, IT'S ABSURDLY SLOW!!
+//	for (int iTop = 0; iTop<nEventTopologies_limit; iTop++) {
+//		SetupSummedLimitsForWeakGrid(s_EventTopology_limit[iTop]);
+//	}
+//}
+
+void SetupSummedLimitsForStrongGrid(){
+		//for every mass point
+		//    for every topo
+		//        for every kinvar: setup
+	std::vector<MCpoint*> Points = setupMCpoints();
+	std::vector<MCpoint*> bbaa;
+	std::vector<MCpoint*> wwaa;
+	std::vector<MCpoint*> zzaa;
+	std::vector<MCpoint*> ttaa;
+	for(std::vector<MCpoint*>::iterator it = Points.begin();it != Points.end();it++){
+		if((*it)->type < 10 || (*it)->type >= 20) continue;
+		else if((*it)->type == 10) bbaa.push_back(*it);
+		else if((*it)->type == 11) wwaa.push_back(*it);
+		else if((*it)->type == 12) zzaa.push_back(*it);
+		else if((*it)->type == 13) ttaa.push_back(*it);
+	}
+        Labledfloat integ_systs;
+        suckinIntegralSystematics(integ_systs);
+	for(std::vector<MCpoint*>::iterator it = bbaa.begin();it != bbaa.end();it++){
+		MCpoint* points[4];
+		points[0] = *it;
+		int found_them_all = 1;
+		bool gotit = false;
+		for(std::vector<MCpoint*>::iterator it2 = wwaa.begin();(!gotit) && it2 != wwaa.end();it2++){ //find the matching point in wwaa
+			if ((*it2)->Mstop == (*it)->Mstop && (*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[1] = *it2;
+				found_them_all++;
+				gotit = true;
+				break;
+			}
+		}
+		gotit = false;
+		for(std::vector<MCpoint*>::iterator it2 = zzaa.begin();(!gotit) && it2 != zzaa.end();it2++){ //find the matching point in zzaa
+			if ((*it2)->Mstop == (*it)->Mstop && (*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[2] = *it2;
+				found_them_all++;
+				gotit = true;
+				break;
+			}
+		}
+		gotit = false;
+		for(std::vector<MCpoint*>::iterator it2 = zzaa.begin();(!gotit) && it2 != zzaa.end();it2++){ //find the matching point in ttaa
+			if ((*it2)->Mstop == (*it)->Mstop && (*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[3] = *it2;
+				found_them_all++;
+				gotit = true;
+				break;
+			}
+		}
+		if (found_them_all != 4) { //make sure you found them all.
+			printf("Error! Can't find all the categories for Mst = %i Mh = %i\n",(*it)->Mstop,(*it)->Mhiggsino);
+			printf("Not Generating the card files for this point!!\n");
+			continue;
+		}
+		printf("Setup for st_%i_mu_%i\n",(*it)->Mstop,(*it)->Mhiggsino);
+		SetupSummedLimitsOneMassPoint(points, 4 , integ_systs);
+	}//end for all MC points
+}//SetupSummedLimitsForStrongGrid
+
+void SetupSummedLimitsForWeakGrid(){
+		//for every mass point
+		//    for every topo
+		//        for every kinvar: setup
+	std::vector<MCpoint*> Points = setupMCpoints();
+	std::vector<MCpoint*> bbaa;
+	std::vector<MCpoint*> wwaa;
+	std::vector<MCpoint*> zzaa;
+	std::vector<MCpoint*> ttaa;
+	for(std::vector<MCpoint*>::iterator it = Points.begin();it != Points.end();it++){
+		if((*it)->type < 20 || (*it)->type >= 30) continue;
+		else if((*it)->type == 20) bbaa.push_back(*it);
+		else if((*it)->type == 21) wwaa.push_back(*it);
+		else if((*it)->type == 22) zzaa.push_back(*it);
+		else if((*it)->type == 23) ttaa.push_back(*it);
+	}
+	Labledfloat integ_systs;
+        suckinIntegralSystematics(integ_systs);
+
+	for(std::vector<MCpoint*>::iterator it = bbaa.begin();it != bbaa.end();it++){
+		MCpoint* points[4];
+		points[0] = *it;
+		int found_them_all = 1;
+		bool gotit = false;
+		for(std::vector<MCpoint*>::iterator it2 = wwaa.begin();(!gotit) && it2 != wwaa.end();it2++){ //find the matching point in wwaa
+			if ( (*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[1] = *it2;
+				found_them_all++;
+				gotit = true;
+				break;
+			}
+		}
+		gotit = false;
+		for(std::vector<MCpoint*>::iterator it2 = zzaa.begin();(!gotit) && it2 != zzaa.end();it2++){ //find the matching point in zzaa
+			if ( (*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[2] = *it2;
+				found_them_all++;
+				gotit = true;
+				break;
+			}
+		}
+		gotit = false;
+		for(std::vector<MCpoint*>::iterator it2 = zzaa.begin();(!gotit) && it2 != zzaa.end();it2++){ //find the matching point in ttaa
+			if ( (*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[3] = *it2;
+				found_them_all++;
+				gotit = true;
+				break;
+			}
+		}
+		if (found_them_all != 4) { //make sure you found them all.
+			printf("Error! Can't find all the categories for Mst = %i Mh = %i\n",(*it)->Mstop,(*it)->Mhiggsino);
+			printf("Not Generating the card files for this point!!\n");
+			continue;
+		}
+		printf("Setup for mu_%i\n",(*it)->Mhiggsino);
+		SetupSummedLimitsOneMassPoint(points, 4 ,integ_systs);
+	}//end for all MC points
+}//SetupSummedLimitsForWeakGrid
+
+
+
+	//To run these, you need all the returned files from the grid, includeing the JEC and BTag files.
+	//for manual use only, this is pretty slow
 void SetupSummedLimitsForStrongGrid(TString topo){
 	std::vector<MCpoint*> Points = setupMCpoints();
 	std::vector<MCpoint*> bbaa;
@@ -1236,6 +1536,8 @@ void SetupSummedLimitsForStrongGrid(TString topo){
 		if((*it)->type == 12) zzaa.push_back(*it);
 		if((*it)->type == 13) ttaa.push_back(*it);
 	}
+        Labledfloat integ_systs;
+        suckinIntegralSystematics(integ_systs);
 	for(std::vector<MCpoint*>::iterator it = bbaa.begin();it != bbaa.end();it++){
 		MCpoint* points[4];
 		points[0] = *it;
@@ -1266,12 +1568,13 @@ void SetupSummedLimitsForStrongGrid(TString topo){
 			printf("Not Generating the card files for this point!!\n");
 			continue;
 		}
-		
-		SetupSummedLimitsOneMassPoint(points, 4 ,topo);
+		printf("Setup %s for st_%i_mu_%i\n",topo.Data(),(*it)->Mstop,(*it)->Mhiggsino);
+		SetupSummedLimitsOneMassPoint(points, 4 ,topo,integ_systs);
 	}//end for all MC points
 }//SetupSummedLimitsForStrongGrid
 
-	//To run these, you need all the returned files from the grid, includeing the JEC and BTag files. 
+	//To run these, you need all the returned files from the grid, includeing the JEC and BTag files.
+	//for manual use only, this is pretty slow
 void SetupSummedLimitsForWeakGrid(TString topo){
 	std::vector<MCpoint*> Points = setupMCpoints();
 	std::vector<MCpoint*> bbaa;
@@ -1285,6 +1588,8 @@ void SetupSummedLimitsForWeakGrid(TString topo){
 		if((*it)->type == 22) zzaa.push_back(*it);
 		if((*it)->type == 23) ttaa.push_back(*it);
 	}
+	Labledfloat integ_systs;
+        suckinIntegralSystematics(integ_systs);
 	for(std::vector<MCpoint*>::iterator it = bbaa.begin();it != bbaa.end();it++){
 		MCpoint* points[4];
 		points[0] = *it;
@@ -1315,13 +1620,15 @@ void SetupSummedLimitsForWeakGrid(TString topo){
 			printf("Not Generating the card files for this point!!\n");
 			continue;
 		}
-
-		SetupSummedLimitsOneMassPoint(points, 4 ,topo);
+		printf("Setup %s for mu_%i\n",topo.Data(),(*it)->Mhiggsino);
+		SetupSummedLimitsOneMassPoint(points, 4 ,topo,integ_systs);
 	}//end for all MC points
 }//SetupSummedLimitsForWeakGrid
 
-void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo){
+//void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo){
+void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo, Labeledfloat & integ_systs){ 
 	string data = "Data";
+	bool metonly = true;
 	MCpoint * datapoint = setupMCpoint(data, "");//this is efficient.
 
 	TFile* files[nMCpoints][6];
@@ -1340,19 +1647,169 @@ void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo
 			  fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data()) &&
 			  fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data()) )){
 			printf("ERROR!! Some of the input files are missing completely!\n");
-			printf("Exiting SetupLimits!!\n");
+			if (!fileExists(datapoint->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",datapoint->plotsAndBackground_mc.c_str() );
+			if (!fileExists(points[i]->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",points[i]->plotsAndBackground_mc.c_str());
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data() );
+			printf("Exiting SetupLimits!! (From SetupSummedLimitsOneMassPoint) \n");
 			return;
 		}
 	}
+	
 	if(topo.CompareTo("bbin3")==0){
-		for (int kKinVar = 0; kKinVar<nKinemVars_all; kKinVar++) {
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
 			TString channels[3] = {"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2"};
-			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_all[kKinVar],"bbin3");
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!Gbar2Mbb"];
+                        f_integ_systs[1]=integ_systs["2JbML!Gbar2Mbb!"];
+                        f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("bbin3MM")==0){
+		TString channels[3];
+		channels[0] = "2JbMM!Gbar2Mbb";
+		channels[1] = "2JbMM!Gbar2Mbb!";
+		channels[2] = "3JbMMLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbMM!Gbar2Mbb"];
+                        f_integ_systs[1]=integ_systs["2JbMM!Gbar2Mbb!"];
+                        f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MM",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("bbin3MLbest")==0){
+		TString channels[3];
+		channels[0] = "2JbML!gbar2bestOn";
+		channels[1] = "2JbML!gbar2bestOff";
+		channels[2] = "3JbMLLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!gbar2bestOn"];
+                        f_integ_systs[1]=integ_systs["2JbML!gbar2bestOff"];
+                        f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MLbest",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("bbin3MMbest")==0){
+		TString channels[3];
+		channels[0] = "2JbMM!gbar2bestOn";
+		channels[1] = "2JbMM!gbar2bestOff";
+		channels[2] = "3JbMMLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbMM!gbar2bestOn"];
+                        f_integ_systs[1]=integ_systs["2JbMM!gbar2bestOff"];
+                        f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MMbest",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("WHbins")==0){
+		TString channels[2];
+		channels[0] = "1!lepgbar2";
+		channels[1] = "23Jb01MewkMll0lepgbar2";
+                        float f_integ_systs[2];
+                        f_integ_systs[0]=integ_systs["1!lepgbar2"];
+                        f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,2, s_KinemVars_limit[kKinVar],"WHbins",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("ZHbins")==0){
+		TString channels[2];
+		channels[0] = "2!lepZgbar2";
+		channels[1] = "23Jb01MewkMll0lepgbar2";
+                        float f_integ_systs[2];
+                        f_integ_systs[0]=integ_systs["2!lepZgbar2"];
+                        f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,2, s_KinemVars_limit[kKinVar],"ZHbins",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("WWbins")==0){
+		TString channels[4];
+		channels[0] = "2lepgbar2";
+		channels[1] = "1!lep23Jb01M!ewkMllgbar2";
+		channels[2] = "1!lep23Jb01MewkMllgbar2";
+		channels[3] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[4];
+                        f_integ_systs[0]=integ_systs["2lepgbar2"];
+                        f_integ_systs[1]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+                        f_integ_systs[2]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+                        f_integ_systs[3]=integ_systs["0lep25Jb01MewkMllgbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,4, s_KinemVars_limit[kKinVar],"WWbins",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("ZZbins")==0){
+		TString channels[5];
+		channels[0] = "3lepgbar2";
+		channels[1] = "2!lepZgbar2";
+		channels[2] = "1!lep23Jb01M!ewkMllgbar2";
+		channels[3] = "1!lep23Jb01MewkMllgbar2";
+		channels[4] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[5];
+                        f_integ_systs[0]=integ_systs["3lepgbar2"];
+                        f_integ_systs[1]=integ_systs["2!lepZgbar2"];
+                        f_integ_systs[2]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+                        f_integ_systs[3]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+                        f_integ_systs[4]=integ_systs["0lep25Jb01MewkMllgbar2"];
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,5, s_KinemVars_limit[kKinVar],"ZZbins",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("SHbins")==0){
+		TString channels[6];
+		channels[0] = "2JbM2lepgbar2";
+		channels[1] = "2JbML!1lepgbar2";
+		channels[2] = "2JbML!gbar2bestOn0lep";
+		channels[3] = "4JbML!gbar2ewkMllbestOff0lep";
+		channels[4] = "2JbML!gbar2bothOff0lep";
+		channels[5] = "3JbMLLGbar2";
+                        float f_integ_systs[6];
+                        f_integ_systs[0]=integ_systs["2JbM2lepgbar2"];
+                        f_integ_systs[1]=integ_systs["2JbML!1lepgbar2"];
+                        f_integ_systs[2]=integ_systs["2JbML!gbar2bestOn0lep"];
+                        f_integ_systs[3]=integ_systs["4JbML!gbar2ewkMllbestOff0lep"];
+                        f_integ_systs[4]=integ_systs["2JbML!gbar2bothOff0lep"];
+                        f_integ_systs[5]=integ_systs["3JbMLLGbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,6, s_KinemVars_limit[kKinVar],"SHbins",f_integ_systs);
 		}
 	}
 	else{
-		for (int kKinVar = 0; kKinVar<nKinemVars_all; kKinVar++) {
-			SetupSummedLimitsOnePlot(files, points, nMCpoints,topo, s_KinemVars_all[kKinVar]);
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot(files, points, nMCpoints,topo, s_KinemVars_limit[kKinVar],integ_systs);
 		}
 	}
 		//close the files.
@@ -1363,7 +1820,197 @@ void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo
 	}
 }//SetupSummedLimitsOneMassPoint
 
-void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar){
+//void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints){
+void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints, Labeledfloat & integ_systs){
+		//this does every topo, every kinvar for a mass point. this should be an order of magnitude faster.
+		//it only opens the files once per mass point. 
+
+	string data = "Data";
+	bool metonly = true;
+	MCpoint * datapoint = setupMCpoint(data, "");//this is efficient.
+
+	TFile* files[nMCpoints][6];
+	for (int i =0; i<nMCpoints; i++) {
+		files[i][0] = new TFile(datapoint->plotsAndBackground_mc.c_str());
+		files[i][1] = new TFile(points[i]->plotsAndBackground_mc.c_str());
+		files[i][2] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data());
+		files[i][3] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data());
+		files[i][4] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data());
+		files[i][5] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data());
+
+		if( !( fileExists(datapoint->plotsAndBackground_mc.c_str()) &&
+			  fileExists(points[i]->plotsAndBackground_mc.c_str()) &&
+			  fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data()) &&
+			  fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data()) &&
+			  fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data()) &&
+			  fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data()) )){
+			printf("ERROR!! Some of the input files are missing completely!\n");
+			if (!fileExists(datapoint->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",datapoint->plotsAndBackground_mc.c_str() );
+			if (!fileExists(points[i]->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",points[i]->plotsAndBackground_mc.c_str());
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data() );
+			printf("Exiting SetupLimits!! (From SetupSummedLimitsOneMassPoint) \n");
+			return;
+		}
+	}//for every MC point
+
+	for (int iTop = 0; iTop<nEventTopologies_limit; iTop++) {
+		TString topo = s_EventTopology_limit[iTop];
+		
+		if(topo.CompareTo("bbin3")==0){
+			TString channels[3] = {"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2"};
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!Gbar2Mbb"];
+                        f_integ_systs[1]=integ_systs["2JbML!Gbar2Mbb!"];
+                        f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("bbin3MM")==0){
+			TString channels[3];
+			channels[0] = "2JbMM!Gbar2Mbb";
+			channels[1] = "2JbMM!Gbar2Mbb!";
+			channels[2] = "3JbMMLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbMM!Gbar2Mbb"];
+                        f_integ_systs[1]=integ_systs["2JbMM!Gbar2Mbb!"];
+                        f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MM",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("bbin3MLbest")==0){
+			TString channels[3];
+			channels[0] = "2JbML!gbar2bestOn";
+			channels[1] = "2JbML!gbar2bestOff";
+			channels[2] = "3JbMLLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!gbar2bestOn"];
+                        f_integ_systs[1]=integ_systs["2JbML!gbar2bestOff"];
+                        f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MLbest",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("bbin3MMbest")==0){
+			TString channels[3];
+			channels[0] = "2JbMM!gbar2bestOn";
+			channels[1] = "2JbMM!gbar2bestOff";
+			channels[2] = "3JbMMLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbMM!gbar2bestOn"];
+                        f_integ_systs[1]=integ_systs["2JbMM!gbar2bestOff"];
+                        f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MMbest",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("WHbins")==0){
+			TString channels[2];
+			channels[0] = "1!lepgbar2";
+			channels[1] = "23Jb01MewkMll0lepgbar2";
+                        float f_integ_systs[2];
+                        f_integ_systs[0]=integ_systs["1!lepgbar2"];
+                        f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,2, s_KinemVars_limit[kKinVar],"WHbins",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("ZHbins")==0){
+			TString channels[2];
+			channels[0] = "2!lepZgbar2"; 
+			channels[1] = "23Jb01MewkMll0lepgbar2";
+                        float f_integ_systs[2];
+                        f_integ_systs[0]=integ_systs["2!lepZgbar2"];
+                        f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,2, s_KinemVars_limit[kKinVar],"ZHbins",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("WWbins")==0){
+			TString channels[4];
+			channels[0] = "2lepgbar2";
+			channels[1] = "1!lep23Jb01M!ewkMllgbar2";
+			channels[2] = "1!lep23Jb01MewkMllgbar2";
+			channels[3] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[4];
+                        f_integ_systs[0]=integ_systs["2lepgbar2"];
+                        f_integ_systs[1]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+                        f_integ_systs[2]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+                        f_integ_systs[3]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,4, s_KinemVars_limit[kKinVar],"WWbins",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("ZZbins")==0){
+			TString channels[5];
+			channels[0] = "3lepgbar2";
+			channels[1] = "2!lepZgbar2";
+			channels[2] = "1!lep23Jb01M!ewkMllgbar2";
+			channels[3] = "1!lep23Jb01MewkMllgbar2";
+			channels[4] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[5];
+                        f_integ_systs[0]=integ_systs["3lepgbar2"];
+                        f_integ_systs[1]=integ_systs["2!lepZgbar2"];
+                        f_integ_systs[2]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+                        f_integ_systs[3]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+                        f_integ_systs[4]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,5, s_KinemVars_limit[kKinVar],"ZZbins",f_integ_systs);
+			}
+		}
+		else if(topo.CompareTo("SHbins")==0){
+			TString channels[6];
+			channels[0] = "2JbM2lepgbar2";
+			channels[1] = "2JbML!1lepgbar2";
+			channels[2] = "2JbML!gbar2bestOn0lep";
+			channels[3] = "4JbML!gbar2ewkMllbestOff0lep";
+			channels[4] = "2JbML!gbar2bothOff0lep";
+			channels[5] = "3JbMLLGbar2";
+                        float f_integ_systs[6];
+                        f_integ_systs[0]=integ_systs["2JbM2lepgbar2"];
+                        f_integ_systs[1]=integ_systs["2JbML!1lepgbar2"];
+                        f_integ_systs[2]=integ_systs["2JbML!gbar2bestOn0lep"];
+                        f_integ_systs[3]=integ_systs["4JbML!gbar2ewkMllbestOff0lep"];
+                        f_integ_systs[4]=integ_systs["2JbML!gbar2bothOff0lep"];
+                        f_integ_systs[5]=integ_systs["3JbMLLGbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,6, s_KinemVars_limit[kKinVar],"SHbins",f_integ_systs);
+			}
+		}
+		else{
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot(files, points, nMCpoints,topo, s_KinemVars_limit[kKinVar],integ_systs);
+			}
+		}
+	}//end for every topo.
+	
+		//close the files.
+	printf("start closing\n");
+	for (int i =0; i<nMCpoints; i++) {
+		for (int j =0; j<6; j++) {
+			files[i][j]->Close();
+		}
+	}
+	printf("fin closing\n");
+}//SetupSummedLimitsOneMassPoint
+
+//void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar){
+void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar, Labeledfloat & integ_systs){
 	string data = "Data";
 	TH1F* CardHistSet[7];
 	TH1F* CardHistSets[nMCpoints][7];
@@ -1398,10 +2045,11 @@ void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints
 	CardHistSet[0]=CardHistSets[0][0];//transfer data simply
 	CardHistSet[1]=CardHistSets[0][1];//transfer data simply
 
-	makeLimitSettingMachinery(CardHistSet, points[0], basename, topo, kinvar, true);
+	makeLimitSettingMachinery(CardHistSet, points[0], basename, topo, integ_systs[topo.Data()], kinvar, true);
 }//SetupSummedLimitsOnePlot
 
-void SetupSummedLimitsOnePlot_bbin(TFile* files[][6],MCpoint* points[], int nMCpoints, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName){
+//void SetupSummedLimitsOnePlot_bbin(TFile* files[][6],MCpoint* points[], int nMCpoints, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName){
+void SetupSummedLimitsOnePlot_bbin(TFile* files[][6],MCpoint* points[], int nMCpoints, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName,float f_integ_systs[]){
 	string data = "Data";
 	TH1F* CardHistSet[nchannels][7];
 	TH1F* CardHistSets[nMCpoints][nchannels][7];
@@ -1442,8 +2090,23 @@ void SetupSummedLimitsOnePlot_bbin(TFile* files[][6],MCpoint* points[], int nMCp
 		CardHistSet[k][1]=CardHistSets[0][k][1];//transfer data simply
 	}
 
-	makeLimitSettingMachinery_bbinN(nchannels, CardHistSet, points[0], channels, CombinedTopoName, kinvar, true);
+	makeLimitSettingMachinery_bbinN(nchannels, CardHistSet, points[0], channels, CombinedTopoName,f_integ_systs, kinvar, true);
 }//SetupSummedLimitsOnePlot_bbin
 
-
-
+void suckinIntegralSystematics( Labeledfloat & integ_systs){
+        std::ifstream infile(integSyst_data_lim.c_str());
+        std::string line;
+        while (std::getline(infile, line)) {
+                std::istringstream iss(line);
+                string name;
+                string s_integ_syst;
+		
+                if (!(iss >> name >> s_integ_syst) ) { break; }
+		TString ts_integ_syst = s_integ_syst;
+                integ_systs[name]=ts_integ_syst.Atof();
+        }//end for every line
+	infile.close();
+	printf("sucked in integSyst_data_lim\n");
+	printf("found integ syst for 2JbMLgbar2: %f\n",integ_systs["2JbMLgbar2"]);
+	printf("found integ syst for 2JbML!Gbar2Mbb: %f\n",integ_systs["2JbML!Gbar2Mbb"]);
+} // end suckinIntegralSystematics

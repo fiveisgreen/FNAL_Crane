@@ -560,6 +560,8 @@ public:
 	bool is_under(TH2D* h);
 	bool is_blank(TH2D* h);
 	bool is_stair(TH2D* h);
+	bool is_bottom(TH2D* h);
+	bool is_rightEdge(TH2D* h);
 	cell* shift(int octdir);
 };
 bool cell::is_over(TH2D* h){return h->GetBinContent(i,j)>1;}
@@ -569,6 +571,20 @@ bool cell::is_stair(TH2D* h){
 		//if this and every other cell above it are zero, it's a staircase cell.
 	for (int jj = j+1; jj<=h->GetYaxis()->GetNbins(); jj++) {
 		if( h->GetBinContent(i,jj) > 0.00001 )return false;
+	}
+	return true;
+}
+bool cell::is_bottom(TH2D* h){
+		//if this and every other cell above it are zero, it's a staircase cell.
+	for (int jj = j-1; jj>0; jj--) {
+		if( h->GetBinContent(i,jj) > 0.00001 )return false;
+	}
+	return true;
+}
+bool cell::is_rightEdge(TH2D* h){
+		//if this and every other cell above it are zero, it's a staircase cell.
+	for (int ii = i+1; ii<=h->GetXaxis()->GetNbins(); ii++) {
+		if( h->GetBinContent(ii,j) > 0.00001 )return false;
 	}
 	return true;
 }
@@ -618,6 +634,7 @@ cell* cell::shift(int octdir){
 
 class overcell: public cell{
 public:
+//      overcells are cells with r > 1
 //	overcell & operator=(overcell & cel);
 	overcell(int _i, int _j):cell(_i,_j){}
 	overcell():cell(){}
@@ -650,6 +667,8 @@ bool overcell::has_transition(TH2D* h, int dir){
 		default:
 			return false;
 	}//end switch
+		//Don't transition to blanks on the bottom
+	if(Junder <= 3 && Iunder > Junder && h->GetBinContent(Iunder,Junder) < 0.00001) return false; 
 		//the edges of the screen are not allowed transitions.
 	if (Junder<=0 || Junder > h->GetYaxis()->GetNbins() || Iunder<=0 || Iunder > h->GetXaxis()->GetNbins() ) return false;
 	return h->GetBinContent(Iunder,Junder) <= 1.0;
@@ -922,7 +941,7 @@ TGraph* getContourBarker_fancy(TH2D* h, TString name) {
 			//now I look around the rest of the red cell, going ccw, asking if I have transitions there that are not
 			//on the list of found transitions.
 			//If I find a new one, I move to it, add it to the list of found transitions.
-		int basedir = thispoint->dir;//needed to keep basedir const under each rotation iteration.
+		int basedir = thispoint->dir;//needed to keep basedir(ection) const under each rotation iteration.
 		for(int rot = 0; rot<4; rot++){ //ccw rotations
 			if(is_seed && (mod(basedir-rot,4) == 0  || mod(basedir-rot,4) == 3 )){
 				//printf("this is the seed, so we reject rot %i\n",rot);
@@ -984,13 +1003,15 @@ TGraph* getContourBarker_fancy(TH2D* h, TString name) {
 	if(foundpoints.size() > 0){
 		transitionpoint* last = foundpoints.back();
 			//	printf("j, last j=%i\n",last->cel.j); //ok, it's segfaulting when it reaches for this.
-		if( last->cel.j > 1 ) graph->SetPoint(ip++,h->GetXaxis()->GetBinUpEdge(nx),last->y); //put on a termination point directly below the last point found. This makes it prettier.
-		else graph->SetPoint(ip++,last->x,-1);
+		//if( last->cel.j > 1 ) graph->SetPoint(ip++,h->GetXaxis()->GetBinUpEdge(nx),last->y); //put on a termination point directly below the last point found. This makes it prettier.
+		//else graph->SetPoint(ip++,last->x,-1);
+		if( last->cel.is_bottom(h) ) graph->SetPoint(ip++,last->x,-1); //if on the bottom, set the point below the bottom
+		else if( last->cel.is_rightEdge(h) ) graph->SetPoint(ip++,h->GetXaxis()->GetBinUpEdge(nx),last->y); //put on a termination point directly below the last point found. This makes it prettier.
 	}
 	if(debug) printf("End tack\n");
 //	printf("done messing with the last point. \n");
 	return graph;
-}
+}//enf getContourBarker_fancy
 
 
 

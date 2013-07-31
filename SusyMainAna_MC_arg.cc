@@ -58,7 +58,7 @@
 #include "hggx_analysers.h"
 #include "SFb.h"
 #include "SFl.h"
-#include "BTagWeight5.h"
+#include "BTagWeight6.h"
 #include <time.h>
 #include "MCpoint.h"
 
@@ -194,7 +194,8 @@ void SusyMainAna_MC_arg::Loop(string which_MC_to_use) {
 	firealarm << "SusyMainAna_MC_arg is on FIRE"<<endl;
 	firealarm.close();
 ///////////////////////////////////////////////////////
-	int pl = 3;//print level
+	//control pannel; dashboard
+	int pl = 3;//print level printlevel printLevel
 	//0 = Stealth
 	//1 = Annouce birth, death, marriage, and explosions
 	//2 = Christmas and easter only; turn on 1000th event heart monitor, Normal for running
@@ -211,20 +212,20 @@ void SusyMainAna_MC_arg::Loop(string which_MC_to_use) {
 	//11= ALICE: 	       Blast it's atoms appart and examine the entrails 
 	
 	///PRINT BLOCK SWITCHES
-	bool pbUSloop = 0;
-	bool pbColloop = 0;
+	bool pbUSloop =   1;
+	bool pbColloop =  1;
 	bool pbMainLoop = 0;
 
-	bool pbMainLoopInit = 0 && pbMainLoop;
-	bool pbPhos = 0 && pbMainLoop;
-	bool pbVtx = 0 && pbMainLoop;
-	bool pbMu = 0 && pbMainLoop;
-	bool pbEle = 0 && pbMainLoop;
-	bool pbJets = 0 && pbMainLoop;
-	bool pbBJets = 0 && pbMainLoop;
-	bool pbMET = 0 && pbMainLoop;
-	bool pbCuts = 0 && pbMainLoop;
-	bool pbFill = 0 && pbMainLoop;
+	bool pbMainLoopInit = 1 && pbMainLoop;
+	bool pbPhos = 1 && pbMainLoop;
+	bool pbVtx =  1 && pbMainLoop;
+	bool pbMu =   1 && pbMainLoop;
+	bool pbEle =  1 && pbMainLoop;
+	bool pbJets = 1 && pbMainLoop;
+	bool pbBJets =1 && pbMainLoop;
+	bool pbMET =  1 && pbMainLoop;
+	bool pbCuts = 1 && pbMainLoop;
+	bool pbFill = 1 && pbMainLoop;
 
 	bool pbFinisUp = 1;
 
@@ -280,22 +281,22 @@ void SusyMainAna_MC_arg::Loop(string which_MC_to_use) {
 		//order:keeps the order of the s_EventTopology array in params.	
 	
 	int nFiltered = 0;
-	TTree* filterTree = 0;
-	cout << "enableFilter is set to "<<enableFilter<<endl;
+//	TTree* filterTree = 0;
+//	cout << "enableFilter is set to "<<enableFilter<<endl;
 	//if (enableFilter){
 	//	enableFilter = false;
 	//	cout << "setting it to false"<<endl;
 	//}
 
         MCpoint* thisMCpoint = setupMCpoint(which_MC_to_use);
-	if(enableFilter) {
-		cout <<endl<< "Making Filter File"<< outroot_data<<endl<<endl;
-		TFile* filterFile = new TFile("MCskim_2JbML_mst210_mho_150.root","RECREATE");
-		//TFile* filterFile = new TFile(thisMCpoint->outroot_mc.c_str(),"RECREATE");
-		filterTree = (TTree*) fChain->GetTree()->CloneTree(0);
-		filterTree->SetAutoSave();
-	}
-	ofstream eventlist;	
+//	if(enableFilter) {
+//		cout <<endl<< "Making Filter File"<< outroot_data<<endl<<endl;
+//		TFile* filterFile = new TFile("MCskim_2JbML_mst210_mho_150.root","RECREATE");
+//		//TFile* filterFile = new TFile(thisMCpoint->outroot_mc.c_str(),"RECREATE");
+//		filterTree = (TTree*) fChain->GetTree()->CloneTree(0);
+//		filterTree->SetAutoSave();
+//	}
+	ofstream eventlist;
 	if(makeEventsList) eventlist.open ("trip_eventlist_SusyMain_MC.txt");
 	ofstream tmvaOut;	
 	if(makeTMVAlist) tmvaOut.open ("tmva_signal_MC.txt");
@@ -573,9 +574,13 @@ void SusyMainAna_MC_arg::Loop(string which_MC_to_use) {
 		"HLT_Photon26_CaloId10_Iso50_Photon18_R9Id85_Mass60",
 		"HLT_Photon36_R9Id85_OR_CaloId10_Iso50_Photon22_R9Id85_OR_CaloId10_Iso50"};
 
-	if(!useTrigger){
+	/*if(!useTrigger){
 		useTrigger = true;
 		cout<< endl<<"By some black magic, useTrigger is false, setting it to true"<<endl; 
+	}*/
+	if(useTrigger){
+		useTrigger = false;
+		cout<< endl<<"By some black magic, useTrigger is true, setting it to false"<<endl; 
 	}
 
 	if (!useTrigger) cout << endl << endl << "WARNING!! NOT USING THE TRIGGER!!!"<<endl<<endl<<endl;
@@ -721,11 +726,14 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		std::vector<susy::PFJet*>    pfBJetsTight;
 		std::vector<susy::PFJet*>    pfBJetsMedium;
 		std::vector<susy::PFJet*>    pfBJetsLoose;
+		std::vector<susy::PFJet*>    pfLFJetsLoose;
 		std::vector<susy::Vertex*>   good_vtx;
 //		std::vector<susy::Muon*>     ra3_muons;
 		std::vector<susy::Muon*>     Muons;//DM's collection
 		std::vector<susy::PFJet*>    ra3_pfjets;
-		std::vector<susy::Electron*>   pfEles;
+		//std::vector<susy::Electron*>   pfEles;
+		std::vector<susy::Electron*>   EGLooseEles;
+		std::vector<susy::Electron*>   vetoEles;
 //		std::vector<susy::Photon*>   tap_electrons;
 		//std::vector<susy::Track*>    tap_tracks;
 		//std::vector<susy::PFJet*>    ra3_pfjets_noid;
@@ -1059,7 +1067,7 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		gg = p0+p1;
 		float mgg = gg.M();//mass is fine
 		float ptgg = gg.Pt();//pt is fine
-		float mtgg = sqrt(gg.E()*gg.E() - gg.Perp2());
+//		float mtgg = sqrt(gg.E()*gg.E() - gg.Perp2());
 
 //		int ipho = 0;//loop over the first four photons.
 //		for(std::vector<susy::Photon*>::iterator it = loose_photons.begin();it != loose_photons.end() && ipho<2; it++) {
@@ -1149,8 +1157,9 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 			
 				if(pbMu && pl > 5) cout<<"looping over muon collection"<<endl;
 
-				susy::Track& innerTrack = event->tracks[it_Mu->trackIndex];
-				if(ok_muon_DMoris(it_Mu,innerTrack)){
+				//susy::Track& innerTrack = event->tracks[it_Mu->trackIndex];
+				susy::Track& innerTrack = event->tracks[it_Mu->combinedTrackIndex];
+				if(ok_muon_POG_Tight(it_Mu,innerTrack)){
 					Muons.push_back(&*it_Mu);
 					myLeptonST += (it_Mu)->momentum.Et();
 					//myMuSumET += (it_Mu)->momentum.Et();
@@ -1214,7 +1223,7 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
                                         //same_pho_object |= isSameObject(it_Ele->momentum,(*p_it)->momentum);//dR05 cut
                                         //same_pho_object |= (t_dR < 0.1 && !(*p_it)->passelectronveto);
 					//if it's a photon here it's already passed the passelectronveto so that'd never fire
-                                        same_pho_object |= t_dR < 0.1;
+                                        same_pho_object |= t_dR < 0.5;
 					
 
                                 }
@@ -1227,19 +1236,22 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 				selvar_ele_Phi->Fill(fabs(it_Ele->momentum.Phi()));
 				selvar_ele_relIso->Fill(relIso);
 
-				if(ok_ele(it_Ele)){
-					pfEles.push_back(&*it_Ele);
+				if(ok_ele_EGLoose(it_Ele,event->tracks[it_Ele->gsfTrackIndex], event->superClusters[it_Ele->superClusterIndex] )){
+					EGLooseEles.push_back(&*it_Ele);
 					myLeptonST += (it_Ele)->momentum.Et();
 					//myEleSumEt += (it_Ele)->momentum.Et();
 					vL += (it_Ele)->momentum;
 				}
+				if(ok_ele_EGVeto(it_Ele,event->tracks[it_Ele->gsfTrackIndex], event->superClusters[it_Ele->superClusterIndex] )){
+					vetoEles.push_back(&*it_Ele);
+				}
 			}//end it_Ele electron loop
-			std::sort(pfEles.begin(), pfEles.end(), EtGreater<susy::Electron>); //sort pfEles by Pt
-			if(pbEle && pl>=5)cout<<"pfEles size= "<<pfEles.size()<<endl;
+			std::sort(EGLooseEles.begin(), EGLooseEles.end(), EtGreater<susy::Electron>); //sort EGLooseEles by Pt
+			if(pbEle && pl>=5)cout<<"EGLooseEles size= "<<EGLooseEles.size()<<endl;
 		}//end eleMap
-		selvar_ele_nele->Fill(pfEles.size());
-		if(Muons.size()<2 && pfEles.size() >=2){
-			Mleplep = (pfEles[0]->momentum + pfEles[1]->momentum).M();
+		selvar_ele_nele->Fill(EGLooseEles.size());
+		if(Muons.size()<2 && EGLooseEles.size() >=2){
+			Mleplep = (EGLooseEles[0]->momentum + EGLooseEles[1]->momentum).M();
 		}
 
 			/////////////////////////////////////////////////////////////////
@@ -1254,7 +1266,6 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		float HT_all = 0;
 		float LHT_all = 0;//non-B hadronic scalar sum
 		float BT_all = 0;
-		//float Bness1 = 0;
 		//float SumCSV = 0;
 		float BT[3] = {0,0,0};//L,M,T
 		float MHT_all = 0;
@@ -1262,6 +1273,13 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		float MHT_y_all =0;
 		
 		if(pbJets && pl >= 4) std::cout << "Find pfJets in the event." << std::endl;
+
+			//my monsters
+		float BnBjets = 0;
+		float Bunjets = 0;
+		float BBt = 0;
+		float BuHT = 0;
+		int nLFjets = 0;
 		
 		std::map<TString,susy::PFJetCollection>::iterator pfJets_it = event->pfJets.find("ak5");
 		if(pfJets_it != event->pfJets.end()){
@@ -1322,7 +1340,7 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 				}
 				
 				bool same_emobject = false;
-				for(std::vector<susy::Electron*>::iterator m_it = pfEles.begin(); m_it != pfEles.end(); m_it++) { 
+				for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) { 
 					same_emobject |= isSameObject(corrP4,(*m_it)->momentum);
 				}
 
@@ -1338,13 +1356,22 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 					MHT_x_all -= corrP4.Px();
 					MHT_y_all -= corrP4.Py();	
 					//SumCSV+=it->bTagDiscriminators[5];
-					//Bness1+=pow(it->bTagDiscriminators[5],0.20);//could also use 0.25
 					if(it->bTagDiscriminators[5] > 0.244) BT_all += corrP4.Pt();//if CSVL, add to BT, this is the first and only time it's filled
-					else LHT_all += corrP4.Pt(); //light flavor tagged
+					else{
+						nLFjets++;
+						pfLFJetsLoose.push_back(&*it);
+						LHT_all += corrP4.Pt(); //light flavor tagged
+					}
 					
 					if(it->bTagDiscriminators[5] > 0.898) BT[2] += corrP4.Pt();//BT_tight
 					else if(it->bTagDiscriminators[5] > 0.679) BT[1] += corrP4.Pt();//BT_medium
 					else if(it->bTagDiscriminators[5] > 0.244) BT[0] += corrP4.Pt();//BT_loose
+
+					BnBjets += Bness(it->bTagDiscriminators[5]);
+					Bunjets += Beauty(it->bTagDiscriminators[5]);
+					BBt +=Bness(it->bTagDiscriminators[5])*corrP4.Pt();
+					BuHT +=Beauty(it->bTagDiscriminators[5])*corrP4.Pt();
+
 				}
 				
 			}// pfjet
@@ -1352,6 +1379,21 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		selvar_jet_njet->Fill(ra3_pfjets.size());
 		std::sort(ra3_pfjets.begin(),ra3_pfjets.end(),EtGreater<susy::PFJet>);
 		MHT_all = std::sqrt(MHT_x_all*MHT_x_all + MHT_y_all*MHT_y_all);
+
+		for(std::vector<susy::PFJet*>::iterator it = pfLFJetsLoose.begin();	it != pfLFJetsLoose.end(); it++) {
+
+		}
+
+		bool MllEWK = false;
+		int tempsize_LF= pfLFJetsLoose.size();
+		if(tempsize_LF >=2){
+			for(int i=0;i<tempsize_LF-1 && !MllEWK;i++){
+				for(int j=i+1; j<tempsize_LF && !MllEWK;j++){
+					float mmm = (pfLFJetsLoose[i]->momentum+pfLFJetsLoose[j]->momentum).M();
+					MllEWK |= mmm>70 && mmm<110;
+				}
+			}
+		}
 
 
 			/////////////////////////////////////////////////////////////////
@@ -1390,7 +1432,6 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 				tempJetInfo.push_back(BTagWeight::JetInfo(btageff[0], getSFbCSVL(jetPt) + getSFbErrorCSVL(jetPt)*bumpBtagEff));
 				tempJetInfo.push_back(BTagWeight::JetInfo(btageff[1], getSFbCSVM(jetPt) + getSFbErrorCSVM(jetPt)*bumpBtagEff));
 				tempJetInfo.push_back(BTagWeight::JetInfo(btageff[2], getSFbCSVT(jetPt) + getSFbErrorCSVT(jetPt)*bumpBtagEff));
-
 
 			
 				//printf("CSVL: eff %f, SFb %f, CSVM: eff %f, SFb %f, CSVT: eff %f, SFb %f\n",tempJetInfo[0].eff,tempJetInfo[0].sf,tempJetInfo[1].eff,tempJetInfo[1].sf,tempJetInfo[2].eff,tempJetInfo[2].sf);//asdf
@@ -1444,19 +1485,19 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 
 		if(pbBJets && pl >=5) std::cout << "Try to calculate bestMjj." << std::endl;
 		float bestMjj = -1;
-		int tempsize_1 = ra3_pfjets.size();
-		if(tempsize_1 >=2){
-			//for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it+1 != ra3_pfjets.end(); it++) 
-				//for(std::vector<susy::PFJet*>::iterator it2 = ra3_pfjets.begin()+1;        it != ra3_pfjets.end(); it++) 
-			for(int i=0;i<tempsize_1-1;i++){
-				for(int j=i+1; j<tempsize_1;j++){
+		int temp_nJets = ra3_pfjets.size();
+		if(temp_nJets >=2){
+			//for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it+1 != ra3_pfjets.end(); it++) {
+				//for(std::vector<susy::PFJet*>::iterator it2 = ra3_pfjets.begin()+1;        it != ra3_pfjets.end(); it++) {
+			for(int i=0;i<temp_nJets-1;i++){
+				for(int j=i+1; j<temp_nJets;j++){
 					float mmm = (ra3_pfjets[i]->momentum+ra3_pfjets[j]->momentum).M();
 					if(fabs(mmm-mHiggs) < fabs(bestMjj-mHiggs)) bestMjj = mmm;
 				}
 			}
 		}
 		if(pbBJets && pl >= 5) std::cout << "Try to calculate bestMbj." << std::endl;
-		float bestMbb = -1; 
+		float bestMbb = -1;
                 /*if(pfBJetsLoose.size() >=2){
                         for(std::vector<susy::PFJet*>::iterator it = pfBJetsLoose.begin(); it+1 != pfBJetsLoose.end(); it++) {
                                 for(std::vector<susy::PFJet*>::iterator it2 = pfBJetsLoose.begin()+1; it != pfBJetsLoose.end(); it++) {
@@ -1464,14 +1505,32 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
                                 }
                         }
                 } */ 
-		tempsize_1= pfBJetsLoose.size();
-		if(tempsize_1 >=2){
-                          for(int i=0;i<tempsize_1-1;i++){
-                                  for(int j=i+1; j<tempsize_1;j++){
+		int temp_nBJets= pfBJetsLoose.size();
+		if(temp_nBJets >=2){
+			for(int i=0;i<temp_nBJets-1;i++){
+				for(int j=i+1; j<temp_nBJets;j++){
 					if(fabs((pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M()-mHiggs) < fabs(bestMbb-mHiggs)) bestMbb = (pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M();
-                                  }
-                          }
-                  }
+				}
+			}
+		}
+		
+			//Find which jet is the most b-like
+		int Most_Blike_Jet_index = -1;
+		float maxCSV = -1;
+		for(int i=0;i<temp_nJets;i++){
+			if(ra3_pfjets[i]->bTagDiscriminators[5] > maxCSV){
+				maxCSV = ra3_pfjets[i]->bTagDiscriminators[5];
+				Most_Blike_Jet_index = i;
+			}
+		}
+		bool ProbeMJJ = false;//ProbeMJJ is true if highest CSV-jet plus one other jet makes a higgs.
+		if(temp_nJets >=2 && Most_Blike_Jet_index >= 0){
+			for(int i=0;i<temp_nJets && !ProbeMJJ;i++){
+				if (i == Most_Blike_Jet_index) continue;
+				float mmm = (ra3_pfjets[i]->momentum+ra3_pfjets[Most_Blike_Jet_index]->momentum).M();
+				ProbeMJJ |= (mmm > 110.0 && mmm < 140.0); //same window as bestMjj_is_H
+			}
+		}
 
 
 			//////////////////////// GET MET  ///////////////////////////
@@ -1538,40 +1597,40 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		//bool Pt0cut = p0.Pt()>mgg/3.0;
 		//bool Pt1cut = p1.Pt()>mgg/4.0;
 
-		float MTg0Met = sqrt(2* corrmet* p0.Pt() *( 1-cos(p0.Phi() - metPhi) ) );
-		float MTg1Met = sqrt(2* corrmet* p1.Pt() *( 1-cos(p1.Phi() - metPhi) ) );
+//		float MTg0Met = sqrt(2* corrmet* p0.Pt() *( 1-cos(p0.Phi() - metPhi) ) );
+//		float MTg1Met = sqrt(2* corrmet* p1.Pt() *( 1-cos(p1.Phi() - metPhi) ) );
 
 
 		float phodPhi = phi_0_2pi(dPhi(p0.Phi(),p1.Phi()));
-		float dPhiPho0Met = phi_0_2pi(dPhi(p0.Phi(),metPhi));
-		float dPhiPho1Met = phi_0_2pi(dPhi(metPhi,p1.Phi()));
+//		float dPhiPho0Met = phi_0_2pi(dPhi(p0.Phi(),metPhi));
+//		float dPhiPho1Met = phi_0_2pi(dPhi(metPhi,p1.Phi()));
 
 		//"MZllHgg","MTggMET","MTlepMET","HGt","HGt_prime","dPhiHG","dPhiHG_prime","HLMGt"
 		float MTggMET = sqrt(2* corrmet* gg.Pt() *( 1-cos(gg.Phi() - metPhi) ) );
-		float dPhiHG = phi_0_2pi(dPhi(gg.Phi(),vH.Phi()));
-		float dPhiHG_prime = phi_0_2pi(dPhi(gg.Phi(),(-vL-vMET-gg).Phi()));
-		float HLMGt = (vPho+vH+vMET+vL).Pt();
-                float HGt = HT_all+vPho.Pt();
-                float HGt_prime = corrmet + myLeptonST; 
+//		float dPhiHG = phi_0_2pi(dPhi(gg.Phi(),vH.Phi()));
+//		float dPhiHG_prime = phi_0_2pi(dPhi(gg.Phi(),(-vL-vMET-gg).Phi()));
+//		float HLMGt = (vPho+vH+vMET+vL).Pt();
+//                float HGt = HT_all+vPho.Pt();
+//                float HGt_prime = corrmet + myLeptonST; 
 		float MZllHgg = -1.0;
 		float MTlepMET = -1.0;
 		if(pbCuts && pl > 3) std::cout << "boo2" << std::endl;
 		if(Muons.size() >=1){
 			MTlepMET = sqrt(2* corrmet* Muons[0]->momentum.Pt() *( 1-cos(Muons[0]->momentum.Phi() - metPhi) ) );
 		}
-                else if(pfEles.size() >=1){
-			MTlepMET = sqrt(2* corrmet* pfEles[0]->momentum.Pt() *( 1-cos(pfEles[0]->momentum.Phi() - metPhi) ) );
+                else if(EGLooseEles.size() >=1){
+			MTlepMET = sqrt(2* corrmet* EGLooseEles[0]->momentum.Pt() *( 1-cos(EGLooseEles[0]->momentum.Phi() - metPhi) ) );
                 } 
                 if(Muons.size() >=2){
                         if(Mleplep>80 && Mleplep<100) MZllHgg = (Muons[0]->momentum + Muons[1]->momentum + gg).M();
                 }
-                else if(pfEles.size() >=2){
-                        if(Mleplep>80 && Mleplep<100) MZllHgg = (pfEles[0]->momentum + pfEles[1]->momentum + gg).M();
+                else if(EGLooseEles.size() >=2){
+                        if(Mleplep>80 && Mleplep<100) MZllHgg = (EGLooseEles[0]->momentum + EGLooseEles[1]->momentum + gg).M();
                 }
 		if(pbCuts && pl >=4) std::cout << "boo3" << std::endl;
 
 		
-
+		/*
 			//calculate cos(theta*), the angle between the two photons in their center of mass frame.
 		TLorentzVector csgg,  csp0, csp1;
 		csgg.SetXYZT(gg.X(),gg.Y(),gg.Z(),gg.T());
@@ -1600,6 +1659,7 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		//printf("p0prime: x %.2f y %.2f z %.2f \n",p0prime.Px(),p0prime.Py(),p0prime.Pz());
 		float cosTheta = fabs(p0prime * xhat)/p0prime.Mag();
 		//cosTheta now lives on 0,1. the -1 part is folded onto the 0,1 part. 
+		 */
 			/// **************************************************************** ///
 
 
@@ -1622,15 +1682,17 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		int nbM = (int)pfBJetsMedium.size();
 		int nbL = (int)pfBJetsLoose.size();
 		int nJ =  (int)ra3_pfjets.size();
-		int nLep = (int)Muons.size() + pfEles.size();
-		float MJJ01 = -1;
+
+		int nLep     = (int)Muons.size() + EGLooseEles.size();
+		int nLepveto = (int)Muons.size() + vetoEles.size();
+//		float MJJ01 = -1;
 		float Mbb01 = -1;
 		float MJJ01gg01 = -1;
 		float Mbb01gg01 = -1;
 		//bool jetdEta15 = false;
 		if(nJ >=2){
 			MJJ01gg01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum + gg).M();
-			MJJ01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum).M();
+//			MJJ01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum).M();
 			//jetdEta15 = fabs(ra3_pfjets[0]->momentum.Eta() - ra3_pfjets[1]->momentum.Eta()) < 1.5;
 		}
 		if(nbL >=2 ){
@@ -1641,12 +1703,12 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		bool bestMjj_is_H = bestMjj > 110.0 && bestMjj < 140.0;
 
 		//bool MJJ01_is_H = MJJ01 > 95.0 && MJJ01 < 155.0;
-		bool onePhoBar = is_bar(p0.Eta()) || is_bar(p1.Eta());
+//		bool onePhoBar = is_bar(p0.Eta()) || is_bar(p1.Eta());
 		//bool onePhoBar = is_bar((*p_photonVector)[0]->momentum.Eta()) || is_bar((*p_photonVector)[1]->momentum.Eta());
 		//bool twoPhoBar = is_bar((*p_photonVector)[0]->momentum.Eta()) && is_bar((*p_photonVector)[1]->momentum.Eta());
 		bool twoPhoBar = is_bar(p0.Eta()) && is_bar(p1.Eta());
 		
-		bool Tpho = 	
+/*		bool Tpho =
 			is_tight_2012(  p0.Et(),// (*p_photonVector)[0]->momentum.Et(),
 					(*p_photonVector)[0]->caloPosition.Eta(),
 					(*p_photonVector)[0]->chargedHadronIso,
@@ -1687,16 +1749,25 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 					(*p_photonVector)[1]->sigmaIetaIeta,
 					(*p_photonVector)[1]->sigmaIphiIphi,
 					(*p_photonVector)[1]->passelectronveto, //replaces pixel seed veto
-					event->rho25);
+					event->rho25);*/
+
+		float BMET = BnBjets*corrmet;
+		float BST = BnBjets*myST;
+		float BPtGG = BnBjets*ptgg;
+		float phoHness = higgsness(ptgg, phodPhi, TMath::Min((*p_photonVector)[0]->r9,(*p_photonVector)[1]->r9) , TMath::Max(fabs(p0.Eta()),fabs(p1.Eta())) );
+		
 
 			//Make Topology Cuts
 		std::map<string,BTagWeight*> m_BTagWeight;
 		//std::map<string,BTagWeight::BTagWeight> m_BTagWeight;
 		std::vector<int> bTagRequirement_NULL;
+		std::vector<int> bTagRequirement_L;
 		std::vector<int> bTagRequirement_M;
+		//std::vector<int> bTagRequirement_T;
 		std::vector<int> bTagRequirement_ML;
 		std::vector<int> bTagRequirement_MM;
 		std::vector<int> bTagRequirement_MLL;
+		std::vector<int> bTagRequirement_MML;
 		std::vector<int> bTagRequirement_MLLL;
 		std::vector<int> bTagRequirement_T;
 		std::vector<int> bTagRequirement_TL;
@@ -1704,10 +1775,13 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		std::vector<int> bTagRequirement_TT;
 		//Set #L's required
 		bTagRequirement_NULL.push_back(0);
+		bTagRequirement_L.push_back(1);
 		bTagRequirement_M.push_back(1);
+		//bTagRequirement_T.push_back(1);
 		bTagRequirement_ML.push_back(2);
 		bTagRequirement_MM.push_back(2);
 		bTagRequirement_MLL.push_back(3);
+		bTagRequirement_MML.push_back(3);
 		bTagRequirement_MLLL.push_back(4);
 		bTagRequirement_T.push_back(1);
 		bTagRequirement_TL.push_back(2);
@@ -1715,10 +1789,13 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		bTagRequirement_TT.push_back(2);
 		//Set #M's required
 		bTagRequirement_NULL.push_back(0);
+		bTagRequirement_L.push_back(0);
 		bTagRequirement_M.push_back(1);
+		//bTagRequirement_T.push_back(1);
 		bTagRequirement_ML.push_back(1);
 		bTagRequirement_MM.push_back(2);
 		bTagRequirement_MLL.push_back(1);
+		bTagRequirement_MML.push_back(2);
 		bTagRequirement_MLLL.push_back(1);
 		bTagRequirement_T.push_back(1);
 		bTagRequirement_TL.push_back(1);
@@ -1726,10 +1803,13 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		bTagRequirement_TT.push_back(2);
 		//Set #T's required
 		bTagRequirement_NULL.push_back(0);
+		bTagRequirement_L.push_back(0);
 		bTagRequirement_M.push_back(0);
+		//bTagRequirement_T.push_back(1);
 		bTagRequirement_ML.push_back(0);
 		bTagRequirement_MM.push_back(0);
 		bTagRequirement_MLL.push_back(0);
+		bTagRequirement_MML.push_back(0);
 		bTagRequirement_MLLL.push_back(0);
 		bTagRequirement_T.push_back(1);
 		bTagRequirement_TL.push_back(1);
@@ -1741,9 +1821,22 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		topoCut["NULL"] = 	    true;
 		//recall that's BTagWeight(nTaggers = #varieties of b-taggers, nJet req, b-tag req vector);
 		m_BTagWeight["NULL"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["gbar2"] =          twoPhoBar;
+		m_BTagWeight["gbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+
+                if ((*p_photonVector).size()>=4 ){
+                        float MVAcor0 = (*p_photonVector)[3]->MVAregEnergyAndErr.first/(*p_photonVector)[3]->momentum.E();
+                        if(  ((useMVAphoP?MVAcor0:1.0)*(*p_photonVector)[3]->momentum).Et() > 15.0) topoCut["4phogbar2"] = twoPhoBar;
+                        else topoCut["4phogbar2"] = false;
+                }
+                else topoCut["4phogbar2"] = false;
+		m_BTagWeight["4phogbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+
 		//topoCut["3J"] =     (int(ra3_pfjets.size()) >= 3);
 		//topoCut["2J"] =     (int(ra3_pfjets.size()) >= 2);
 //	topoCut["metCut"] = (corrmet > 20.0);
+                topoCut["m30"] = (corrmet > 30.0);
+		m_BTagWeight["m30"] = new BTagWeight(3,0,bTagRequirement_NULL);
 		/*topoCut["1Jb"] =    (int(ra3_pfjets.size()) >= 1) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["2Jb"] =    (int(ra3_pfjets.size()) >= 2) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["3Jb"] =    (int(ra3_pfjets.size()) >= 3) && (int(pfBJetsMedium.size()) >= 1);
@@ -1770,55 +1863,81 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		//m_BTagWeight["3JbMm20"] = new BTagWeight(3,3,bTagRequirement_M);
 		//topoCut["3JbTm20"] =     nJ >=3 && nbT >=1 && corrmet >20.0;
 		//m_BTagWeight["3JbTm20"] = new BTagWeight(3,3,bTagRequirement_T);
-		topoCut["2JbMLm20"] =    nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0;
-		m_BTagWeight["2JbMLm20"] = new BTagWeight(3,2,bTagRequirement_ML);
+//		topoCut["2JbMLm20"] =    nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0;
+//		m_BTagWeight["2JbMLm20"] = new BTagWeight(3,2,bTagRequirement_ML);
 		topoCut["2JbML"] =    nJ >=2 && nbL >=2 && nbM >=1;
 		m_BTagWeight["2JbML"] = new BTagWeight(3,2,bTagRequirement_ML);
                 topoCut["2JbMLgbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && twoPhoBar;
 		m_BTagWeight["2JbMLgbar2"] = new BTagWeight(3,2,bTagRequirement_ML);
+		topoCut["2JbMMgbar2"] =    nJ >=2 && nbM >=2 && twoPhoBar; //f
+		m_BTagWeight["2JbMMgbar2"] = new BTagWeight(3,2,bTagRequirement_MM);
 		//if(pl > 0) std::cout << "1boo5" << std::endl;
-		topoCut["2JbMLgbar1"] =    nJ >=2 && nbL >=2 && nbM >=1 && onePhoBar;
-		m_BTagWeight["2JbMLgbar1"] = new BTagWeight(3,2,bTagRequirement_ML);
-		topoCut["2JbMLm20gbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0 && twoPhoBar;
-		m_BTagWeight["2JbMLm20gbar2"] = new BTagWeight(3,2,bTagRequirement_ML);
+//		topoCut["2JbMLgbar1"] =    nJ >=2 && nbL >=2 && nbM >=1 && onePhoBar;
+		//m_BTagWeight["2JbMLgbar1"] = new BTagWeight(3,2,bTagRequirement_ML);
+//		topoCut["2JbMLm20gbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0 && twoPhoBar;
+		//m_BTagWeight["2JbMLm20gbar2"] = new BTagWeight(3,2,bTagRequirement_ML);
 		//bbin
+		std::vector<short> bTypeAtLeast;
+		bTypeAtLeast.push_back(0); // all >=
+		bTypeAtLeast.push_back(0);
+		bTypeAtLeast.push_back(0);
 		std::vector<short> bTypeExactLoose;
 		bTypeExactLoose.push_back(1);//Loose is exact
 		bTypeExactLoose.push_back(0);//medium is >=
 		bTypeExactLoose.push_back(0);//tight is >=
+		std::vector<short> bTypeExactMedium;
+		bTypeExactMedium.push_back(1);//Loose is exact
+		bTypeExactMedium.push_back(1);//medium is exact
+		bTypeExactMedium.push_back(0);//tight is >=
+		std::vector<short> b_veto;
+		b_veto.push_back(2);//Loose is <=
+		b_veto.push_back(2);//medium is <=
+		b_veto.push_back(2);//tight is <=
+		std::vector<short> bTypeExactTight;
+		bTypeExactTight.push_back(1);//all are exact
+		bTypeExactTight.push_back(1);
+		bTypeExactTight.push_back(1);
 		topoCut["2JbML!Gbar2Mbb"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar && Mbb01_is_H;
 		m_BTagWeight["2JbML!Gbar2Mbb"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
 		topoCut["2JbML!Gbar2Mbb!"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar && !Mbb01_is_H;
 		m_BTagWeight["2JbML!Gbar2Mbb!"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
-		topoCut["2JbML!Gbar2"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar;
-		m_BTagWeight["2JbML!Gbar2"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["2JbMM!Gbar2Mbb"] =    nJ >=2 && nbL ==2 && nbM ==2 && twoPhoBar && Mbb01_is_H;//f
+		m_BTagWeight["2JbMM!Gbar2Mbb"] = new BTagWeight(3,2,bTagRequirement_MM,bTypeExactLoose);
+
+		topoCut["2JbMM!Gbar2Mbb!"] =    nJ >=2 && nbL ==2 && nbM ==2 && twoPhoBar && !Mbb01_is_H;//f
+			m_BTagWeight["2JbMM!Gbar2Mbb!"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+
+
+
 
 		topoCut["3JbMLLGbar2"] =    nJ >=3 && nbL >=3 && nbM >=1 && twoPhoBar;
 		m_BTagWeight["3JbMLLGbar2"] = new BTagWeight(3,3,bTagRequirement_MLL);
+		topoCut["3JbMMLGbar2"] =    nJ >=3 && nbL >=3 && nbM >=2 && twoPhoBar;
+		m_BTagWeight["3JbMMLGbar2"] = new BTagWeight(3,3,bTagRequirement_MML);
 
-		topoCut["4JbMLLLGbar2"] =    nJ >=4 && nbL >=4 && nbM >=1 && twoPhoBar;
-		m_BTagWeight["4JbMLLLGbar2"] = new BTagWeight(3,4,bTagRequirement_MLLL);
+/*		topoCut["4JbMLLLGbar2"] =    nJ >=4 && nbL >=4 && nbM >=1 && twoPhoBar;
+//		m_BTagWeight["4JbMLLLGbar2"] = new BTagWeight(3,4,bTagRequirement_MLLL);
 
-		topoCut["2JbMLgbar2bestOn"] = nJ >= 2 && nbL >=2 && nbM >=1 && twoPhoBar && bestMjj_is_H;
-		m_BTagWeight["2JbMLgbar2bestOn"] = new BTagWeight(3,2,bTagRequirement_ML);
-		topoCut["2JbMLgbar2bestOff"] =nJ >= 2 && nbL >=2 && nbM >=1 && twoPhoBar && !bestMjj_is_H;
-		m_BTagWeight["2JbMLgbar2bestOff"] = new BTagWeight(3,2,bTagRequirement_ML);
+//		topoCut["2JbMLgbar2bestOn"] = nJ >= 2 && nbL >=2 && nbM >=1 && twoPhoBar && bestMjj_is_H;
+//		m_BTagWeight["2JbMLgbar2bestOn"] = new BTagWeight(3,2,bTagRequirement_ML);
+//		topoCut["2JbMLgbar2bestOff"] =nJ >= 2 && nbL >=2 && nbM >=1 && twoPhoBar && !bestMjj_is_H;
+//		m_BTagWeight["2JbMLgbar2bestOff"] = new BTagWeight(3,2,bTagRequirement_ML);
 
-		topoCut["2JbTLgbar2bestOn"] = nJ >= 2 && nbL >=2 && nbT >=1 && twoPhoBar && bestMjj_is_H;
-		m_BTagWeight["2JbTLgbar2bestOn"] = new BTagWeight(3,2,bTagRequirement_TL);
-		topoCut["2JbTLgbar2bestOff"] =nJ >= 2 && nbL >=2 && nbT >=1 && twoPhoBar && !bestMjj_is_H;
-		m_BTagWeight["2JbTLgbar2bestOff"] = new BTagWeight(3,2,bTagRequirement_TL);
+		//topoCut["2JbTLgbar2bestOn"] = nJ >= 2 && nbL >=2 && nbT >=1 && twoPhoBar && bestMjj_is_H;
+		//m_BTagWeight["2JbTLgbar2bestOn"] = new BTagWeight(3,2,bTagRequirement_TL);
+		//topoCut["2JbTLgbar2bestOff"] =nJ >= 2 && nbL >=2 && nbT >=1 && twoPhoBar && !bestMjj_is_H;
+		//m_BTagWeight["2JbTLgbar2bestOff"] = new BTagWeight(3,2,bTagRequirement_TL);
 		//topoCut["2JbMLm20gbar1jdn15"] =nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0 && onePhoBar && jetdEta15;
 		//topoCut["2JbMLm20gbar2n15"] =  nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0 && twoPhoBar && jetdEta15;
 		//float dijetPt01 = -1;
 		//if(nJ >=2) dijetPt01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum).Pt();
-		/*topoCut["2JbMLm20cs1"] = nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0 && 
-			fabs(p0.Eta())<2 && fabs(p1.Eta())<2 && 
-			(bestMjj<10 || (bestMjj>80 && bestMjj < 170)) &&
-			dR(p0,p1) < 3.3 &&
-			dijetPt01 > 20;*/
+//		topoCut["2JbMLm20cs1"] = nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0 && 
+//			fabs(p0.Eta())<2 && fabs(p1.Eta())<2 && 
+//			(bestMjj<10 || (bestMjj>80 && bestMjj < 170)) &&
+//			dR(p0,p1) < 3.3 &&
+//			dijetPt01 > 20;
 		//topoCut["4JbMm20"] =    nJ >=4 && nbL >=1 && nbM >=1 && corrmet >20.0;
 		//if(pl > 0) std::cout << "2boo5" << std::endl;
 		//topoCut["4JbMm20gbar1"] =    nJ >=4 && nbL >=1 && nbM >=1 && corrmet >20.0 && onePhoBar;
@@ -1843,70 +1962,130 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		//m_BTagWeight["2JbTLm20"] = new BTagWeight(3,2,bTagRequirement_TL);
 		//topoCut["2JbTLm20gbar1"] =    nJ >=2 && nbL >=2 && nbT >=1 && corrmet >20.0 && onePhoBar;
 		//m_BTagWeight["2JbTLm20gbar1"] = new BTagWeight(3,2,bTagRequirement_TL);
-		topoCut["2JbTLgbar2"] =    nJ >=2 && nbL >=2 && nbT >=1 && twoPhoBar;
-		m_BTagWeight["2JbTLgbar2"] = new BTagWeight(3,2,bTagRequirement_TL);
+//		topoCut["2JbTLgbar2"] =    nJ >=2 && nbL >=2 && nbT >=1 && twoPhoBar;
+		//m_BTagWeight["2JbTLgbar2"] = new BTagWeight(3,2,bTagRequirement_TL);
 
 
-		topoCut["2JbTgbar2"] =    nJ >=2 && nbT >=1 && twoPhoBar;
-		m_BTagWeight["2JbTgbar2"] = new BTagWeight(3,2,bTagRequirement_T);
-		topoCut["2JbTMgbar2"] =    nJ >=2 && nbM >=2 && nbT >=1 && twoPhoBar;
-		m_BTagWeight["2JbTMgbar2"] = new BTagWeight(3,2,bTagRequirement_TM);
-		topoCut["2JbMMgbar2"] =    nJ >=2 && nbM >=2 && twoPhoBar;
-		m_BTagWeight["2JbMMgbar2"] = new BTagWeight(3,2,bTagRequirement_MM);
-		topoCut["2JbTTgbar2"] =    nJ >=2 && nbT >=2 && twoPhoBar;
-		m_BTagWeight["2JbTTgbar2"] = new BTagWeight(3,2,bTagRequirement_TT);
+		//topoCut["2JbTgbar2"] =    nJ >=2 && nbT >=1 && twoPhoBar;
+		//m_BTagWeight["2JbTgbar2"] = new BTagWeight(3,2,bTagRequirement_T);
+		//topoCut["2JbTMgbar2"] =    nJ >=2 && nbM >=2 && nbT >=1 && twoPhoBar;
+		//m_BTagWeight["2JbTMgbar2"] = new BTagWeight(3,2,bTagRequirement_TM);
+		//topoCut["2JbMMgbar2"] =    nJ >=2 && nbM >=2 && twoPhoBar;
+		//m_BTagWeight["2JbMMgbar2"] = new BTagWeight(3,2,bTagRequirement_MM);
+		//topoCut["2JbTTgbar2"] =    nJ >=2 && nbT >=2 && twoPhoBar;
+		//m_BTagWeight["2JbTTgbar2"] = new BTagWeight(3,2,bTagRequirement_TT);
 
 
 
-		topoCut["2JbTLgbar2Tpho"] =    nJ >=2 && nbL >=2 && nbT >=1 && twoPhoBar && Tpho;
-		m_BTagWeight["2JbTLgbar2Tpho"] = new BTagWeight(3,2,bTagRequirement_TL);
-		topoCut["2JbTLgbar2Mpho"] =    nJ >=2 && nbL >=2 && nbT >=1 && twoPhoBar && Mpho;
-		m_BTagWeight["2JbTLgbar2Mpho"] = new BTagWeight(3,2,bTagRequirement_TL);
+		//topoCut["2JbTLgbar2Tpho"] =    nJ >=2 && nbL >=2 && nbT >=1 && twoPhoBar && Tpho;
+//		m_BTagWeight["2JbTLgbar2Tpho"] = new BTagWeight(3,2,bTagRequirement_TL);
+//		topoCut["2JbTLgbar2Mpho"] =    nJ >=2 && nbL >=2 && nbT >=1 && twoPhoBar && Mpho;
+//		m_BTagWeight["2JbTLgbar2Mpho"] = new BTagWeight(3,2,bTagRequirement_TL);
 
 		//topoCut["4JbTm20"] =     nJ >=4 && nbT >=1 && corrmet >20.0;
 		//topoCut["4JbTLm20"] =    nJ >=4 && nbL >=2 && nbT >=1 && corrmet >20.0;
 		//m_BTagWeight["4JbTLm20"] = new BTagWeight(3,4,bTagRequirement_TL);
-		/*topoCut["4JbTLLm20"] =   nJ >=4 && nbL >=3 && nbT >=1 && corrmet >20.0;
-		topoCut["4JbTLLLm20"] =  nJ >=4 && nbL >=4 && nbT >=1 && corrmet >20.0;*/
+//		topoCut["4JbTLLm20"] =   nJ >=4 && nbL >=3 && nbT >=1 && corrmet >20.0;
+//		topoCut["4JbTLLLm20"] =  nJ >=4 && nbL >=4 && nbT >=1 && corrmet >20.0;
 		//topoCut["2JHjj"] =  nJ >=2 && 			     MJJ01 > 90 && MJJ01 < 180;
 		//topoCut["2JHjjgbar1"] =  nJ >=2 && 		     MJJ01 > 90 && MJJ01 < 180 && onePhoBar;
 		//if(pl > 0) std::cout << "4boo5" << std::endl;
 		//topoCut["2JHjjgbar2"] =  nJ >=2 && 		     MJJ01 > 90 && MJJ01 < 180 && twoPhoBar;
 		//topoCut["2JHjjgbar1jdn15"] =  nJ >=2 && 	     MJJ01 > 90 && MJJ01 < 180 && onePhoBar && jetdEta15;
 		//topoCut["2JHjjgbar2jdn15"] =  nJ >=2 && 	     MJJ01 > 90 && MJJ01 < 180 && twoPhoBar && jetdEta15;
-		//topoCut["2JHbM"] = nJ >=2 /*&& nbL >= 2*/ && nbM >=1 && Mbb01 > 90 && Mbb01 < 180;
+		//topoCut["2JHbM"] = nJ >=2 && nbM >=1 && Mbb01 > 90 && Mbb01 < 180;
 
 		//topoCut["0!lep"] = nLep == 0;
-                //m_BTagWeight["0!lep"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		//topoCut["1!lep"] = nLep == 1;
-                //m_BTagWeight["1!lep"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		topoCut["1lep"] = nLep >= 1;
-        m_BTagWeight["1lep"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		topoCut["2lep"] = nLep >= 2;
-        m_BTagWeight["2lep"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		//topoCut["3lep"] = nLep >= 2;
-                //m_BTagWeight["3lep"] = new BTagWeight(3,0,bTagRequirement_NULL);
+                //m_BTagWeight["0!lep"] = new BTagWeight(3,0,bTagRequirement_NULL);*/
+		topoCut["1!lepgbar2"] = nLep == 1 && twoPhoBar;//f
+                m_BTagWeight["1!lepgbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["1lepgbar2"] = nLep >= 1 && twoPhoBar;//f
+		m_BTagWeight["1lepgbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["2lepgbar2"] = nLep >= 2 && twoPhoBar;//f
+		m_BTagWeight["2lepgbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["3lepgbar2"] = nLep >= 3 && twoPhoBar;//f
+                m_BTagWeight["3lepgbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+
+
+
 		//if(pl > 0) std::cout << "5boo5" << std::endl;
-		//topoCut["2lepZ"] = nLep >= 2 && Mleplep > 80 && Mleplep<100; 
-                //m_BTagWeight["2lepZ"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		//topoCut["1Mu"] = Muons.size() >=1;
-                //m_BTagWeight["1Mu"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		//topoCut["1Ele1Mu"] = Muons.size() >= 1 && pfEles.size() >= 1;
+		topoCut["2!lepZgbar2"] = nLep == 2 && Mleplep > 80 && Mleplep<100 && twoPhoBar;//f
+                m_BTagWeight["2!lepZgbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["1Mugbar2"] = Muons.size() >=1 && twoPhoBar;//f
+                m_BTagWeight["1Mugbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["1Elegbar2"] = EGLooseEles.size() >=1 && twoPhoBar;//f
+                m_BTagWeight["1Elegbar2"] = new BTagWeight(3,0,bTagRequirement_NULL);
+/*		//topoCut["1Ele1Mu"] = Muons.size() >= 1 && EGLooseEles.size() >= 1;
                 //m_BTagWeight["1Ele1Mu"] = new BTagWeight(3,0,bTagRequirement_NULL);
 		//topoCut["2JbML"] = nJ >=2 && nbL >= 2 && nbM >=1;
 		//topoCut["2JbM"] = nJ >=2 && nbM >=1;
                 //m_BTagWeight["Tpho"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		topoCut["2JbMLgbar2Tpho"] = Tpho && topoCut["2JbMLgbar2"];
-		m_BTagWeight["2JbMLgbar2Tpho"] = new BTagWeight(3,2,bTagRequirement_ML);
-		topoCut["2JbMLgbar2Mpho"] = Mpho && topoCut["2JbMLgbar2"];
-		m_BTagWeight["2JbMLgbar2Mpho"] = new BTagWeight(3,2,bTagRequirement_ML);
+//		topoCut["2JbMLgbar2Tpho"] = Tpho && topoCut["2JbMLgbar2"];
+		//m_BTagWeight["2JbMLgbar2Tpho"] = new BTagWeight(3,2,bTagRequirement_ML);
+//		topoCut["2JbMLgbar2Mpho"] = Mpho && topoCut["2JbMLgbar2"];
+		//m_BTagWeight["2JbMLgbar2Mpho"] = new BTagWeight(3,2,bTagRequirement_ML);
 		//topoCut["1lepTpho"] = Tpho &&  topoCut["1lep"];
                 //m_BTagWeight["1lepTpho"] = new BTagWeight(3,0,bTagRequirement_NULL);
 		//topoCut["2lepTpho"] = Tpho &&  topoCut["2lep"];
                 //m_BTagWeight["2lepTpho"] = new BTagWeight(3,0,bTagRequirement_NULL);
-		//if(topoCut["2lep"]) cout<<"ok, pass cut"<<endl;
+		//if(topoCut["2lep"]) cout<<"ok, pass cut"<<endl;*/
 
 		if(pbCuts && pl > 3) std::cout << "boo5" << std::endl;
+		topoCut["23JbML!gbar2Mbb0lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
+                m_BTagWeight["23JbML!gbar2Mbb0lep"] = new BTagWeight(3,2,3,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["2JbML!gbar2Mbb0lep"]  = nJ>=2           && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
+                m_BTagWeight["2JbML!gbar2Mbb0lep"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["23JbML!gbar2Mbb01lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;
+                m_BTagWeight["23JbML!gbar2Mbb01lep"] = new BTagWeight(3,2,3,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["2JbML!gbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H; 
+                m_BTagWeight["2JbML!gbar2Mbb01lep"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+
+		topoCut["2lJgbar2"] = nLFjets >=2 && twoPhoBar; //there's no point in this existing.
+		        m_BTagWeight["2lJgbar2"] = new BTagWeight(3,2,99,2,99,bTagRequirement_NULL, bTypeAtLeast);
+		topoCut["2lJewkMllgbar2"]= nLFjets >=2 && twoPhoBar && MllEWK;
+		        m_BTagWeight["2lJewkMllgbar2"] = new BTagWeight(3,2,99,2,99,bTagRequirement_NULL, bTypeAtLeast);
+		topoCut["23lJewkMllgbar2"]= nLFjets >=2 && nLFjets <=3 && twoPhoBar && MllEWK;
+		        m_BTagWeight["23lJewkMllgbar2"] = new BTagWeight(3,2,99,2,3,bTagRequirement_NULL, bTypeAtLeast);
+
+		topoCut["2JbML!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && bestMjj_is_H;
+                m_BTagWeight["2JbML!gbar2bestOn"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["2JbML!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && !bestMjj_is_H;
+                m_BTagWeight["2JbML!gbar2bestOff"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["2JbMM!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && bestMjj_is_H;
+                m_BTagWeight["2JbMM!gbar2bestOn"] = new BTagWeight(3,2,bTagRequirement_MM,bTypeExactMedium);
+		topoCut["2JbMM!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && !bestMjj_is_H;
+                m_BTagWeight["2JbMM!gbar2bestOff"] = new BTagWeight(3,2,bTagRequirement_MM,bTypeExactMedium);
+
+
+		//topoCut["2JbT!gbar2ProbeMJJ"]=nJ>=2 && nbT >= 1 && twoPhoBar && ProbeMJJ ;
+		topoCut["2JbT!gbar2ProbeMJJ"]=nJ>=2 && nbT == 1 && twoPhoBar && ProbeMJJ && nbL < 2 && nLepveto ==0; 
+		        m_BTagWeight["2JbT!gbar2ProbeMJJ"] = new BTagWeight(3,2,bTagRequirement_T,bTypeExactTight);//at most 1 b-jet
+
+		topoCut["23Jb01MewkMll0lepgbar2"]= nJ>=2 && nJ <=3 && MllEWK && nLepveto == 0 && twoPhoBar && nbL <=1 && nbT<=0; //for WH and ZH
+		        m_BTagWeight["23Jb01MewkMll0lepgbar2"] = new BTagWeight(3,2,3,2,99, bTagRequirement_M, b_veto);//at most 1 M b-jet
+
+		topoCut["0lep25Jb01MewkMllgbar2"] = nJ>=2 && nJ <=5 && MllEWK && twoPhoBar && nLepveto == 0 && nbL <=1 && nbT<=0;
+			m_BTagWeight["0lep25Jb01MewkMllgbar2"] = new BTagWeight(3,2,5,2,99, bTagRequirement_M, b_veto);//xxxy
+
+		topoCut["1!lep23Jb01MewkMllgbar2"] = nJ>=2 && nJ <=3 && MllEWK && twoPhoBar && nLep == 1 && nbL <=1 && nbT<=0;
+			m_BTagWeight["1!lep23Jb01MewkMllgbar2"] = new BTagWeight(3,2,3,2,99, bTagRequirement_M, b_veto);//xxxy
+
+		topoCut["1!lep23Jb01M!ewkMllgbar2"]= nJ>=2 && nJ <=3 && (!MllEWK) && twoPhoBar && nLep == 1 && nbL <=1 && nbT<=0; //for WWbins and ZZbins
+		        m_BTagWeight["1!lep23Jb01M!ewkMllgbar2"] = new BTagWeight(3,2,3, bTagRequirement_M, b_veto);//xxxy
+
+
+		topoCut["2JbM2lepgbar2"] = nJ>=2 && nbM >=1 && twoPhoBar && nLep >=2;
+                m_BTagWeight["2JbM2lepgbar2"] = new BTagWeight(3,2,bTagRequirement_M);
+		topoCut["2JbML!1lepgbar2"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLep ==1;
+                m_BTagWeight["2JbML!1lepgbar2"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["2JbML!gbar2bestOn0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto ==0 && bestMjj_is_H;
+                m_BTagWeight["2JbML!gbar2bestOn0lep"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["4JbML!gbar2ewkMllbestOff0lep"]=nJ>=4 && nbL ==2 && nbM >=1 && MllEWK && twoPhoBar && (!bestMjj_is_H) && nLepveto==0;
+		        m_BTagWeight["4JbML!gbar2ewkMllbestOff0lep"] = new BTagWeight(3,4,99,2,99,bTagRequirement_ML, bTypeExactLoose);
+		topoCut["2JbML!gbar2bothOff0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto ==0 && (!bestMjj_is_H) && !topoCut["4JbML!gbar2ewkMllbestOff0lep"];
+                m_BTagWeight["2JbML!gbar2bothOff0lep"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		topoCut["01J0lep0Bgbar2"] = nJ <=1 && nbL ==0 && nLepveto == 0 && twoPhoBar;
+                m_BTagWeight["01J0lep0Bgbar2"] = new BTagWeight(3,0,1,bTagRequirement_NULL,b_veto);
 		/*if(enableFilter && (nJ >=2 && nbL >=2 && nbM >=1) ) { //this makes the special little skim for Yuri
                         nFiltered++;
                         Counters["number filtered"]++;
@@ -1926,26 +2105,35 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
                                 //corrmet > f_EventTopology_metCuts[iTopo]) 
 					//distrobutions of physics-good quantities.
 				lh_mGG_unsliced[s_EventTopology[iTopo]]->Fill(mgg,weight);
-
 				lh_unsliced[s_EventTopology[iTopo]]["MET"]->Fill(corrmet,weight);
+				lh_unsliced[s_EventTopology[iTopo]]["BMET"]->Fill(BMET,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["ST"]->Fill(myST,weight);//pfmet->sumEt);
+				lh_unsliced[s_EventTopology[iTopo]]["BST"]->Fill(BST,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["HT"]->Fill(HT_all,weight);
+				lh_unsliced[s_EventTopology[iTopo]]["BuHT"]->Fill(BuHT,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["LHT"]->Fill(LHT_all,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["Bt"]->Fill(BT_all,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["BTL"]->Fill(BT[0],weight);
-				lh_unsliced[s_EventTopology[iTopo]]["BTM"]->Fill(BT[1],weight);
-				lh_unsliced[s_EventTopology[iTopo]]["BTT"]->Fill(BT[2],weight);
-				//lh_unsliced[s_EventTopology[iTopo]]["Bness1"]->Fill(Bness1,weight);
+				lh_unsliced[s_EventTopology[iTopo]]["BBt"]->Fill(BBt,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["BTL"]->Fill(BT[0],weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["BTM"]->Fill(BT[1],weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["BTT"]->Fill(BT[2],weight);
+
 				lh_unsliced[s_EventTopology[iTopo]]["MHT"]->Fill(MHT_all,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["LepT"]->Fill(myLeptonST,weight);
-
-				lh_unsliced[s_EventTopology[iTopo]]["HGt"]->Fill(HGt,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["HGt_prime"]->Fill(HGt_prime,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["dPhiHG"]->Fill(dPhiHG,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["dPhiHG_prime"]->Fill(dPhiHG_prime,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["HLMGt"]->Fill(HLMGt,weight);
-
+				for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+					lh_unsliced[s_EventTopology[iTopo]]["LepPt"]->Fill((*m_it)->momentum.Et(),weight);
+				}
+				for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+					lh_unsliced[s_EventTopology[iTopo]]["LepPt"]->Fill((*m_it)->momentum.Et(),weight);
+				}
+//				lh_unsliced[s_EventTopology[iTopo]]["HGt"]->Fill(HGt,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["HGt_prime"]->Fill(HGt_prime,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["dPhiHG"]->Fill(dPhiHG,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["dPhiHG_prime"]->Fill(dPhiHG_prime,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["HLMGt"]->Fill(HLMGt,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["PtGG"]->Fill(ptgg,weight);
+				lh_unsliced[s_EventTopology[iTopo]]["BPtGG"]->Fill(BPtGG,weight);
+				lh_unsliced[s_EventTopology[iTopo]]["phoHness"]->Fill(phoHness,weight);
 				//lh_unsliced[s_EventTopology[iTopo]]["PhiGG"]->Fill(phi_0_2pi(gg.Phi()),weight);
 				//lh_unsliced[s_EventTopology[iTopo]]["EtaGG"]->Fill(gg.Eta(),weight);
 				lh_unsliced[s_EventTopology[iTopo]]["phoPt0"]->Fill(p0.Pt(),weight);
@@ -1955,13 +2143,17 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 				lh_unsliced[s_EventTopology[iTopo]]["phoEta"]->Fill(p0.Eta(),weight);
 				lh_unsliced[s_EventTopology[iTopo]]["phoEta"]->Fill(p1.Eta(),weight);
 				lh_unsliced[s_EventTopology[iTopo]]["phoEtaMax"]->Fill(TMath::Max(fabs(p0.Eta()),fabs(p1.Eta())),weight);
-				lh_unsliced[s_EventTopology[iTopo]]["phoEtaMin"]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["phoEtaMin"]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
 				lh_unsliced[s_EventTopology[iTopo]]["phoMinR9"]->Fill(TMath::Min((*p_photonVector)[0]->r9,(*p_photonVector)[1]->r9),weight);
 				lh_unsliced[s_EventTopology[iTopo]]["phoDEta"]->Fill(fabs(p0.Eta()-p1.Eta()),weight);
 				lh_unsliced[s_EventTopology[iTopo]]["nJets"]->Fill((float)ra3_pfjets.size(),weight);
+				lh_unsliced[s_EventTopology[iTopo]]["nLFjets"]->Fill((float)nLFjets,weight);
+				lh_unsliced[s_EventTopology[iTopo]]["Bunjets"]->Fill((float)Bunjets,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["nBjets"]->Fill((float)pfBJetsLoose.size(),weight);//CHANGE ME!! TO CSVL
+				lh_unsliced[s_EventTopology[iTopo]]["BnBjets"]->Fill((float)BnBjets,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["bestMbb"]->Fill(bestMbb,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["bestMjj"]->Fill(bestMjj,weight);
+				
 				{int tempsize = ra3_pfjets.size();
 				for(int i=0;i<tempsize-1;i++){
 					for(int j=i+1; j<tempsize;j++){
@@ -1971,17 +2163,17 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 					for(int j=i+1; j<tempsize;j++){
 						lh_unsliced[s_EventTopology[iTopo]]["allMjj"]->Fill((pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M(),weight); } }
 				}
-				lh_unsliced[s_EventTopology[iTopo]]["nLep"]->Fill((float)Muons.size() + pfEles.size(),weight);
+				lh_unsliced[s_EventTopology[iTopo]]["nLep"]->Fill((float)Muons.size() + EGLooseEles.size(),weight);
 				lh_unsliced[s_EventTopology[iTopo]]["nMu"]->Fill((float)Muons.size(),weight);
-				lh_unsliced[s_EventTopology[iTopo]]["nEle"]->Fill((float)pfEles.size(),weight);
-				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg0Met,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg1Met,weight);
+				lh_unsliced[s_EventTopology[iTopo]]["nEle"]->Fill((float)EGLooseEles.size(),weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg0Met,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg1Met,weight);
 				lh_unsliced[s_EventTopology[iTopo]]["MTggMET"]->Fill(MTggMET,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["cosThetaStar"]->Fill(cosTheta,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["cosThetaStar"]->Fill(cosTheta,weight);
 
 				lh_unsliced[s_EventTopology[iTopo]]["phoDPhi"]->Fill(phodPhi,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["dPhiPhoMet"]->Fill(dPhiPho0Met,weight);
-				lh_unsliced[s_EventTopology[iTopo]]["dPhiPhoMet"]->Fill(dPhiPho1Met,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["dPhiPhoMet"]->Fill(dPhiPho0Met,weight);
+//				lh_unsliced[s_EventTopology[iTopo]]["dPhiPhoMet"]->Fill(dPhiPho1Met,weight);
 
 				//lh_unsliced[s_EventTopology[iTopo]]["PitGG"]->Fill(ptgg/mgg,weight);
 				if(nLep >=1 ) lh_unsliced[s_EventTopology[iTopo]]["MTlepMET"]->Fill(MTlepMET,weight);
@@ -2001,9 +2193,9 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 					TLorentzVector j0 = ra3_pfjets[0]->momentum;
 					TLorentzVector j1 = ra3_pfjets[1]->momentum;
 					TLorentzVector jj = j0+j1;
-					lh_unsliced[s_EventTopology[iTopo]]["dijetDEta01"]->Fill(fabs(j0.Eta() - j1.Eta()),weight);//
+//					lh_unsliced[s_EventTopology[iTopo]]["dijetDEta01"]->Fill(fabs(j0.Eta() - j1.Eta()),weight);//
 					//lh_unsliced[s_EventTopology[iTopo]]["dijetEta01"]->Fill((j0+j1).Eta() ,weight);//
-					lh_unsliced[s_EventTopology[iTopo]]["dijetDPhi01"]->Fill(dPhi(j0,j1),weight);//
+//					lh_unsliced[s_EventTopology[iTopo]]["dijetDPhi01"]->Fill(dPhi(j0,j1),weight);//
 					//lh_unsliced[s_EventTopology[iTopo]]["dijetDR01"]->Fill(dR(j0,j1),weight);//
 					lh_unsliced[s_EventTopology[iTopo]]["dijetM01"]->Fill(jj.M(),weight);//
 					lh_unsliced[s_EventTopology[iTopo]]["dijetPt01"]->Fill(jj.Pt(),weight);//
@@ -2022,27 +2214,39 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 
 				if(passmass){
 					if (mgg > lsb_lb && mgg < lsb_ub) { // lower side band
+						if(pbFill && pl >=5) std::cout << "LSB" << std::endl;
 						Counters[string("are in sb region")+s_forTopo[iTopo]]++;
 						Counters[string("are in lsb region")+s_forTopo[iTopo]]++;
 
 						lha2[s_EventTopology[iTopo]]["MET"][0]->Fill(corrmet,weight);
+						lha2[s_EventTopology[iTopo]]["BMET"][0]->Fill(BMET,weight);
 						lha2[s_EventTopology[iTopo]]["ST"][0]->Fill(myST,weight);
+						lha2[s_EventTopology[iTopo]]["BST"][0]->Fill(BST,weight);
 						lha2[s_EventTopology[iTopo]]["HT"][0]->Fill(HT_all,weight);
+						lha2[s_EventTopology[iTopo]]["BuHT"][0]->Fill(BuHT,weight);
 						lha2[s_EventTopology[iTopo]]["LHT"][0]->Fill(LHT_all,weight);
 						lha2[s_EventTopology[iTopo]]["Bt"][0]->Fill(BT_all,weight);
-						lha2[s_EventTopology[iTopo]]["BTL"][0]->Fill(BT[0],weight);
-						lha2[s_EventTopology[iTopo]]["BTM"][0]->Fill(BT[1],weight);
-						lha2[s_EventTopology[iTopo]]["BTT"][0]->Fill(BT[2],weight);
-						//lha2[s_EventTopology[iTopo]]["Bness1"][0]->Fill(Bness1,weight);
+						lha2[s_EventTopology[iTopo]]["BBt"][0]->Fill(BBt,weight);
+//						lha2[s_EventTopology[iTopo]]["BTL"][0]->Fill(BT[0],weight);
+//						lha2[s_EventTopology[iTopo]]["BTM"][0]->Fill(BT[1],weight);
+//						lha2[s_EventTopology[iTopo]]["BTT"][0]->Fill(BT[2],weight);
 						lha2[s_EventTopology[iTopo]]["MHT"][0]->Fill(MHT_all,weight);
 						lha2[s_EventTopology[iTopo]]["LepT"][0]->Fill(myLeptonST,weight);
-						lha2[s_EventTopology[iTopo]]["HGt"][0]->Fill(HGt,weight);
-						lha2[s_EventTopology[iTopo]]["HGt_prime"][0]->Fill(HGt_prime,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiHG"][0]->Fill(dPhiHG,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][0]->Fill(dPhiHG_prime,weight);
-						lha2[s_EventTopology[iTopo]]["HLMGt"][0]->Fill(HLMGt,weight);
+						for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+							lha2[s_EventTopology[iTopo]]["LepPt"][0]->Fill((*m_it)->momentum.Et(),weight);
+						}
+						for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+							lha2[s_EventTopology[iTopo]]["LepPt"][0]->Fill((*m_it)->momentum.Et(),weight);
+						}
+//						lha2[s_EventTopology[iTopo]]["HGt"][0]->Fill(HGt,weight);
+//						lha2[s_EventTopology[iTopo]]["HGt_prime"][0]->Fill(HGt_prime,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiHG"][0]->Fill(dPhiHG,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][0]->Fill(dPhiHG_prime,weight);
+//						lha2[s_EventTopology[iTopo]]["HLMGt"][0]->Fill(HLMGt,weight);
 
 						lha2[s_EventTopology[iTopo]]["PtGG"][0]->Fill(ptgg,weight);
+						lha2[s_EventTopology[iTopo]]["BPtGG"][0]->Fill(BPtGG,weight);
+						lha2[s_EventTopology[iTopo]]["phoHness"][0]->Fill(phoHness,weight);
 						//lha2[s_EventTopology[iTopo]]["PhiGG"][0]->Fill(phi_0_2pi(gg.Phi()),weight);
 						//lha2[s_EventTopology[iTopo]]["EtaGG"][0]->Fill(gg.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoPt0"][0]->Fill(p0.Pt(),weight);
@@ -2052,11 +2256,14 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						lha2[s_EventTopology[iTopo]]["phoEta"][0]->Fill(p0.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoEta"][0]->Fill(p1.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoEtaMax"][0]->Fill(TMath::Max(fabs(p0.Eta()),fabs(p1.Eta())),weight);
-						lha2[s_EventTopology[iTopo]]["phoEtaMin"][0]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
+//						lha2[s_EventTopology[iTopo]]["phoEtaMin"][0]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
 						lha2[s_EventTopology[iTopo]]["phoMinR9"][0]->Fill(TMath::Min((*p_photonVector)[0]->r9,(*p_photonVector)[1]->r9),weight);
 						lha2[s_EventTopology[iTopo]]["phoDEta"][0]->Fill(fabs(p0.Eta()-p1.Eta()),weight);
 						lha2[s_EventTopology[iTopo]]["nJets"][0]->Fill((float)ra3_pfjets.size(),weight);
+						lha2[s_EventTopology[iTopo]]["nLFjets"][0]->Fill((float)nLFjets,weight);
+						lha2[s_EventTopology[iTopo]]["Bunjets"][0]->Fill((float)Bunjets,weight);
 						lha2[s_EventTopology[iTopo]]["nBjets"][0]->Fill((float)pfBJetsLoose.size(),weight);
+						lha2[s_EventTopology[iTopo]]["BnBjets"][0]->Fill((float)BnBjets,weight);
 						lha2[s_EventTopology[iTopo]]["bestMbb"][0]->Fill(bestMbb,weight);
 						lha2[s_EventTopology[iTopo]]["bestMjj"][0]->Fill(bestMjj,weight);
 						{int tempsize = ra3_pfjets.size();
@@ -2070,20 +2277,20 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						}
 						lha2[s_EventTopology[iTopo]]["nLep"][0]->Fill((float)nLep,weight);
 						lha2[s_EventTopology[iTopo]]["nMu"][0]->Fill((float)Muons.size(),weight);
-						lha2[s_EventTopology[iTopo]]["nEle"][0]->Fill((float)pfEles.size(),weight);
+						lha2[s_EventTopology[iTopo]]["nEle"][0]->Fill((float)EGLooseEles.size(),weight);
 						if(nLep >=1 ) lha2[s_EventTopology[iTopo]]["MTlepMET"][0]->Fill(MTlepMET,weight);
 						if(nLep >=2 ){ 
 							lha2[s_EventTopology[iTopo]]["Mleplep"][0]->Fill(Mleplep,weight);
 							lha2[s_EventTopology[iTopo]]["MZllHgg"][0]->Fill(MZllHgg,weight);
 						}
-						lha2[s_EventTopology[iTopo]]["MTphoMET"][0]->Fill(MTg0Met,weight);
-						lha2[s_EventTopology[iTopo]]["MTphoMET"][0]->Fill(MTg1Met,weight);
+//						lha2[s_EventTopology[iTopo]]["MTphoMET"][0]->Fill(MTg0Met,weight);
+//						lha2[s_EventTopology[iTopo]]["MTphoMET"][0]->Fill(MTg1Met,weight);
 						lha2[s_EventTopology[iTopo]]["MTggMET"][0]->Fill(MTggMET,weight);
-						lha2[s_EventTopology[iTopo]]["cosThetaStar"][0]->Fill(cosTheta,weight);
+//						lha2[s_EventTopology[iTopo]]["cosThetaStar"][0]->Fill(cosTheta,weight);
 
 						lha2[s_EventTopology[iTopo]]["phoDPhi"][0]->Fill(phodPhi,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][0]->Fill(dPhiPho0Met,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][0]->Fill(dPhiPho1Met,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][0]->Fill(dPhiPho0Met,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][0]->Fill(dPhiPho1Met,weight);
 
 						//lha2[s_EventTopology[iTopo]]["PitGG"][0]->Fill(ptgg/mgg,weight);
 						for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it != ra3_pfjets.end(); it++) {
@@ -2096,9 +2303,9 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 							TLorentzVector j0 = ra3_pfjets[0]->momentum;
 							TLorentzVector j1 = ra3_pfjets[1]->momentum;
 							TLorentzVector jj = j0+j1;
-							lha2[s_EventTopology[iTopo]]["dijetDEta01"][0]->Fill(fabs(j0.Eta() - j1.Eta()),weight);
+//							lha2[s_EventTopology[iTopo]]["dijetDEta01"][0]->Fill(fabs(j0.Eta() - j1.Eta()),weight);
 							//lha2[s_EventTopology[iTopo]]["dijetEta01"][0]->Fill((j0+j1).Eta() ,weight);
-                                                        lha2[s_EventTopology[iTopo]]["dijetDPhi01"][0]->Fill(dPhi(j0,j1),weight);//
+//                                                        lha2[s_EventTopology[iTopo]]["dijetDPhi01"][0]->Fill(dPhi(j0,j1),weight);//
                                                         //lha2[s_EventTopology[iTopo]]["dijetDR01"][0]->Fill(dR(j0,j1),weight);//
 							lha2[s_EventTopology[iTopo]]["dijetM01"][0]->Fill(jj.M(),weight);
 							lha2[s_EventTopology[iTopo]]["dijetPt01"][0]->Fill(jj.Pt(),weight);
@@ -2114,6 +2321,7 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						lsb_int->SetBinContent(iTopo,lsb_int->GetBinContent(iTopo)+1); //increment
 					}
 					else if(mgg > tag_lb && mgg < tag_ub){ //tag region
+						if(pbFill && pl >=5) std::cout << "tag " << std::endl;
 						/*if(enableFilter && s_EventTopology[iTopo] == "2JbMLm20") {
                                                         nFiltered++;
                                                         Counters["number filtered"]++;
@@ -2141,9 +2349,9 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
                                                                   (int)ra3_pfjets.size()<<" "<<
                                                                   (int)pfBJetsLoose.size()<<" "<<//CHANGE ME!! TO CSVL
                                                                   bestMjj<<" "<<
-                                                                  (int)Muons.size() + pfEles.size()<<" "<<
+                                                                  (int)Muons.size() + EGLooseEles.size()<<" "<<
                                                                   (int)Muons.size()<<" "<<
-                                                                  (int)pfEles.size()<<" "<<
+                                                                  (int)EGLooseEles.size()<<" "<<
                                                                   Mleplep<<" "<<
                                                                   MTg0Met<<" "<<
                                                                   MTg1Met<<" "<<
@@ -2162,22 +2370,34 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						Counters[string("are in tag region")+s_forTopo[iTopo]]++;
 //						lha_MET[s_EventTopology[iTopo]][1]->Fill(corrmet,weight);
 						lha2[s_EventTopology[iTopo]]["MET"][1]->Fill(corrmet,weight);
+						lha2[s_EventTopology[iTopo]]["BMET"][1]->Fill(BMET,weight);
 						lha2[s_EventTopology[iTopo]]["ST"][1]->Fill(myST,weight);
+						lha2[s_EventTopology[iTopo]]["BST"][1]->Fill(BST,weight);
 						lha2[s_EventTopology[iTopo]]["HT"][1]->Fill(HT_all,weight);
+						lha2[s_EventTopology[iTopo]]["BuHT"][1]->Fill(BuHT,weight);
 						lha2[s_EventTopology[iTopo]]["LHT"][1]->Fill(LHT_all,weight);
 						lha2[s_EventTopology[iTopo]]["Bt"][1]->Fill(BT_all,weight);
-                                                lha2[s_EventTopology[iTopo]]["BTL"][1]->Fill(BT[0],weight);
-                                                lha2[s_EventTopology[iTopo]]["BTM"][1]->Fill(BT[1],weight);
-                                                lha2[s_EventTopology[iTopo]]["BTT"][1]->Fill(BT[2],weight);
-						//lha2[s_EventTopology[iTopo]]["Bness1"][1]->Fill(Bness1,weight);
+						lha2[s_EventTopology[iTopo]]["BBt"][1]->Fill(BBt,weight);
+//                                                lha2[s_EventTopology[iTopo]]["BTL"][1]->Fill(BT[0],weight);
+//                                                lha2[s_EventTopology[iTopo]]["BTM"][1]->Fill(BT[1],weight);
+//                                                lha2[s_EventTopology[iTopo]]["BTT"][1]->Fill(BT[2],weight);
+
 						lha2[s_EventTopology[iTopo]]["MHT"][1]->Fill(MHT_all,weight);
 						lha2[s_EventTopology[iTopo]]["LepT"][1]->Fill(myLeptonST,weight);
-						lha2[s_EventTopology[iTopo]]["HGt"][1]->Fill(HGt,weight);
-						lha2[s_EventTopology[iTopo]]["HGt_prime"][1]->Fill(HGt_prime,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiHG"][1]->Fill(dPhiHG,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][1]->Fill(dPhiHG_prime,weight);
-						lha2[s_EventTopology[iTopo]]["HLMGt"][1]->Fill(HLMGt,weight);
+						for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+							lha2[s_EventTopology[iTopo]]["LepPt"][1]->Fill((*m_it)->momentum.Et(),weight);
+						}
+						for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+							lha2[s_EventTopology[iTopo]]["LepPt"][1]->Fill((*m_it)->momentum.Et(),weight);
+						}
+//						lha2[s_EventTopology[iTopo]]["HGt"][1]->Fill(HGt,weight);
+//						lha2[s_EventTopology[iTopo]]["HGt_prime"][1]->Fill(HGt_prime,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiHG"][1]->Fill(dPhiHG,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][1]->Fill(dPhiHG_prime,weight);
+//						lha2[s_EventTopology[iTopo]]["HLMGt"][1]->Fill(HLMGt,weight);
 						lha2[s_EventTopology[iTopo]]["PtGG"][1]->Fill(ptgg,weight);
+						lha2[s_EventTopology[iTopo]]["BPtGG"][1]->Fill(BPtGG,weight);
+						lha2[s_EventTopology[iTopo]]["phoHness"][1]->Fill(phoHness,weight);
 						//lha2[s_EventTopology[iTopo]]["PhiGG"][1]->Fill(phi_0_2pi(gg.Phi()),weight);
 						//lha2[s_EventTopology[iTopo]]["EtaGG"][1]->Fill(gg.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoPt0"][1]->Fill(p0.Pt(),weight);
@@ -2187,13 +2407,17 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						lha2[s_EventTopology[iTopo]]["phoEta"][1]->Fill(p0.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoEta"][1]->Fill(p1.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoEtaMax"][1]->Fill(TMath::Max(fabs(p0.Eta()),fabs(p1.Eta())),weight);
-						lha2[s_EventTopology[iTopo]]["phoEtaMin"][1]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
+//						lha2[s_EventTopology[iTopo]]["phoEtaMin"][1]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
 						lha2[s_EventTopology[iTopo]]["phoMinR9"][1]->Fill(TMath::Min((*p_photonVector)[0]->r9,(*p_photonVector)[1]->r9),weight);
 						lha2[s_EventTopology[iTopo]]["phoDEta"][1]->Fill(fabs(p0.Eta()-p1.Eta()),weight);
 						lha2[s_EventTopology[iTopo]]["nJets"][1]->Fill((float)ra3_pfjets.size(),weight);
+						lha2[s_EventTopology[iTopo]]["nLFjets"][1]->Fill((float)nLFjets,weight);
+						lha2[s_EventTopology[iTopo]]["Bunjets"][1]->Fill((float)Bunjets,weight);
 						lha2[s_EventTopology[iTopo]]["nBjets"][1]->Fill((float)pfBJetsLoose.size(),weight);
+						lha2[s_EventTopology[iTopo]]["BnBjets"][1]->Fill((float)BnBjets,weight);
 						lha2[s_EventTopology[iTopo]]["bestMbb"][1]->Fill(bestMbb,weight);
 						lha2[s_EventTopology[iTopo]]["bestMjj"][1]->Fill(bestMjj,weight);
+
 						{int tempsize = ra3_pfjets.size();
 						for(int i=0;i<tempsize-1;i++){
 							for(int j=i+1; j<tempsize;j++){
@@ -2205,20 +2429,20 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						}
 						lha2[s_EventTopology[iTopo]]["nLep"][1]->Fill((float)nLep,weight);
 						lha2[s_EventTopology[iTopo]]["nMu"][1]->Fill((float)Muons.size(),weight);
-						lha2[s_EventTopology[iTopo]]["nEle"][1]->Fill((float)pfEles.size(),weight);
+						lha2[s_EventTopology[iTopo]]["nEle"][1]->Fill((float)EGLooseEles.size(),weight);
 						if(nLep >=1 ) lha2[s_EventTopology[iTopo]]["MTlepMET"][1]->Fill(MTlepMET,weight);
 						if(nLep >=2 ){
 							lha2[s_EventTopology[iTopo]]["Mleplep"][1]->Fill(Mleplep,weight);
 							lha2[s_EventTopology[iTopo]]["MZllHgg"][1]->Fill(MZllHgg,weight);
 						}
-						lha2[s_EventTopology[iTopo]]["MTphoMET"][1]->Fill(MTg0Met,weight);
-						lha2[s_EventTopology[iTopo]]["MTphoMET"][1]->Fill(MTg1Met,weight);
+//						lha2[s_EventTopology[iTopo]]["MTphoMET"][1]->Fill(MTg0Met,weight);
+//						lha2[s_EventTopology[iTopo]]["MTphoMET"][1]->Fill(MTg1Met,weight);
 						lha2[s_EventTopology[iTopo]]["MTggMET"][1]->Fill(MTggMET,weight);
-						lha2[s_EventTopology[iTopo]]["cosThetaStar"][1]->Fill(cosTheta,weight);
+//						lha2[s_EventTopology[iTopo]]["cosThetaStar"][1]->Fill(cosTheta,weight);
 
 						lha2[s_EventTopology[iTopo]]["phoDPhi"][1]->Fill(phodPhi,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][1]->Fill(dPhiPho0Met,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][1]->Fill(dPhiPho1Met,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][1]->Fill(dPhiPho0Met,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][1]->Fill(dPhiPho1Met,weight);
 
 						//lha2[s_EventTopology[iTopo]]["PitGG"][1]->Fill(ptgg/mgg,weight);
 						for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it != ra3_pfjets.end(); it++) {
@@ -2231,9 +2455,9 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 							TLorentzVector j0 = ra3_pfjets[0]->momentum;
 							TLorentzVector j1 = ra3_pfjets[1]->momentum;
 							TLorentzVector jj = j0+j1;
-							lha2[s_EventTopology[iTopo]]["dijetDEta01"][1]->Fill(fabs(j0.Eta() - j1.Eta()),weight);
+//							lha2[s_EventTopology[iTopo]]["dijetDEta01"][1]->Fill(fabs(j0.Eta() - j1.Eta()),weight);
 							//lha2[s_EventTopology[iTopo]]["dijetEta01"][1]->Fill((j0+j1).Eta() ,weight);
-                                                        lha2[s_EventTopology[iTopo]]["dijetDPhi01"][1]->Fill(dPhi(j0,j1),weight);//
+//                                                        lha2[s_EventTopology[iTopo]]["dijetDPhi01"][1]->Fill(dPhi(j0,j1),weight);//
                                                         //lha2[s_EventTopology[iTopo]]["dijetDR01"][1]->Fill(dR(j0,j1),weight);//
 							lha2[s_EventTopology[iTopo]]["dijetM01"][1]->Fill(jj.M(),weight);
 							lha2[s_EventTopology[iTopo]]["dijetPt01"][1]->Fill(jj.Pt(),weight);
@@ -2247,26 +2471,39 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						
 					}
 					else if(mgg > usb_lb && mgg < usb_ub){ // upper side band
+						if(pbFill && pl >=5) std::cout << "usb " << std::endl;
 						Counters[string("are in sb region")+s_forTopo[iTopo]]++;
 						Counters[string("are in usb region")+s_forTopo[iTopo]]++;
 
 						lha2[s_EventTopology[iTopo]]["MET"][2]->Fill(corrmet,weight);
+						lha2[s_EventTopology[iTopo]]["BMET"][2]->Fill(BMET,weight);
 						lha2[s_EventTopology[iTopo]]["ST"][2]->Fill(myST,weight);
+						lha2[s_EventTopology[iTopo]]["BST"][2]->Fill(BST,weight);
 						lha2[s_EventTopology[iTopo]]["HT"][2]->Fill(HT_all,weight);
+						lha2[s_EventTopology[iTopo]]["BuHT"][2]->Fill(BuHT,weight);
 						lha2[s_EventTopology[iTopo]]["LHT"][2]->Fill(LHT_all,weight);
 						lha2[s_EventTopology[iTopo]]["Bt"][2]->Fill(BT_all,weight);
-                                                lha2[s_EventTopology[iTopo]]["BTL"][2]->Fill(BT[0],weight);
-                                                lha2[s_EventTopology[iTopo]]["BTM"][2]->Fill(BT[1],weight);
-                                                lha2[s_EventTopology[iTopo]]["BTT"][2]->Fill(BT[2],weight);
-						//lha2[s_EventTopology[iTopo]]["Bness1"][2]->Fill(Bness1,weight);
+						lha2[s_EventTopology[iTopo]]["BBt"][2]->Fill(BBt,weight);
+//                                                lha2[s_EventTopology[iTopo]]["BTL"][2]->Fill(BT[0],weight);
+//                                                lha2[s_EventTopology[iTopo]]["BTM"][2]->Fill(BT[1],weight);
+//                                                lha2[s_EventTopology[iTopo]]["BTT"][2]->Fill(BT[2],weight);
 						lha2[s_EventTopology[iTopo]]["MHT"][2]->Fill(MHT_all,weight);
 						lha2[s_EventTopology[iTopo]]["LepT"][2]->Fill(myLeptonST,weight);
-                                                lha2[s_EventTopology[iTopo]]["HGt"][2]->Fill(HGt,weight);
-                                                lha2[s_EventTopology[iTopo]]["HGt_prime"][2]->Fill(HGt_prime,weight);
-                                                lha2[s_EventTopology[iTopo]]["dPhiHG"][2]->Fill(dPhiHG,weight);
-                                                lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][2]->Fill(dPhiHG_prime,weight);
-                                                lha2[s_EventTopology[iTopo]]["HLMGt"][2]->Fill(HLMGt,weight);
+						for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+							lha2[s_EventTopology[iTopo]]["LepPt"][2]->Fill((*m_it)->momentum.Et(),weight);
+						}
+						for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+							lha2[s_EventTopology[iTopo]]["LepPt"][2]->Fill((*m_it)->momentum.Et(),weight);
+						}
+//                                                lha2[s_EventTopology[iTopo]]["HGt"][2]->Fill(HGt,weight);
+//                                                lha2[s_EventTopology[iTopo]]["HGt_prime"][2]->Fill(HGt_prime,weight);
+//                                               lha2[s_EventTopology[iTopo]]["dPhiHG"][2]->Fill(dPhiHG,weight);
+//                                                lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][2]->Fill(dPhiHG_prime,weight);
+//                                                lha2[s_EventTopology[iTopo]]["HLMGt"][2]->Fill(HLMGt,weight);
 						lha2[s_EventTopology[iTopo]]["PtGG"][2]->Fill(ptgg,weight);
+
+						lha2[s_EventTopology[iTopo]]["BPtGG"][2]->Fill(BPtGG,weight);
+						lha2[s_EventTopology[iTopo]]["phoHness"][2]->Fill(phoHness,weight);
 						//lha2[s_EventTopology[iTopo]]["PhiGG"][2]->Fill(phi_0_2pi(gg.Phi()),weight);
 						//lha2[s_EventTopology[iTopo]]["EtaGG"][2]->Fill(gg.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoPt0"][2]->Fill(p0.Pt(),weight);
@@ -2276,13 +2513,17 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						lha2[s_EventTopology[iTopo]]["phoEta"][2]->Fill(p0.Eta(),weight);
 						lha2[s_EventTopology[iTopo]]["phoEta"][2]->Fill(p1.Eta(),weight);
                                                 lha2[s_EventTopology[iTopo]]["phoEtaMax"][2]->Fill(TMath::Max(fabs(p0.Eta()),fabs(p1.Eta())),weight);
-                                                lha2[s_EventTopology[iTopo]]["phoEtaMin"][2]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
+//                                                lha2[s_EventTopology[iTopo]]["phoEtaMin"][2]->Fill(TMath::Min(fabs(p0.Eta()),fabs(p1.Eta())),weight);
 						lha2[s_EventTopology[iTopo]]["phoMinR9"][2]->Fill(TMath::Min((*p_photonVector)[0]->r9,(*p_photonVector)[1]->r9),weight);
 						lha2[s_EventTopology[iTopo]]["phoDEta"][2]->Fill(fabs(p0.Eta()-p1.Eta()),weight);
 						lha2[s_EventTopology[iTopo]]["nJets"][2]->Fill((float)ra3_pfjets.size(),weight);
+						lha2[s_EventTopology[iTopo]]["nLFjets"][2]->Fill((float)nLFjets,weight);
+						lha2[s_EventTopology[iTopo]]["Bunjets"][2]->Fill((float)Bunjets,weight);
 						lha2[s_EventTopology[iTopo]]["nBjets"][2]->Fill((float)pfBJetsLoose.size(),weight);
+						lha2[s_EventTopology[iTopo]]["BnBjets"][2]->Fill((float)BnBjets,weight);
 						lha2[s_EventTopology[iTopo]]["bestMbb"][2]->Fill(bestMbb,weight);
 						lha2[s_EventTopology[iTopo]]["bestMjj"][2]->Fill(bestMjj,weight);
+
 						{int tempsize = ra3_pfjets.size();
 						for(int i=0;i<tempsize-1;i++){
 							for(int j=i+1; j<tempsize;j++){
@@ -2294,21 +2535,21 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						}
 						lha2[s_EventTopology[iTopo]]["nLep"][2]->Fill((float)nLep,weight);
 						lha2[s_EventTopology[iTopo]]["nMu"][2]->Fill((float)Muons.size(),weight);
-						lha2[s_EventTopology[iTopo]]["nEle"][2]->Fill((float)pfEles.size(),weight);
+						lha2[s_EventTopology[iTopo]]["nEle"][2]->Fill((float)EGLooseEles.size(),weight);
                                                 if(nLep >=1 ) lha2[s_EventTopology[iTopo]]["MTlepMET"][2]->Fill(MTlepMET,weight);
                                                 if(nLep >=2 ){
                                                         lha2[s_EventTopology[iTopo]]["Mleplep"][2]->Fill(Mleplep,weight);
                                                         lha2[s_EventTopology[iTopo]]["MZllHgg"][2]->Fill(MZllHgg,weight);
                                                 }
-						lha2[s_EventTopology[iTopo]]["MTphoMET"][2]->Fill(MTg0Met,weight);
-						lha2[s_EventTopology[iTopo]]["MTphoMET"][2]->Fill(MTg1Met,weight);
+//						lha2[s_EventTopology[iTopo]]["MTphoMET"][2]->Fill(MTg0Met,weight);
+//						lha2[s_EventTopology[iTopo]]["MTphoMET"][2]->Fill(MTg1Met,weight);
 						lha2[s_EventTopology[iTopo]]["MTggMET"][2]->Fill(MTggMET,weight);
-						lha2[s_EventTopology[iTopo]]["cosThetaStar"][2]->Fill(cosTheta,weight);
+//						lha2[s_EventTopology[iTopo]]["cosThetaStar"][2]->Fill(cosTheta,weight);
 
 						lha2[s_EventTopology[iTopo]]["phoDPhi"][2]->Fill(phodPhi,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][2]->Fill(dPhiPho0Met,weight);
-						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][2]->Fill(dPhiPho1Met,weight);
-						
+//						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][2]->Fill(dPhiPho0Met,weight);
+//						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][2]->Fill(dPhiPho1Met,weight);
+
 						//lha2[s_EventTopology[iTopo]]["PitGG"][2]->Fill(ptgg/mgg,weight);
 						for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it != ra3_pfjets.end(); it++) {
 							lha2[s_EventTopology[iTopo]]["jetPt"][2]->Fill((*it)->momentum.Pt(),weight);
@@ -2320,9 +2561,9 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 							TLorentzVector j0 = ra3_pfjets[0]->momentum;
 							TLorentzVector j1 = ra3_pfjets[1]->momentum;
 							TLorentzVector jj = j0+j1;
-							lha2[s_EventTopology[iTopo]]["dijetDEta01"][2]->Fill(fabs(j0.Eta() - j1.Eta()),weight);
+//							lha2[s_EventTopology[iTopo]]["dijetDEta01"][2]->Fill(fabs(j0.Eta() - j1.Eta()),weight);
 							//lha2[s_EventTopology[iTopo]]["dijetEta01"][2]->Fill((j0+j1).Eta() ,weight);
-							lha2[s_EventTopology[iTopo]]["dijetDPhi01"][2]->Fill(dPhi(j0,j1),weight);//
+//							lha2[s_EventTopology[iTopo]]["dijetDPhi01"][2]->Fill(dPhi(j0,j1),weight);//
 							//lha2[s_EventTopology[iTopo]]["dijetDR01"][2]->Fill(dR(j0,j1),weight);//
 							lha2[s_EventTopology[iTopo]]["dijetM01"][2]->Fill(jj.M(),weight);
 							lha2[s_EventTopology[iTopo]]["dijetPt01"][2]->Fill(jj.Pt(),weight);
@@ -2337,9 +2578,12 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 						usb_int->SetBinContent(iTopo,usb_int->GetBinContent(iTopo)+1); //increment 
 					}
 				}//end if passmass
+				if(pbFill && pl >=6) std::cout << "end pass mass" << std::endl;
 
 			}//end Topology Cut. 
+			if(pbFill && pl >=5) std::cout << "end topo cut" << std::endl;
 		}//for every topo
+		if(pbFill && pl >=4) std::cout << "end topo loop" << std::endl;
 
 	} // for every jentry
 
@@ -2477,11 +2721,11 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 	fout->Close();
 	if(pbFinisUp && pl >=5) cout<<"wrote and closed fout, do enable filter"<<endl;
 	
-	if(enableFilter) {
-		filterTree->GetCurrentFile()->cd();
-		filterTree->GetCurrentFile()->Write();
-		filterTree->GetCurrentFile()->Close();
-	}//end if filter enabled
+//	if(enableFilter) {
+//		filterTree->GetCurrentFile()->cd();
+//		filterTree->GetCurrentFile()->Write();
+//		filterTree->GetCurrentFile()->Close();
+//	}//end if filter enabled
 	if(pbFinisUp && pl >=5) cout<<"did filter, do tmvaout"<<endl;
 	if(makeTMVAlist) tmvaOut.close();
 	if(pbFinisUp && pl >=5) cout<<"did tmvaout, do eventlist"<<endl;
@@ -2542,7 +2786,7 @@ bool SusyMainAna_MC_arg::ok_muon_AN_11_409(std::vector<susy::Muon>::iterator it,
 	else return true;
 }//end ok_muon_AN_11_409
 
-	//use this one!
+	//this is what you used before July 16, 2013
 bool SusyMainAna_MC_arg::ok_muon_DMoris(std::vector<susy::Muon>::iterator it_Mu,susy::Track& innerTrack){
 	if(!it_Mu->isGlobalMuon()) return false; //Brian Francis agrees
 	if(!it_Mu->isPFMuon()) return false; //Brian Francis agrees
@@ -2563,7 +2807,7 @@ bool SusyMainAna_MC_arg::ok_muon_DMoris(std::vector<susy::Muon>::iterator it_Mu,
 	if(pt < 15) return false; //Brian Francis agrees
 	if(eta > 2.6) return false;  // the TDR says the muon system ends at |eta| < 2.4 
 	if(chi2OverNdof > 10)return false; 
-	if(numberOfValidMuonHits<=0)return false; //Brian Francis agrees
+	if(numberOfValidMuonHits<=0) return false; //Brian Francis agrees
 	if(std::fabs(d0) > 0.2) return false; //Brian Francis agrees
 	if(std::fabs(dZ) > 0.5) return false; //Brian Francis agrees
 	if(numberOfValidPixelHits<=0)return false; //Brian Francis agrees
@@ -2577,7 +2821,38 @@ bool SusyMainAna_MC_arg::ok_muon_DMoris(std::vector<susy::Muon>::iterator it_Mu,
 		//id from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
 }//end ok_muon_DMoris
 
-	//use this one!
+//use this one
+bool SusyMainAna_MC_arg::ok_muon_POG_Tight(std::vector<susy::Muon>::iterator it_Mu,susy::Track& innerTrack){
+	//this is meant to be an implentation of the Muon POG tight muon ID
+	//see here: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Tight_Muon
+	//cout<<"muon n valid hits, "<<(int) it_Mu->nValidMuonHits<<" track n valid hits "<<(int) innerTrack.numberOfValidMuonHits<<endl; //debug
+	if(!it_Mu->isGlobalMuon()) return false;  //
+	if(!it_Mu->isPFMuon()) return false;  //
+	if(it_Mu->momentum.Pt() < 15) return false; //
+	if(it_Mu->momentum.Eta() > 2.4) return false;  
+	if(innerTrack.numberOfValidPixelHits <= 0) return false; //
+	if(innerTrack.normChi2() >= 10) return false; //
+/*
+	//for d0 and dZ David is again calculating the primary Vertex himself. 
+    TVector3 trackVtx = innerTrack.vertex;
+    float dxy = (-(trackVtx.X() - primVtx.position.X())*innerTrack.momentum.Py()+(trackVtx.Y() - primVtx.position.Y())*innerTrack.momentum.Px())/innerTrack.momentum.Pt();
+    float d0=(-1)*dxy;
+
+    float dZ = innerTrack.dz()-primVtx.position.Z();
+    float dZraw=innerTrack.dz();
+*/
+	if(fabs(innerTrack.d0()) > 0.2) return false; //
+	if(fabs(innerTrack.dz()) > 0.5) return false; //
+	if(it_Mu->nMatchedStations <= 1) return false; //
+	if(it_Mu->nValidMuonHits<=0) return false;  //
+	//if(innerTrack.numberOfValidMuonHits <=0) return false;  // maybe use this instead??
+	if(it_Mu->nStripLayersWithMeasurement <= 5) return false; //
+	float combIsoPF=( it_Mu->sumChargedHadronPt04 + std::max(0.,it_Mu->sumNeutralHadronEt04+it_Mu->sumPhotonEt04-0.5*it_Mu->sumPUPt04) );
+	if(combIsoPF > 0.12) return false; //ok
+	return true;	
+}//end ok_muon_POG_Tight
+
+	//my previous ele definition before 13 July 2013
 bool SusyMainAna_MC_arg::ok_ele(std::vector<susy::Electron>::iterator it_Ele){	//Dave Moris
 	if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;
 	float Iso=it_Ele->chargedHadronIso + it_Ele->neutralHadronIso + it_Ele->photonIso;
@@ -2587,6 +2862,93 @@ bool SusyMainAna_MC_arg::ok_ele(std::vector<susy::Electron>::iterator it_Ele){	/
 	if(Iso/pt>0.2) return false;
 	return true;
 }
+
+//use this one for selecting ele
+bool SusyMainAna_MC_arg::ok_ele_EGLoose(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC ){	//new as of July 16, 2013
+	//access track using it_Ele->gsfTrackIndex
+	//access supercluster using it_Ele->superClusterIndex
+	//similar to VBTF 90 wp 
+	//see the Loose definition here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
+	float scEta = fabs(eleSC.position.PseudoRapidity());
+	//these had better match
+	//if(fabs(scEta - it_Ele->momentum.Eta() ) > 0.0001){
+		//printf("ele SCEta %f\n", scEta); //debug
+		//printf("ele 4-vec Eta %f\n", it_Ele->momentum.Eta() );//debug
+	//}
+	//printf("ele track Eta at sc %f\n", gsf_track.extrapolatedPositions["AtCalo"].PseudoRapidity() ); //debug
+
+	if(it_Ele->momentum.Pt()<15) return false;
+	if( fabs(gsf_track.d0()) >= 0.02 ) return false; //d0
+	if( fabs(gsf_track.dz()) >= 0.2 ) return false; //dz
+/*
+	David is calculating these manually with a manual selection of the pv.
+    TVector3 trackVtx = gsfTrack.vertex;
+    float dxy = (-(trackVtx.X() - primVtx.position.X())*gsfTrack.momentum.Py()+(trackVtx.Y() - primVtx.position.Y())*gsfTrack.momentum.Px())/gsfTrack.momentum.Pt();
+    float d0=(-1)*dxy;
+    float dZ=gsfTrack.dz()-primVtx.position.Z();
+*/
+	if ( fabs((1.0/it_Ele->ecalEnergy) - 1.0/( it_Ele->trackMomentums["AtVtx"].P())) > 0.05 ) return false; //1/E - 1/P
+
+	float Iso=it_Ele->chargedHadronIso + it_Ele->neutralHadronIso + it_Ele->photonIso;
+	if(scEta>1.4442 && scEta<1.566) return false;
+	if(scEta <= 1.479){ //the twiki's barrel cut. 
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.007) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.15) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.010) return false;
+		if(it_Ele->hcalOverEcal() > 0.12) return false;
+		if(Iso/it_Ele->momentum.Pt()>0.15) return false;
+	}
+	else if( scEta > 2.5){ //the twiki's end cap cut
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.009) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.10) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.030) return false;
+		if(it_Ele->hcalOverEcal() > 0.10) return false;
+		float pt = it_Ele->momentum.Pt();
+		if(( pt <= 20 && Iso/pt>0.10) || (pt > 20  && Iso/pt > 0.15) ) return false;
+	}
+	else return false; 
+	//to be proper we ought to be requiring that #missing hits is at most 1 and vertex fit probability is < 1e-6
+
+	//if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;
+	return true;
+}//end ok_ele_EGLoose
+
+//use this one for rejecting ele
+bool SusyMainAna_MC_arg::ok_ele_EGVeto(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC ){	//new as of July 16, 2013
+	//access track using it_Ele->gsfTrackIndex
+	//access supercluster using it_Ele->superClusterIndex
+	//similar to VBTF 90 wp 
+	//see the Loose definition here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
+	if(it_Ele->momentum.Pt()<15) return false;
+	if( fabs(gsf_track.d0()) >= 0.04 ) return false; //d0
+	if( fabs(gsf_track.dz()) >= 0.2 ) return false; //dz
+	//if ( fabs((1.0/it_Ele->ecalEnergy) - 1.0/( it_Ele->trackMomentums["AtVtx"].P())) > 0.05 ) return false; //1/E - 1/P
+
+	float scEta = fabs(eleSC.position.PseudoRapidity());
+	//these had better match
+	//printf("deta ele Eta and SCEta %f\n", fabs(it_Ele->momentum.Eta() - scEta)); //debug
+	//printf("deta track Eta at sc and SCEta %f\n", fabs(gsf_track.extrapolatedPositions["AtCalo"].PseudoRapidity() - scEta)); //debug
+	float Iso=it_Ele->chargedHadronIso + it_Ele->neutralHadronIso + it_Ele->photonIso;
+	if(scEta>1.4442 && scEta<1.566) return false;
+	if(scEta <= 1.479){ //the twiki's barrel cut. 
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.007) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.8) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.010) return false;
+		if(it_Ele->hcalOverEcal() > 0.15) return false;
+		if(Iso/it_Ele->momentum.Pt()>0.15) return false;
+	}
+	else if( scEta > 2.5){ //the twiki's end cap cut
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.010) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.7) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.030) return false;
+		//if(it_Ele->hcalOverEcal() > 0.10) return false;
+		if(Iso/it_Ele->momentum.Pt()>0.15) return false;
+	}
+	else return false; 
+
+	//if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;
+	return true;
+}//end ok_ele_EGVeto
 
 bool SusyMainAna_MC_arg::ok_ele_AN_11_409(std::vector<susy::Electron>::iterator it_Ele, susy::Track& innerTrack, float pVtx_Z){
 		//if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;

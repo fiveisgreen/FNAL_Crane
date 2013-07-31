@@ -1,0 +1,3 @@
+./testMCcode.sh st_400_mu_300_bbaa /eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/tree_StopHiggs_stop400_chargino300_15_hh_bbaa.root raw_plots_MC_st400_ho300_bbaa.root raw_plots_MC_st400_ho300_bbaa.log plotsWithBackground_MC_st400_ho300_bbaa.root plotsWithBackground_MC_st400_ho300_bbaa.log
+
+

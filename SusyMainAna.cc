@@ -20,6 +20,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TH1F.h>
+#include "TProfile.h"
 
 #include <map>
 #include <set>
@@ -239,11 +240,13 @@ void SusyMainAna::Loop() {
 	
 	int nFiltered = 0;
 	TTree* filterTree = 0;
-	cout << "enableFilter is set to "<<enableFilter<<endl;
-	if (enableFilter){
-		enableFilter = false;
-		cout << "setting it to false"<<endl;
-	}
+	//cout << "enableFilter is set to "<<enableFilter<<endl;
+	//if (enableFilter){
+		//enableFilter = false;
+		//cout << "setting it to false"<<endl;
+	//}
+	cout << "enableFilter is set to true"<<endl;
+		enableFilter = true;
 
 	if(enableFilter) {
 		cout <<endl<< "Making Filter File"<< outroot_data<<endl<<endl;
@@ -275,6 +278,7 @@ void SusyMainAna::Loop() {
 	
 	TH1F* h_vtxZ_unsliced = new TH1F("vtxZ_unsliced","Z position of the primary vertex;Z (cm);Events",100,-50.0,50.0);
 	TH1F* h_bsZ_unsliced = new TH1F("bsZ_unsliced","Z position of the beam spot;Z (cm);Events",100,-50.0,50.0);
+	TProfile* h_phoResOnPt = new TProfile("phoResOnPt",";Uncorrected Photon E_{t};E_{t} Corrected/E_{t} Uncorrected",12,25,205);
 
 	//nameint nbins;
 	//namefloat hmin;
@@ -376,6 +380,7 @@ void SusyMainAna::Loop() {
 	TH1F* selvar_pho_nPho = new TH1F("selvar_pho_nPho","number of tight photons;n photons", 10,0.,10.);
 	TH1F* selvar_pho_Et = new TH1F("selvar_pho_Et","selvar_pho_Et;E_{t}^{#gamma}", 200,0.,200);
 	TH1F* selvar_pho_Eta= new TH1F("selvar_pho_Eta","selvar_pho_Eta;#gamma #eta", 100,-2.5,2.5);
+	TH1F* selvar_pho_dEta_SC_reg= new TH1F("selvar_pho_dEta_SC_reg","selvar_pho_dEta_SC_reg;#Delta #eta", 100,0,0.1);
 	TH1F* selvar_pho_Phi= new TH1F("selvar_pho_Phi","selvar_pho_Phi;#gamma #phi", 60,0.,3.15);
 	TH1F* selvar_pho_TrkIsoDR04= new TH1F("selvar_pho_TrkIsoDR04","selvar_pho_TrkIsoDR04;TrackIsoDR04", 32,-1.,7.);
 	TH1F* selvar_pho_EcalIsoDR04= new TH1F("selvar_pho_EcalIsoDR04","selvar_pho_EcalIsoDR04;EcalIsoDR04", 34,-2.,15.);
@@ -540,6 +545,13 @@ void SusyMainAna::Loop() {
 			if(printLevel > 0) std::cout << "Warning: run number less than zero" << std::endl;
 			continue;
 		}		
+				
+		bool dilepEvent = (event->runNumber == 195147 && event->luminosityBlockNumber == 340 && event->eventNumber == 381225715) ||
+				(event->runNumber == 203987 && event->luminosityBlockNumber == 39 && event->eventNumber == 50527407) ||
+				(event->runNumber == 206446 && event->luminosityBlockNumber == 784 && event->eventNumber == 1072391444) ||
+				(event->runNumber == 207231 && event->luminosityBlockNumber == 524 && event->eventNumber == 792766566) ||
+				(event->runNumber == 207920 && event->luminosityBlockNumber == 500 && event->eventNumber == 748865301);
+				
 		
 		if(printLevel > 0 && event->eventNumber == ((unsigned int)probeevent)) cout<<"probe is at point A"<<endl;
 
@@ -573,7 +585,7 @@ void SusyMainAna::Loop() {
 		bool passHLT = false;
 		
 	
-		for (int i=0; i<5 && !pass_non_r9id_trigger; i++) {
+		for (int i=0; i<4 && !pass_non_r9id_trigger; i++) {
 			pass_dmason_trigger |= PassTrigger(dmason_triggers[i]);
 		}
 		/*for (int i=0; i<Nnonr9Triggers && !pass_non_r9id_trigger; i++) {
@@ -627,7 +639,9 @@ void SusyMainAna::Loop() {
 //		std::vector<susy::Muon*>     ra3_muons;
 		std::vector<susy::Muon*>     Muons;//DM's collection
 		std::vector<susy::PFJet*>    ra3_pfjets;
-		std::vector<susy::Electron*>   pfEles;
+		//std::vector<susy::Electron*>   pfEles;
+		std::vector<susy::Electron*>   EGLooseEles;
+		std::vector<susy::Electron*>   vetoEles;
 //		std::vector<susy::Photon*>   tap_electrons;
 		//std::vector<susy::Track*>    tap_tracks;
 		//std::vector<susy::PFJet*>    ra3_pfjets_noid;
@@ -882,6 +896,7 @@ void SusyMainAna::Loop() {
                         if(Eti < phoEtThresh1){//if((*it)->momentum.Et() < phoEtThresh1){
                                 selvar_pho_Et->Fill(Eti);//selvar_pho_Et->Fill((*it)->momentum.Et());
                                 selvar_pho_Eta ->Fill((*it)->caloPosition.Eta());
+                                selvar_pho_dEta_SC_reg->Fill(fabs((*it)->caloPosition.Eta() - (*it)->momentum.Eta()));
                                 selvar_pho_Phi->Fill(fabs((*it)->caloPosition.Phi()));
                         }
                 }
@@ -921,12 +936,6 @@ void SusyMainAna::Loop() {
 			//(useMVAphoP?loose_susy12_photons[1]->MVAcorrMomentum.Et():loose_susy12_photons[1]->momentum.Et()) < phoEtThresh1) continue;//firing all of the time. 
 
 		//	If we're doing ele-pho, Require one to have ps and the other not to. 
-		if(useSusyLoose_PS_ElePho){
-			if(((*p_photonVector)[0]->nPixelSeeds == 0 && (*p_photonVector)[1]->nPixelSeeds == 0 ) || 
-				((*p_photonVector)[0]->nPixelSeeds > 0 && (*p_photonVector)[1]->nPixelSeeds > 0 ) ||
-				(*p_photonVector)[0]->nPixelSeeds < 0 || (*p_photonVector)[1]->nPixelSeeds < 0  ) continue; //xyxyx
-			Counters["have 1 ele, 1 pho candidate"]++;
-		}
 
 		if ((*p_photonVector).size()<2 || 
 				(((useMVAphoP?(*p_photonVector)[0]->MVAregEnergyAndErr.first / (*p_photonVector)[0]->momentum.E():1.0)*(*p_photonVector)[0]->momentum).Et()) < phoEtThresh0 || 
@@ -934,6 +943,13 @@ void SusyMainAna::Loop() {
 				isSameObject((*p_photonVector)[0]->momentum,(*p_photonVector)[1]->momentum) ) continue;
 				//(useMVAphoP?(*p_photonVector)[0]->MVAcorrMomentum.Et():(*p_photonVector)[0]->momentum.Et()) < phoEtThresh0 || 
 				//(useMVAphoP?(*p_photonVector)[1]->MVAcorrMomentum.Et():(*p_photonVector)[1]->momentum.Et()) < phoEtThresh1) continue;
+
+		if(useSusyLoose_PS_ElePho){
+			if(((*p_photonVector)[0]->nPixelSeeds == 0 && (*p_photonVector)[1]->nPixelSeeds == 0 ) || 
+				((*p_photonVector)[0]->nPixelSeeds > 0 && (*p_photonVector)[1]->nPixelSeeds > 0 ) ||
+				(*p_photonVector)[0]->nPixelSeeds < 0 || (*p_photonVector)[1]->nPixelSeeds < 0  ) continue; //xyxyx
+			Counters["have 1 ele, 1 pho candidate"]++;
+		}
 		Counters["have 2 loose photons"]++;
 		if(printLevel > 4 && event->eventNumber == ((unsigned int)probeevent)) cout<<"probe passes Two Loose Photons"<<endl;
 			//Counters["have 2 tight photons"]++;
@@ -956,6 +972,10 @@ void SusyMainAna::Loop() {
 			//vPho +=      useMVAphoP?(*it)->MVAcorrMomentum:(*it)->momentum;
 			//myPhotonST+= useMVAphoP?(*it)->MVAcorrMomentum.Et():(*it)->momentum.Et();
 //			ipho++;
+		}
+		if(mgg > lsb_lb && mgg < usb_ub){
+			h_phoResOnPt->Fill( (*p_photonVector)[0]->momentum.Et(), (((*p_photonVector)[0]->MVAregEnergyAndErr.first / (*p_photonVector)[0]->momentum.E())*(*p_photonVector)[0]->momentum).Et() / (*p_photonVector)[0]->momentum.Et());
+			h_phoResOnPt->Fill( (*p_photonVector)[1]->momentum.Et(), (((*p_photonVector)[1]->MVAregEnergyAndErr.first / (*p_photonVector)[1]->momentum.E())*(*p_photonVector)[1]->momentum).Et() / (*p_photonVector)[1]->momentum.Et());
 		}
 
 			/////////////////////////////////////////////////////////////////
@@ -1036,8 +1056,9 @@ void SusyMainAna::Loop() {
 			
 				if(printLevel > 7) cout<<"looping over muon collection"<<endl;
 
-				susy::Track& innerTrack = event->tracks[it_Mu->trackIndex];
-				if(ok_muon_DMoris(it_Mu,innerTrack)){
+				//susy::Track& innerTrack = event->tracks[it_Mu->trackIndex];
+				susy::Track& innerTrack = event->tracks[it_Mu->combinedTrackIndex];
+				if(ok_muon_POG_Tight(it_Mu,innerTrack)){
 					Muons.push_back(&*it_Mu);
 					myLeptonST += (it_Mu)->momentum.Et();
 					//myMuSumET += (it_Mu)->momentum.Et();
@@ -1114,19 +1135,29 @@ void SusyMainAna::Loop() {
 				selvar_ele_Phi->Fill(fabs(it_Ele->momentum.Phi()));
 				selvar_ele_relIso->Fill(relIso);
 
-				if(ok_ele(it_Ele)){
-					pfEles.push_back(&*it_Ele);
+				if(ok_ele_EGLoose(it_Ele,event->tracks[it_Ele->gsfTrackIndex], event->superClusters[it_Ele->superClusterIndex] )){
+					EGLooseEles.push_back(&*it_Ele);
 					myLeptonST += (it_Ele)->momentum.Et();
 					//myEleSumEt += (it_Ele)->momentum.Et();
 					vL += (it_Ele)->momentum;
 				}
+				if(ok_ele_EGVeto(it_Ele,event->tracks[it_Ele->gsfTrackIndex], event->superClusters[it_Ele->superClusterIndex] )){
+					vetoEles.push_back(&*it_Ele);
+				}
+				if(dilepEvent){
+					if(ok_ele(it_Ele)){
+						printf("\n\nPasses the old electron definition\n");
+						printf("relIso here: %f\n",relIso);
+					}
+					print_ele_vars(it_Ele,event->tracks[it_Ele->gsfTrackIndex], event->superClusters[it_Ele->superClusterIndex] );
+				}
 			}//end it_Ele electron loop
-			std::sort(pfEles.begin(), pfEles.end(), EtGreater<susy::Electron>); //sort pfEles by Pt
-			if(printLevel>1)cout<<"pfEles size= "<<pfEles.size()<<endl;
+			std::sort(EGLooseEles.begin(), EGLooseEles.end(), EtGreater<susy::Electron>); //sort EGLooseEles by Pt
+			if(printLevel>1)cout<<"EGLooseEles size= "<<EGLooseEles.size()<<endl;
 		}//end eleMap
-		selvar_ele_nele->Fill(pfEles.size());
-		if(Muons.size()<2 && pfEles.size() >=2){
-			Mleplep = (pfEles[0]->momentum + pfEles[1]->momentum).M();
+		selvar_ele_nele->Fill(EGLooseEles.size());
+		if(Muons.size()<2 && EGLooseEles.size() >=2){
+			Mleplep = (EGLooseEles[0]->momentum + EGLooseEles[1]->momentum).M();
 		}
 
 			/////////////////////////////////////////////////////////////////
@@ -1216,7 +1247,7 @@ void SusyMainAna::Loop() {
 				}
 				
 				bool same_emobject = false;
-				for(std::vector<susy::Electron*>::iterator m_it = pfEles.begin(); m_it != pfEles.end(); m_it++) { 
+				for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) { 
 					same_emobject |= isSameObject(corrP4,(*m_it)->momentum);
 				}
 
@@ -1266,7 +1297,7 @@ void SusyMainAna::Loop() {
 			for(int i=0;i<tempsize_LF-1 && !MllEWK;i++){
 				for(int j=i+1; j<tempsize_LF && !MllEWK;j++){
 					float mmm = (pfLFJetsLoose[i]->momentum+pfLFJetsLoose[j]->momentum).M();
-					MllEWK == mmm>70 && mmm<110;
+					MllEWK |= mmm>70 && mmm<110;
 				}
 			}
 		}
@@ -1280,7 +1311,7 @@ void SusyMainAna::Loop() {
 //   |  _ \ _____ _  | |/ _ \ __/ __|
 //   | |_) |_____| |_| |  __/ |_\__ \
 //   |____/       \___/ \___|\__|___/
-//                                   
+//
 		for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin();	it != ra3_pfjets.end(); it++) { //error
 			if((*it)->bTagDiscriminators[5] > 0.898) pfBJetsTight.push_back(*it);//CSV medium working point
 			if((*it)->bTagDiscriminators[5] > 0.679) pfBJetsMedium.push_back(*it);//CSV medium working point
@@ -1292,19 +1323,19 @@ void SusyMainAna::Loop() {
 
 		if(printLevel > 4) std::cout << "Try to calculate bestMjj." << std::endl;
 		float bestMjj = -1;
-		int tempsize_1 = ra3_pfjets.size();
-		if(tempsize_1 >=2){
+		int temp_nJets = ra3_pfjets.size();
+		if(temp_nJets >=2){
 			//for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it+1 != ra3_pfjets.end(); it++) {
 				//for(std::vector<susy::PFJet*>::iterator it2 = ra3_pfjets.begin()+1;        it != ra3_pfjets.end(); it++) {
-			for(int i=0;i<tempsize_1-1;i++){
-				for(int j=i+1; j<tempsize_1;j++){
+			for(int i=0;i<temp_nJets-1;i++){
+				for(int j=i+1; j<temp_nJets;j++){
 					float mmm = (ra3_pfjets[i]->momentum+ra3_pfjets[j]->momentum).M();
 					if(fabs(mmm-mHiggs) < fabs(bestMjj-mHiggs)) bestMjj = mmm;
 				}
 			}
 		}
 		if(printLevel > 4) std::cout << "Try to calculate bestMbj." << std::endl;
-		float bestMbb = -1; 
+		float bestMbb = -1;
                 /*if(pfBJetsLoose.size() >=2){
                         for(std::vector<susy::PFJet*>::iterator it = pfBJetsLoose.begin(); it+1 != pfBJetsLoose.end(); it++) {
                                 for(std::vector<susy::PFJet*>::iterator it2 = pfBJetsLoose.begin()+1; it != pfBJetsLoose.end(); it++) {
@@ -1312,16 +1343,38 @@ void SusyMainAna::Loop() {
                                 }
                         }
                 } */ 
-		tempsize_1= pfBJetsLoose.size();
-		if(tempsize_1 >=2){
-			for(int i=0;i<tempsize_1-1;i++){
-				for(int j=i+1; j<tempsize_1;j++){
+		int temp_nBJets= pfBJetsLoose.size();
+		if(temp_nBJets >=2){
+			for(int i=0;i<temp_nBJets-1;i++){
+				for(int j=i+1; j<temp_nBJets;j++){
 					float mmm = (pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M();
 					if(fabs((pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M()-mHiggs) < fabs(bestMbb-mHiggs)) bestMbb = (pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M();
-					if(mmm<10) printf("info: see low mbb mass=%f, nJ=%i, E1 %.2f E2 %.2f dphi %f \n",mmm,tempsize_1,pfBJetsLoose[i]->momentum.E(),pfBJetsLoose[j]->momentum.E(),pfBJetsLoose[i]->momentum.Phi()-pfBJetsLoose[j]->momentum.Phi());
+					if(mmm<10) printf("info: see low mbb mass=%f, nJ=%i, E1 %.2f E2 %.2f dphi %f \n",mmm,temp_nBJets,pfBJetsLoose[i]->momentum.E(),pfBJetsLoose[j]->momentum.E(),pfBJetsLoose[i]->momentum.Phi()-pfBJetsLoose[j]->momentum.Phi());
 				}
 			}
 		}
+		
+			//Find which jet is the most b-like
+//		cout<<endl<<"try to do Probe Mjj, njets = "<<temp_nJets<<endl;
+		int Most_Blike_Jet_index = -1;
+		float maxCSV = -1;
+		for(int i=0;i<temp_nJets;i++){
+//			cout<<"i="<<i<<" maxCSV: "<<maxCSV<<" this one: "<<ra3_pfjets[i]->bTagDiscriminators[5]<<endl;
+			if(ra3_pfjets[i]->bTagDiscriminators[5] > maxCSV){
+				maxCSV = ra3_pfjets[i]->bTagDiscriminators[5];
+				Most_Blike_Jet_index = i;
+			}
+		}
+//		cout<<"max csv "<<maxCSV<<" best: "<<Most_Blike_Jet_index<<endl;
+		bool ProbeMJJ = false;//ProbeMJJ is true if highest CSV-jet plus one other jet makes a higgs.
+		if(temp_nJets >=2 && Most_Blike_Jet_index >= 0){
+			for(int i=0;i<temp_nJets && !ProbeMJJ;i++){
+				if (i == Most_Blike_Jet_index) continue;
+				float mmm = (ra3_pfjets[i]->momentum+ra3_pfjets[Most_Blike_Jet_index]->momentum).M();
+				ProbeMJJ |= (mmm > 110.0 && mmm < 140.0); //same window as bestMjj_is_H
+			}
+		}
+//		cout<<"did Probe Mjj"<<endl;
 
 
 			//////////////////////// GET MET  ///////////////////////////
@@ -1366,7 +1419,8 @@ void SusyMainAna::Loop() {
 		//////////////////////////////////////////////////////////////////////
 
 		if(makeEventsList) eventlist<<event->runNumber<<" "<<event->luminosityBlockNumber<<" "<<event->eventNumber<<endl;
-		if(enableFilter) {
+		if(false) {
+		//if(enableFilter) {
 			nFiltered++;
 			Counters["number filtered"]++;
 			filterTree->Fill();
@@ -1410,14 +1464,14 @@ void SusyMainAna::Loop() {
 		if(Muons.size() >=1){
 			MTlepMET = sqrt(2* corrmet* Muons[0]->momentum.Pt() *( 1-cos(Muons[0]->momentum.Phi() - metPhi) ) );
 		}
-                else if(pfEles.size() >=1){
-			MTlepMET = sqrt(2* corrmet* pfEles[0]->momentum.Pt() *( 1-cos(pfEles[0]->momentum.Phi() - metPhi) ) );
+                else if(EGLooseEles.size() >=1){
+			MTlepMET = sqrt(2* corrmet* EGLooseEles[0]->momentum.Pt() *( 1-cos(EGLooseEles[0]->momentum.Phi() - metPhi) ) );
                 } 
                 if(Muons.size() >=2){
                         if(Mleplep>80 && Mleplep<100) MZllHgg = (Muons[0]->momentum + Muons[1]->momentum + gg).M();
                 }
-                else if(pfEles.size() >=2){
-                        if(Mleplep>80 && Mleplep<100) MZllHgg = (pfEles[0]->momentum + pfEles[1]->momentum + gg).M();
+                else if(EGLooseEles.size() >=2){
+                        if(Mleplep>80 && Mleplep<100) MZllHgg = (EGLooseEles[0]->momentum + EGLooseEles[1]->momentum + gg).M();
                 }
 		if(printLevel > 4) std::cout << "boo3" << std::endl;
 
@@ -1475,15 +1529,16 @@ void SusyMainAna::Loop() {
 		int nbL = (int)pfBJetsLoose.size();
 		int nJ =  (int)ra3_pfjets.size();
 
-		int nLep = (int)Muons.size() + pfEles.size();
-		float MJJ01 = -1;
+		int nLep = (int)Muons.size() + EGLooseEles.size();
+		int nLepveto = (int)Muons.size() + vetoEles.size();
+//		float MJJ01 = -1;
 		float Mbb01 = -1;
 		float MJJ01gg01 = -1;
 		float Mbb01gg01 = -1;
 		//bool jetdEta15 = false;
 		if(nJ >=2){
 			MJJ01gg01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum + gg).M();
-			MJJ01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum).M();
+//			MJJ01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum).M();
 			//jetdEta15 = fabs(ra3_pfjets[0]->momentum.Eta() - ra3_pfjets[1]->momentum.Eta()) < 1.5;
 		}
 		if(nbL >=2 ){
@@ -1499,7 +1554,7 @@ void SusyMainAna::Loop() {
 		//bool twoPhoBar = is_bar((*p_photonVector)[0]->momentum.Eta()) && is_bar((*p_photonVector)[1]->momentum.Eta());
 		bool twoPhoBar = is_bar(p0.Eta()) && is_bar(p1.Eta());
 		
-		bool Tpho = 	
+/*		bool Tpho =
 			is_tight_2012(  p0.Et(),// (*p_photonVector)[0]->momentum.Et(),
 					(*p_photonVector)[0]->caloPosition.Eta(),
 					(*p_photonVector)[0]->chargedHadronIso,
@@ -1540,7 +1595,7 @@ void SusyMainAna::Loop() {
 					(*p_photonVector)[1]->sigmaIetaIeta,
 					(*p_photonVector)[1]->sigmaIphiIphi,
 					(*p_photonVector)[1]->passelectronveto, //replaces pixel seed veto
-					event->rho25);
+					event->rho25);*/
 
 		float BMET = BnBjets*corrmet;
 		float BST = BnBjets*myST;
@@ -1552,10 +1607,18 @@ void SusyMainAna::Loop() {
 		topoCut["NULL"] = 	    true; //f
 		topoCut["gbar2"] = 	    twoPhoBar; //f
 
+		if ((*p_photonVector).size()>=4 ){
+                        float MVAcor0 = (*p_photonVector)[3]->MVAregEnergyAndErr.first/(*p_photonVector)[3]->momentum.E();
+			if(  ((useMVAphoP?MVAcor0:1.0)*(*p_photonVector)[3]->momentum).Et() > 15.0) topoCut["4phogbar2"] = twoPhoBar;
+			else topoCut["4phogbar2"] = false;
+		}
+		else topoCut["4phogbar2"] = false;
+
 
 		//topoCut["3J"] =     (int(ra3_pfjets.size()) >= 3);
 		//topoCut["2J"] =     (int(ra3_pfjets.size()) >= 2);
-//	topoCut["metCut"] = (corrmet > 20.0);
+//		topoCut["metCut"] = (corrmet > 20.0);
+		topoCut["m30"] = (corrmet > 30.0);
 		/*topoCut["1Jb"] =    (int(ra3_pfjets.size()) >= 1) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["2Jb"] =    (int(ra3_pfjets.size()) >= 2) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["3Jb"] =    (int(ra3_pfjets.size()) >= 3) && (int(pfBJetsMedium.size()) >= 1);
@@ -1573,7 +1636,7 @@ void SusyMainAna::Loop() {
 
 /*		topoCut["2Jm20"] =       nJ >=2 && corrmet >20.0;
 		topoCut["3Jm20"] =       nJ >=3 && corrmet >20.0;
-		topoCut["3JbLm20"] =     nJ >=3 && nbL >=1 && corrmet >20.0;
+		topoCut["3JbLm20"] =     nJ >=3 && nbL >=1 && corrmet >20.0;/
 		topoCut["3JbMm20"] =     nJ >=3 && nbM >=1 && corrmet >20.0;
 		topoCut["4Jm20"] =       nJ >=4 && corrmet >20.0;*/
 		//topoCut["4JbLLLLm20gbar1"] =  nJ >=4 && nbL >=4 && corrmet >20.0 &&  onePhoBar;
@@ -1583,7 +1646,9 @@ void SusyMainAna::Loop() {
 		//topoCut["3JbTm20"] =     nJ >=3 && nbT >=1 && corrmet >20.0;
 		//m_BTagWeight["3JbTm20"] = new BTagWeight(3,3,bTagRequirement_T);
 //		topoCut["2JbMLm20"] =    nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0;
+
 		topoCut["2JbML"] =    nJ >=2 && nbL >=2 && nbM >=1; //f
+
 		topoCut["2JbMLgbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && twoPhoBar; //f
 		topoCut["2JbMMgbar2"] =    nJ >=2 && nbM >=2 && twoPhoBar; //f
 		//m_BTagWeight["2JbMLm20"] = new BTagWeight(3,2,bTagRequirement_ML);
@@ -1604,7 +1669,7 @@ void SusyMainAna::Loop() {
 		//m_BTagWeight["2JbML!Gbar2Mbb!"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
 		topoCut["2JbMM!Gbar2Mbb"] =    nJ >=2 && nbL ==2 && nbM ==2 && twoPhoBar && Mbb01_is_H;//f
-			//m_BTagWeight["2JbML!Gbar2Mbb"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+			//m_BTagWeight["2JbMM!Gbar2Mbb"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
 		topoCut["2JbMM!Gbar2Mbb!"] =    nJ >=2 && nbL ==2 && nbM ==2 && twoPhoBar && !Mbb01_is_H;//f
 			//m_BTagWeight["2JbML!Gbar2Mbb!"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
@@ -1613,6 +1678,7 @@ void SusyMainAna::Loop() {
 //		topoCut["2JbML!Gbar2"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar;
 
 		topoCut["3JbMLLGbar2"] =    nJ >=3 && nbL >=3 && nbM >=1 && twoPhoBar;//f
+
 		topoCut["3JbMMLGbar2"] =    nJ >=3 && nbL >=3 && nbM >=2 && twoPhoBar;//f
 
 		//m_BTagWeight["3JbMLLGbar2"] = new BTagWeight(3,3,bTagRequirement_MLL);
@@ -1686,9 +1752,13 @@ void SusyMainAna::Loop() {
 		//topoCut["2JHbM"] = nJ >=2 /*&& nbL >= 2*/ && nbM >=1 && Mbb01 > 90 && Mbb01 < 180;
 
 		//topoCut["0!lep"] = nLep == 0;
+
 		topoCut["1!lepgbar2"] = nLep == 1 && twoPhoBar;//f
+
 		topoCut["1lepgbar2"] = nLep >= 1 && twoPhoBar;//f
+
 		topoCut["2lepgbar2"] = nLep >= 2 && twoPhoBar;//f
+
 		topoCut["3lepgbar2"] = nLep >= 3 && twoPhoBar;//f
 
 		becauseIsayso |= nLep>=2 && twoPhoBar;
@@ -1698,10 +1768,11 @@ void SusyMainAna::Loop() {
 		topoCut["2!lepZgbar2"] = nLep == 2 && Mleplep > 80 && Mleplep<100 && twoPhoBar;//f
                 //m_BTagWeight["2lepZ"] = new BTagWeight(3,0,bTagRequirement_NULL);
 		topoCut["1Mugbar2"] = Muons.size() >=1 && twoPhoBar;//f
-		topoCut["1Elegbar2"] = pfEles.size() >=1 && twoPhoBar;//f
 
-//		topoCut["2lepOFgbar2"] = Muons.size() >= 1 && pfEles.size() >= 1 && twoPhoBar;
-//		topoCut["2lepSFgbar2"] = (Muons.size() >= 2 || pfEles.size() >= 2) && twoPhoBar;
+		topoCut["1Elegbar2"] = EGLooseEles.size() >=1 && twoPhoBar;//f
+
+//		topoCut["2lepOFgbar2"] = Muons.size() >= 1 && EGLooseEles.size() >= 1 && twoPhoBar;
+//		topoCut["2lepSFgbar2"] = (Muons.size() >= 2 || EGLooseEles.size() >= 2) && twoPhoBar;
 
 		//topoCut["2JbML"] = nJ >=2 && nbL >= 2 && nbM >=1;
 		//topoCut["2JbM"] = nJ >=2 && nbM >=1;
@@ -1716,30 +1787,35 @@ void SusyMainAna::Loop() {
                 //m_BTagWeight["2lepTpho"] = new BTagWeight(3,0,bTagRequirement_NULL);
 		//if(topoCut["2lep"]) cout<<"ok, pass cut"<<endl;
 
-		topoCut["23JbML!gbar2Mbb0lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=1 && twoPhoBar && nLep == 0 && Mbb01_is_H;
-		topoCut["2JbML!gbar2Mbb0lep"]  = nJ==2           && nbL ==2 && nbM >=1 && twoPhoBar && nLep == 0 && Mbb01_is_H;
+
+		topoCut["23JbML!gbar2Mbb0lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
+		topoCut["2JbML!gbar2Mbb0lep"]  = nJ>=2           && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
+		topoCut["23JbML!gbar2Mbb01lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;
+		topoCut["2JbML!gbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;
 
 		topoCut["2lJgbar2"] = nLFjets >=2 && twoPhoBar; //there's no point in this existing.
-		topoCut["2lJEWKgbar2"]= nLFjets >=2 && twoPhoBar && MllEWK; //why not use 2-3?
-		topoCut["23lJEWKgbar2"]= nLFjets >=2 && nLFjets <=3 && twoPhoBar && MllEWK;
+		topoCut["2lJewkMllgbar2"]= nLFjets >=2 && twoPhoBar && MllEWK; //why not use 2-3?
+		topoCut["23lJewkMllgbar2"]= nLFjets >=2 && nLFjets <=3 && twoPhoBar && MllEWK;
 
 		topoCut["2JbML!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && bestMjj_is_H;
 		topoCut["2JbML!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && !bestMjj_is_H;
 		topoCut["2JbMM!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && bestMjj_is_H;
 		topoCut["2JbMM!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && !bestMjj_is_H;
 
-		topoCut["23JMllEWK0lepgbar2"]= nJ>=2 && nJ <=3 && MllEWK && nLep == 0 && twoPhoBar; //for WH and ZH
+		topoCut["2JbT!gbar2ProbeMJJ"]=nJ>=2 && nbT == 1 && twoPhoBar && ProbeMJJ && nbL < 2 && nLepveto ==0;
 
-		topoCut["0lep25JMllEWKgbar2"] = nJ>=2 && nJ <=5 && MllEWK && nLep == 0 && twoPhoBar && nLep == 0;
-		topoCut["1!lep23JMllEWKgbar2"] = nJ>=2 && nJ <=3 && MllEWK && nLep == 0 && twoPhoBar && nLep == 1;
-		topoCut["1!lep23J!MllEWKgbar2"]= nJ>=2 && nJ <=3 && (!MllEWK) && nLep == 0 && twoPhoBar && nLep == 1; //for WWbins and ZZbins
+		topoCut["23Jb01MewkMll0lepgbar2"]= nJ>=2 && nJ <=3 && MllEWK && nLepveto == 0 && twoPhoBar && nbL <=1 && nbT<=0; //for WH and ZH
+
+		topoCut["0lep25Jb01MewkMllgbar2"] = nJ>=2 && nJ <=5 && MllEWK && twoPhoBar && nLepveto == 0 && nbL <=1 && nbT<=0;
+		topoCut["1!lep23Jb01MewkMllgbar2"] = nJ>=2 && nJ <=3 && MllEWK && twoPhoBar && nLep == 1 && nbL <=1 && nbT<=0;
+		topoCut["1!lep23Jb01M!ewkMllgbar2"]= nJ>=2 && nJ <=3 && (!MllEWK) && twoPhoBar && nLep == 1 && nbL <=1 && nbT<=0; //for WWbins and ZZbins
 
 		topoCut["2JbM2lepgbar2"] = nJ>=2 && nbM >=1 && twoPhoBar && nLep >=2;
 		topoCut["2JbML!1lepgbar2"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLep ==1;
-		topoCut["2JbML!gbar2bestOn0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLep ==0 && bestMjj_is_H;
-		topoCut["4JbML!gbar2MllEWKbestOff0lep"]=nJ>=4 && nbL ==2 && nbM >=1 && MllEWK && twoPhoBar && (!bestMjj_is_H) && nLep==0;
-		topoCut["2JbML!gbar2bothOff0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLep ==0 && (!bestMjj_is_H) && !topoCut["4JbML!gbar2MllEWKbestOff0lep"];
-		topoCut["01J0lep0Bgbar2"] = nJ <=1 && nbL ==0 && nLep == 0 && twoPhoBar;
+		topoCut["2JbML!gbar2bestOn0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto ==0 && bestMjj_is_H;
+		topoCut["4JbML!gbar2ewkMllbestOff0lep"]=nJ>=4 && nbL ==2 && nbM >=1 && MllEWK && twoPhoBar && (!bestMjj_is_H) && nLepveto==0;
+		topoCut["2JbML!gbar2bothOff0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto ==0 && (!bestMjj_is_H) && !topoCut["4JbML!gbar2ewkMllbestOff0lep"];
+		topoCut["01J0lep0Bgbar2"] = nJ <=1 && nbL ==0 && nLepveto == 0 && twoPhoBar;
 
 
 		if(printLevel > 3) std::cout << "boo5" << std::endl;
@@ -1748,6 +1824,11 @@ void SusyMainAna::Loop() {
                         Counters["number filtered"]++;
                         filterTree->Fill();
                 }// if(enableFilter)    	*/
+		if(enableFilter && (topoCut["2lepgbar2"] || dilepEvent)){
+                        nFiltered++;
+                        Counters["number filtered"]++;
+                        filterTree->Fill();
+                }// if(enableFilter)    
 
 		//Fill Main kinematic varriable histograms.
 		for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {
@@ -1773,6 +1854,12 @@ void SusyMainAna::Loop() {
 
 				lh_unsliced[s_EventTopology[iTopo]]["MHT"]->Fill(MHT_all);
 				lh_unsliced[s_EventTopology[iTopo]]["LepT"]->Fill(myLeptonST);
+				for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+                                        lh_unsliced[s_EventTopology[iTopo]]["LepPt"]->Fill((*m_it)->momentum.Et());
+                                }
+                                for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+                                        lh_unsliced[s_EventTopology[iTopo]]["LepPt"]->Fill((*m_it)->momentum.Et());
+                                }
 
 //				lh_unsliced[s_EventTopology[iTopo]]["HGt"]->Fill(HGt);
 //				lh_unsliced[s_EventTopology[iTopo]]["HGt_prime"]->Fill(HGt_prime);
@@ -1808,11 +1895,11 @@ void SusyMainAna::Loop() {
 				tempsize= pfBJetsLoose.size();
 				for(int i=0;i<tempsize-1;i++){
 					for(int j=i+1; j<tempsize;j++){
-						lh_unsliced[s_EventTopology[iTopo]]["allMbb"]->Fill((pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M()); } }
+						lh_unsliced[s_EventTopology[iTopo]]["allMjj"]->Fill((pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M()); } }
 				}
-				lh_unsliced[s_EventTopology[iTopo]]["nLep"]->Fill((float)Muons.size() + pfEles.size());
+				lh_unsliced[s_EventTopology[iTopo]]["nLep"]->Fill((float)Muons.size() + EGLooseEles.size());
 				lh_unsliced[s_EventTopology[iTopo]]["nMu"]->Fill((float)Muons.size());
-				lh_unsliced[s_EventTopology[iTopo]]["nEle"]->Fill((float)pfEles.size());
+				lh_unsliced[s_EventTopology[iTopo]]["nEle"]->Fill((float)EGLooseEles.size());
 //				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg0Met);
 //				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg1Met);
 				lh_unsliced[s_EventTopology[iTopo]]["MTggMET"]->Fill(MTggMET);
@@ -1886,9 +1973,9 @@ void SusyMainAna::Loop() {
 								(int)ra3_pfjets.size()<<" "<<
 								(int)pfBJetsLoose.size()<<" "<<//CHANGE ME!! TO CSVL
 								bestMjj<<" "<<
-								(int)Muons.size() + pfEles.size()<<" "<<
+								(int)Muons.size() + EGLooseEles.size()<<" "<<
 								(int)Muons.size()<<" "<<
-								(int)pfEles.size()<<" "<<
+								(int)EGLooseEles.size()<<" "<<
 								Mleplep<<" "<<
 								MTg0Met<<" "<<
 								MTg1Met<<" "<<
@@ -1921,6 +2008,12 @@ void SusyMainAna::Loop() {
 //						lha2[s_EventTopology[iTopo]]["BTT"][0]->Fill(BT[2]);
 						lha2[s_EventTopology[iTopo]]["MHT"][0]->Fill(MHT_all);
 						lha2[s_EventTopology[iTopo]]["LepT"][0]->Fill(myLeptonST);
+                                                for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+                                                        lha2[s_EventTopology[iTopo]]["LepPt"][0]->Fill((*m_it)->momentum.Et());
+                                                }
+                                                for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+                                                        lha2[s_EventTopology[iTopo]]["LepPt"][0]->Fill((*m_it)->momentum.Et());
+                                                }
 //						lha2[s_EventTopology[iTopo]]["HGt"][0]->Fill(HGt);
 //						lha2[s_EventTopology[iTopo]]["HGt_prime"][0]->Fill(HGt_prime);
 //						lha2[s_EventTopology[iTopo]]["dPhiHG"][0]->Fill(dPhiHG);
@@ -1960,7 +2053,7 @@ void SusyMainAna::Loop() {
 						}
 						lha2[s_EventTopology[iTopo]]["nLep"][0]->Fill((float)nLep);
 						lha2[s_EventTopology[iTopo]]["nMu"][0]->Fill((float)Muons.size());
-						lha2[s_EventTopology[iTopo]]["nEle"][0]->Fill((float)pfEles.size());
+						lha2[s_EventTopology[iTopo]]["nEle"][0]->Fill((float)EGLooseEles.size());
 						if(nLep >=1 ) lha2[s_EventTopology[iTopo]]["MTlepMET"][0]->Fill(MTlepMET);
 						if(nLep >=2 ){ 
 							lha2[s_EventTopology[iTopo]]["Mleplep"][0]->Fill(Mleplep);
@@ -2021,6 +2114,12 @@ void SusyMainAna::Loop() {
 
 						lha2[s_EventTopology[iTopo]]["MHT"][1]->Fill(MHT_all);
 						lha2[s_EventTopology[iTopo]]["LepT"][1]->Fill(myLeptonST);
+                                                for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+                                                        lha2[s_EventTopology[iTopo]]["LepPt"][1]->Fill((*m_it)->momentum.Et());
+                                                }
+                                                for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+                                                        lha2[s_EventTopology[iTopo]]["LepPt"][1]->Fill((*m_it)->momentum.Et());
+                                                }
 //						lha2[s_EventTopology[iTopo]]["HGt"][1]->Fill(HGt);
 //						lha2[s_EventTopology[iTopo]]["HGt_prime"][1]->Fill(HGt_prime);
 //						lha2[s_EventTopology[iTopo]]["dPhiHG"][1]->Fill(dPhiHG);
@@ -2060,7 +2159,7 @@ void SusyMainAna::Loop() {
 						}
 						lha2[s_EventTopology[iTopo]]["nLep"][1]->Fill((float)nLep);
 						lha2[s_EventTopology[iTopo]]["nMu"][1]->Fill((float)Muons.size());
-						lha2[s_EventTopology[iTopo]]["nEle"][1]->Fill((float)pfEles.size());
+						lha2[s_EventTopology[iTopo]]["nEle"][1]->Fill((float)EGLooseEles.size());
 						if(nLep >=1 ) lha2[s_EventTopology[iTopo]]["MTlepMET"][1]->Fill(MTlepMET);
 						if(nLep >=2 ){
 							lha2[s_EventTopology[iTopo]]["Mleplep"][1]->Fill(Mleplep);
@@ -2130,9 +2229,9 @@ void SusyMainAna::Loop() {
                                                                 (int)ra3_pfjets.size()<<" "<<
                                                                 (int)pfBJetsLoose.size()<<" "<<//CHANGE ME!! TO CSVL
                                                                 bestMjj<<" "<<
-                                                                (int)Muons.size() + pfEles.size()<<" "<<
+                                                                (int)Muons.size() + EGLooseEles.size()<<" "<<
                                                                 (int)Muons.size()<<" "<<
-                                                                (int)pfEles.size()<<" "<<
+                                                                (int)EGLooseEles.size()<<" "<<
                                                                 Mleplep<<" "<<
                                                                 MTg0Met<<" "<<
                                                                 MTg1Met<<" "<<
@@ -2166,6 +2265,12 @@ void SusyMainAna::Loop() {
 //                                                lha2[s_EventTopology[iTopo]]["BTT"][2]->Fill(BT[2]);
 						lha2[s_EventTopology[iTopo]]["MHT"][2]->Fill(MHT_all);
 						lha2[s_EventTopology[iTopo]]["LepT"][2]->Fill(myLeptonST);
+                                                for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+                                                        lha2[s_EventTopology[iTopo]]["LepPt"][2]->Fill((*m_it)->momentum.Et());
+                                                }
+                                                for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+                                                        lha2[s_EventTopology[iTopo]]["LepPt"][2]->Fill((*m_it)->momentum.Et());
+                                                }
 //                                                lha2[s_EventTopology[iTopo]]["HGt"][2]->Fill(HGt);
 //                                                lha2[s_EventTopology[iTopo]]["HGt_prime"][2]->Fill(HGt_prime);
 //                                                lha2[s_EventTopology[iTopo]]["dPhiHG"][2]->Fill(dPhiHG);
@@ -2206,7 +2311,7 @@ void SusyMainAna::Loop() {
 						}
 						lha2[s_EventTopology[iTopo]]["nLep"][2]->Fill((float)nLep);
 						lha2[s_EventTopology[iTopo]]["nMu"][2]->Fill((float)Muons.size());
-						lha2[s_EventTopology[iTopo]]["nEle"][2]->Fill((float)pfEles.size());
+						lha2[s_EventTopology[iTopo]]["nEle"][2]->Fill((float)EGLooseEles.size());
                                                 if(nLep >=1 ) lha2[s_EventTopology[iTopo]]["MTlepMET"][2]->Fill(MTlepMET);
                                                 if(nLep >=2 ){
                                                         lha2[s_EventTopology[iTopo]]["Mleplep"][2]->Fill(Mleplep);
@@ -2253,9 +2358,9 @@ void SusyMainAna::Loop() {
 			}//end Topology Cut.
 
 		    if (s_EventTopology[iTopo]=="NULL" && (mgg > tag_lb && mgg < tag_ub) &&
-				((Muons.size() + pfEles.size()>=3) || (Muons.size() >= 1) || (nbL >= 4) || (nJ >= 8) ||
+				((Muons.size() + EGLooseEles.size()>=3) || (Muons.size() >= 1) || (nbL >= 4) || (nJ >= 8) ||
 				 (Mleplep > 80 && Mleplep<100) ||
-				 (nJ >= 3 && corrmet > 20 && nbM>=1 && Muons.size() + pfEles.size() >= 1) ||
+				 (nJ >= 3 && corrmet > 20 && nbM>=1 && Muons.size() + EGLooseEles.size() >= 1) ||
 				 (nJ >= 3 && corrmet > 20 && nbM>=1 && myST > 1000) ||
 				 becauseIsayso
 				 )
@@ -2268,7 +2373,7 @@ void SusyMainAna::Loop() {
 			specialevents<<"N CSV Loose BJets "<<pfBJetsLoose.size()<<endl;
 			specialevents<<"N CSV Medium BJets "<<pfBJetsMedium.size()<<endl;
 			specialevents<<"MET "<<corrmet<<" MET Phi "<<metPhi<<endl;
-			specialevents<<"N Ele "<<pfEles.size()<<endl;
+			specialevents<<"N Ele "<<EGLooseEles.size()<<endl;
 			specialevents<<"N Muons "<<Muons.size()<<endl;
 			if(nLep >=1 ) specialevents<<"    MT(lep0,MET) "<< MTlepMET<<endl;
 			if(nLep >=2 ){
@@ -2352,19 +2457,19 @@ void SusyMainAna::Loop() {
 				specialevents<<endl<<"MUON VARRIABLES"<<endl;
 				int imu = 0;
 				for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
-					specialevents<<"Mu "<<imu<<" Pt "<<(*m_it)->momentum.Pt()<<" Eta "<<(*m_it)->momentum.Eta()<<" Phi "<<(*m_it)->momentum.Phi() << endl;
+					specialevents<<"Mu "<<imu<<" Pt "<<(*m_it)->momentum.Pt()<<" Eta "<<(*m_it)->momentum.Eta()<<" Phi "<<(*m_it)->momentum.Phi() << " Q= "<< (event->tracks[(*m_it)->trackIndex]).charge << endl;
 					imu++;
 				}
 			}
-			if (pfEles.size()>0) {
+			if (EGLooseEles.size()>0) {
 				specialevents<<endl<<"Electron VARRIABLES"<<endl;
 				int iele = 0;
-				for(std::vector<susy::Electron*>::iterator m_it = pfEles.begin(); m_it != pfEles.end(); m_it++) {
-					specialevents<<"Ele "<<iele<<" Pt "<<(*m_it)->momentum.Pt()<<" Eta "<<(*m_it)->momentum.Eta()<<" Phi "<<(*m_it)->momentum.Phi() << endl;
-					iele++;
+				for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+						specialevents<<"Ele "<<iele<<" Pt "<<(*m_it)->momentum.Pt()<<" Eta "<<(*m_it)->momentum.Eta()<<" Phi "<<(*m_it)->momentum.Phi() << " Q= "<< (event->tracks[(*m_it)->gsfTrackIndex]).charge << endl;
+						iele++;
+					}
 				}
-			}
-			if(nLep >=1 ) specialevents<<"MT(lep0,MET) "<< MTlepMET<<endl;
+				if(nLep >=1 ) specialevents<<"MT(lep0,MET) "<< MTlepMET<<endl;
 			if(nLep >=2 ){
 				specialevents<<"M (lep 0,1) "<<Mleplep<<endl;
 				specialevents<<"M (Zll, Hgg) "<<MZllHgg<<endl;
@@ -2412,7 +2517,9 @@ void SusyMainAna::Loop() {
 	}
 	
 		//////Write SelVars/////
+	h_phoResOnPt->Write();
 	selvar_pho_nPho->Write();
+	selvar_pho_dEta_SC_reg->Write();
 	selvar_pho_TrkIsoDR04->Write();
 	selvar_pho_EcalIsoDR04->Write();
 	selvar_pho_HcalIsoDR04->Write();
@@ -2567,7 +2674,7 @@ bool SusyMainAna::ok_muon_AN_11_409(std::vector<susy::Muon>::iterator it,susy::T
 	else return true;
 }//end ok_muon_AN_11_409
 
-	//use this one!
+	//this is what you used before July 16, 2013
 bool SusyMainAna::ok_muon_DMoris(std::vector<susy::Muon>::iterator it_Mu,susy::Track& innerTrack){
 	if(!it_Mu->isGlobalMuon()) return false; //Brian Francis agrees
 	if(!it_Mu->isPFMuon()) return false; //Brian Francis agrees
@@ -2588,7 +2695,7 @@ bool SusyMainAna::ok_muon_DMoris(std::vector<susy::Muon>::iterator it_Mu,susy::T
 	if(pt < 15) return false; //Brian Francis agrees
 	if(eta > 2.6) return false;  // the TDR says the muon system ends at |eta| < 2.4 
 	if(chi2OverNdof > 10)return false; 
-	if(numberOfValidMuonHits<=0)return false; //Brian Francis agrees
+	if(numberOfValidMuonHits<=0) return false; //Brian Francis agrees
 	if(std::fabs(d0) > 0.2) return false; //Brian Francis agrees
 	if(std::fabs(dZ) > 0.5) return false; //Brian Francis agrees
 	if(numberOfValidPixelHits<=0)return false; //Brian Francis agrees
@@ -2602,7 +2709,38 @@ bool SusyMainAna::ok_muon_DMoris(std::vector<susy::Muon>::iterator it_Mu,susy::T
 		//id from https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId
 }//end ok_muon_DMoris
 
-	//use this one!
+//use this one
+bool SusyMainAna::ok_muon_POG_Tight(std::vector<susy::Muon>::iterator it_Mu,susy::Track& innerTrack){
+	//this is meant to be an implentation of the Muon POG tight muon ID
+	//see here: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Tight_Muon
+	//use the it_Mu->combinedTrackIndex for the "inner track"
+	if(!it_Mu->isGlobalMuon()) return false;  //
+	if(!it_Mu->isPFMuon()) return false;  //
+	if(it_Mu->momentum.Pt() < 15) return false; //
+	if(it_Mu->momentum.Eta() > 2.4) return false;  
+	if(innerTrack.numberOfValidPixelHits <= 0) return false; //
+	if(innerTrack.normChi2() >= 10) return false; //
+/*
+	//for d0 and dZ David is again calculating the primary Vertex himself. 
+    TVector3 trackVtx = innerTrack.vertex;
+    float dxy = (-(trackVtx.X() - primVtx.position.X())*innerTrack.momentum.Py()+(trackVtx.Y() - primVtx.position.Y())*innerTrack.momentum.Px())/innerTrack.momentum.Pt();
+    float d0=(-1)*dxy;
+
+    float dZ = innerTrack.dz()-primVtx.position.Z();
+    float dZraw=innerTrack.dz();
+*/
+	//if(fabs(innerTrack.d0()) > 0.2) return false; //
+	//if(fabs(innerTrack.dz()) > 0.5) return false; // //remove these because vertexing is broken. 
+	if(it_Mu->nMatchedStations <= 1) return false; //
+	if(it_Mu->nValidMuonHits<=0) return false;  //
+	//if(innerTrack.numberOfValidMuonHits <=0) return false;  // maybe use this instead??
+	if(it_Mu->nStripLayersWithMeasurement <= 5) return false; //
+	float combIsoPF=( it_Mu->sumChargedHadronPt04 + std::max(0.,it_Mu->sumNeutralHadronEt04+it_Mu->sumPhotonEt04-0.5*it_Mu->sumPUPt04) );
+	if(combIsoPF > 0.12) return false; //ok
+	return true;	
+}//end ok_muon_POG_Tight
+
+	//my previous ele definition before 13 July 2013
 bool SusyMainAna::ok_ele(std::vector<susy::Electron>::iterator it_Ele){	//Dave Moris
 	if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;
 	float Iso=it_Ele->chargedHadronIso + it_Ele->neutralHadronIso + it_Ele->photonIso;
@@ -2610,8 +2748,131 @@ bool SusyMainAna::ok_ele(std::vector<susy::Electron>::iterator it_Ele){	//Dave M
 	if(it_Ele->momentum.Eta()>2.6) return false;
 	if(pt<15) return false;
 	if(Iso/pt>0.2) return false;
+	printf("ok_ele passed reliso < 0.2, reliso = %f\n",Iso/pt);
 	return true;
 }
+
+//use this one for selecting ele
+bool SusyMainAna::ok_ele_EGLoose(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC ){	//new as of July 16, 2013
+	//access track using it_Ele->gsfTrackIndex
+	//access supercluster using it_Ele->superClusterIndex
+	//similar to VBTF 90 wp 
+	//see the Loose definition here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
+	float scEta = fabs(eleSC.position.PseudoRapidity());
+	//these had better match
+	//if(fabs(scEta - it_Ele->momentum.Eta() ) > 0.0001){
+		//printf("ele SCEta %f\n", scEta); //debug
+		//printf("ele 4-vec Eta %f\n", it_Ele->momentum.Eta() );//debug
+	//}
+	//printf("ele track Eta at sc %f\n", gsf_track.extrapolatedPositions["AtCalo"].PseudoRapidity() ); //debug
+
+	if(it_Ele->momentum.Pt()<15) return false;
+	//if( fabs(gsf_track.d0()) >= 0.02 ) return false; //d0
+	//if( fabs(gsf_track.dz()) >= 0.2 ) return false; //dz //remove these because the're broken. 
+
+/*
+	David is calculating these manually with a manual selection of the pv.
+    TVector3 trackVtx = gsfTrack.vertex;
+    float dxy = (-(trackVtx.X() - primVtx.position.X())*gsfTrack.momentum.Py()+(trackVtx.Y() - primVtx.position.Y())*gsfTrack.momentum.Px())/gsfTrack.momentum.Pt();
+    float d0=(-1)*dxy;
+    float dZ=gsfTrack.dz()-primVtx.position.Z();
+*/
+	if ( fabs((1.0/it_Ele->ecalEnergy) - 1.0/( it_Ele->trackMomentums["AtVtx"].P())) > 0.05 ) return false; //1/E - 1/P
+
+	float Iso=it_Ele->chargedHadronIso + it_Ele->neutralHadronIso + it_Ele->photonIso;
+	if(scEta>1.4442 && scEta<1.566) return false;
+	if(scEta <= 1.479){ //the twiki's barrel cut. 
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.007) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.15) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.010) return false;
+		if(it_Ele->hcalOverEcal() > 0.12) return false;
+		if(Iso/it_Ele->momentum.Pt()>0.15) return false;
+	}
+	else if( scEta > 2.5){ //the twiki's end cap cut
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.009) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.10) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.030) return false;
+		if(it_Ele->hcalOverEcal() > 0.10) return false;
+		float pt = it_Ele->momentum.Pt();
+		if(( pt <= 20 && Iso/pt>0.10) || (pt > 20  && Iso/pt > 0.15) ) return false;
+	}
+	else return false; 
+	//to be proper we ought to be requiring that #missing hits is at most 1 and vertex fit probability is < 1e-6
+
+	//if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;
+	return true;
+}//end ok_ele_EGLoose
+
+//use this one for rejecting ele
+bool SusyMainAna::ok_ele_EGVeto(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC ){	//new as of July 16, 2013
+	//access track using it_Ele->gsfTrackIndex
+	//access supercluster using it_Ele->superClusterIndex
+	//similar to VBTF 90 wp 
+	//see the Loose definition here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
+	if(it_Ele->momentum.Pt()<15) return false;
+	if( fabs(gsf_track.d0()) >= 0.04 ) return false; //d0
+	if( fabs(gsf_track.dz()) >= 0.2 ) return false; //dz
+	//if ( fabs((1.0/it_Ele->ecalEnergy) - 1.0/( it_Ele->trackMomentums["AtVtx"].P())) > 0.05 ) return false; //1/E - 1/P
+
+	float scEta = fabs(eleSC.position.PseudoRapidity());
+	//these had better match
+	//printf("deta ele Eta and SCEta %f\n", fabs(it_Ele->momentum.Eta() - scEta)); //debug
+	//printf("deta track Eta at sc and SCEta %f\n", fabs(gsf_track.extrapolatedPositions["AtCalo"].PseudoRapidity() - scEta)); //debug
+	float Iso=it_Ele->chargedHadronIso + it_Ele->neutralHadronIso + it_Ele->photonIso;
+	if(scEta>1.4442 && scEta<1.566) return false;
+	if(scEta <= 1.479){ //the twiki's barrel cut. 
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.007) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.8) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.010) return false;
+		if(it_Ele->hcalOverEcal() > 0.15) return false;
+		if(Iso/it_Ele->momentum.Pt()>0.15) return false;
+	}
+	else if( scEta > 2.5){ //the twiki's end cap cut
+		if( it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.010) return false;//aka dEtaIn
+		if( it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.7) return false;//aka dPhiIn
+		if(it_Ele->sigmaIetaIeta > 0.030) return false;
+		//if(it_Ele->hcalOverEcal() > 0.10) return false;
+		if(Iso/it_Ele->momentum.Pt()>0.15) return false;
+	}
+	else return false; 
+
+	//if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;
+	return true;
+}//end ok_ele_EGVeto
+
+void SusyMainAna::print_ele_vars(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC ){
+	//prints variables used in ok_ele_EGLoose, and whether they'd pass the cut. 
+	//of particular interest are electrons that pass ok_ele but fail ok_ele_Loose
+	//access supercluster using it_Ele->superClusterIndex
+	float scEta = fabs(eleSC.position.PseudoRapidity());
+
+	printf("*** Electron Pt = %f (%s) ***\n",it_Ele->momentum.Pt(),it_Ele->momentum.Pt()<15?"fail":"pass");
+	printf("d0 = %f (%s)\n",fabs(gsf_track.d0()), fabs(gsf_track.d0()) >= 0.02?"fail":"pass");
+	printf("dz = %f (%s)\n",fabs(gsf_track.dz()), fabs(gsf_track.dz()) >= 0.2?"fail":"pass");	
+	float EmP = fabs((1.0/it_Ele->ecalEnergy) - 1.0/( it_Ele->trackMomentums["AtVtx"].P())); 
+	printf("1/E - 1/P = %f (%s)\n",EmP , EmP>0.05?"fail":"pass");	
+	float Iso=it_Ele->chargedHadronIso + it_Ele->neutralHadronIso + it_Ele->photonIso;
+	printf("Eta = %f \n",scEta);
+	if(scEta>1.4442 && scEta<1.566) printf("Is on the crack\n");
+	if(scEta <= 1.479){ //the twiki's barrel cut. 
+		printf("Barrel Cuts\n");
+		printf("deltaEtaSuperClusterTrackAtVtx = %f (%s)\n",it_Ele->deltaEtaSuperClusterTrackAtVtx , it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.007?"fail":"pass");	
+		printf("deltaPhiSuperClusterTrackAtVtx = %f (%s)\n", it_Ele->deltaPhiSuperClusterTrackAtVtx, it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.15?"fail":"pass");	
+		printf("sigmaIetaIeta = %f (%s)\n",it_Ele->sigmaIetaIeta, it_Ele->sigmaIetaIeta > 0.010?"fail":"pass");	
+		printf("H/E = %f (%s)\n", it_Ele->hcalOverEcal(), it_Ele->hcalOverEcal() > 0.12?"fail":"pass");	
+		printf("relIso = %f (%s)\n", Iso/it_Ele->momentum.Pt(), Iso/it_Ele->momentum.Pt()>0.15?"fail":"pass");	
+	}
+	else if( scEta > 2.5){ //the twiki's end cap cut
+
+		printf("End Cap Cuts\n");
+		printf("deltaEtaSuperClusterTrackAtVtx = %f (%s)\n",it_Ele->deltaEtaSuperClusterTrackAtVtx , it_Ele->deltaEtaSuperClusterTrackAtVtx > 0.009?"fail":"pass");	
+		printf("deltaPhiSuperClusterTrackAtVtx = %f (%s)\n", it_Ele->deltaPhiSuperClusterTrackAtVtx, it_Ele->deltaPhiSuperClusterTrackAtVtx > 0.10?"fail":"pass");	
+		printf("sigmaIetaIeta = %f (%s)\n",it_Ele->sigmaIetaIeta, it_Ele->sigmaIetaIeta > 0.030?"fail":"pass");	
+		printf("H/E = %f (%s)\n", it_Ele->hcalOverEcal(), it_Ele->hcalOverEcal() > 0.10?"fail":"pass");	
+		float pt = it_Ele->momentum.Pt();
+		printf("relIso = %f (%s)\n", Iso/it_Ele->momentum.Pt(), ( pt <= 20 && Iso/pt>0.10) || (pt > 20  && Iso/pt > 0.15)?"fail":"pass");	
+	}
+}//end print_ele_vars
 
 bool SusyMainAna::ok_ele_AN_11_409(std::vector<susy::Electron>::iterator it_Ele, susy::Track& innerTrack, float pVtx_Z){
 		//if(!it_Ele->isPF() and !it_Ele->passingMvaPreselection()) return false;

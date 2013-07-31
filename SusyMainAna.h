@@ -62,8 +62,12 @@ class SusyMainAna {
 //	bool ok_muon_AN_11_409(std::vector<susy::Muon>::iterator it,susy::Track& combinedTrack, susy::Event* event, float pVtx_Z);
 	bool ok_muon(std::vector<susy::Muon>::iterator it);
 	bool ok_muon_DMoris(std::vector<susy::Muon>::iterator it_Mu,susy::Track& innerTrack);
+	bool ok_muon_POG_Tight(std::vector<susy::Muon>::iterator it_Mu,susy::Track& innerTrack);
 	bool ok_muon_AN_11_409(std::vector<susy::Muon>::iterator it,susy::Track& combinedTrack, float pVtx_Z);	
 	bool ok_ele(std::vector<susy::Electron>::iterator it_Ele);
+	bool ok_ele_EGLoose(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC);
+	void print_ele_vars(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC);
+	bool ok_ele_EGVeto(std::vector<susy::Electron>::iterator it_Ele, susy::Track& gsf_track, susy::SuperCluster& eleSC);
 	bool ok_ele_AN_11_409(std::vector<susy::Electron>::iterator it_Ele, susy::Track& innerTrack, float pVtx_Z);
 	bool ok_vtx(std::vector<susy::Vertex>::iterator it);
 	void MakeHistSet(TH1F** h, string prefix, int nbins, float lower, float upper);
@@ -206,7 +210,6 @@ void SusyMainAna::IncludeAJson(std::string jsonfile) {
 					}
 					sscanf(srunnum.c_str(),"%i",&runnum);
 					std::cout << " runnum: " << runnum << std::endl;
-					bool newrun=true;
 					
 				} // inside ""
 				if (thing == '[') {

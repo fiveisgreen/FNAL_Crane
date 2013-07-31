@@ -742,7 +742,7 @@ chain->Add("/uscmst1b_scratch/lpc1/3DayLifetime/abarker/2012D/SuperSkim53X_data_
   //sea->IncludeAJson("Cert_190456-199429_8TeV_PromptReco_Collisions12_JSON.txt");
   //sea->IncludeAJson("Cert_190456-202016_8TeV_PromptReco_Collisions12_JSON.txt");
   //sea->IncludeAJson("Cert_190456-203853_8TeV_PromptReco_Collisions12_JSON.txt");
-  sea->IncludeAJson("Cert_190456-208686_8TeV_PromptReco_Collisions12_JSON.txt"); //DeC 14 Json
+  sea->IncludeAJson("Cert_190456-208686_8TeV_Collisions12_Abarker_Combined_JSON.txt");
   //sea->IncludeAJson("anotherJSON.txt");
 
   TStopwatch ts;

@@ -206,7 +206,6 @@ void SusyMainAna_MC::IncludeAJson(std::string jsonfile) {
 					}
 					sscanf(srunnum.c_str(),"%i",&runnum);
 					std::cout << " runnum: " << runnum << std::endl;
-					bool newrun=true;
 					
 				} // inside ""
 				if (thing == '[') {

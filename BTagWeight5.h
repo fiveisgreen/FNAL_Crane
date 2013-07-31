@@ -1,5 +1,5 @@
-#ifndef BTAGWEIGHT4
-#define BTAGWEIGHT4
+#ifndef BTAGWEIGHT5
+#define BTAGWEIGHT5
 #include <math.h>
 #include <iostream>
 #include <vector>

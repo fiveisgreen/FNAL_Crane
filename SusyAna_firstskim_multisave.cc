@@ -362,7 +362,8 @@ void SusyAna_firstskim_multisave_arg::Loop() {
 				//if( is_vvloose_pho(it) ) vvloose_photons.push_back(&*it);
 				//if( is_vloose_pho(it) ) vloose_photons.push_back(&*it);
         			eta = it->caloPosition.Eta();
-				if( (it->hadTowOverEm < 0.05 || it->hadronicOverEm < 0.05 ) && (it->passelectronveto || it->nPixelSeeds == 0 )){
+				//if( (it->hadTowOverEm < 0.05 || it->hadronicOverEm < 0.05 ) && (it->passelectronveto || it->nPixelSeeds == 0 )){
+				if( it->hadTowOverEm < 0.05 || it->hadronicOverEm < 0.05  ){
 				       if((is_bar(eta) && it->sigmaIetaIeta < 0.014) ||
 						       ( is_ec(eta) && it->sigmaIetaIeta < 0.035)) vvloose_photons.push_back(&*it);
 					//if((is_bar(eta) && it->sigmaIetaIeta < 0.012) ||

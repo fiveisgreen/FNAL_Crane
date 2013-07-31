@@ -31,17 +31,24 @@
 using namespace std;
 using namespace params;
 
+
+/*
+This version changes find_bkg_with_fit so that the statistical uncertainty does not double count the statistics in the side band. 
+*/
+
 //void fitmgg(TH1F* hmgg, float lb, float ub, TGraphAsymmErrors** g, TF1** fitcurve, float& chi2, float ** fit_parameters, float ** fit_parameter_errors);
 void fitmgg_simpler(TH1F* hmgg, Double_t lb, Double_t ub, TF1** fitcurve, float& chi2, float & B_integral, float & B_integral_error, TString type, bool preset_fitter = true);
 void fitmgg_simple(TH1F* hmgg, float lb, float ub, TGraphAsymmErrors** g, TF1** fitcurve, float& chi2, float & B_integral, float & B_integral_error, TString type, bool preset_fitter = true);//obsolete, but maybe useful
 
 void find_preset_params(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin,float &param0,float &param1);
 void find_preset_params_powerlaw(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin,float &param0,float &param1);
+void find_preset_params_exp(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin,float &param0,float &param1);
 bool check_statistics(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin);
 //***	
 void nLep(TH1F** h, float B_integral, float B_integral_error, float lsb_int, float usb_int);
 //***
 void fitmgg(TH1F* hmgg, float lb, float ub, TGraphAsymmErrors** g, TF1** fitcurve, float& chi2, float * fit_parameters, float * covarianceMx, bool preset_fitter = true); //currently orphaned and unused
+void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float lsb_int, float usb_int); //the state of the art; but you can do better
 void get_bkg_integral(float* fit_parameters, float* covarianceMx, float & B_integral, float & B_integral_error);//made obsolete by fitmgg_simple, orphaned, unused. 
 float expo_integral(float * params);//made obsolete by fitmgg_simple orphaned, unsed.
 void find_bkg(TH1F** h);//obsolete, but maybe still useful if the fit fails., orphaned, unused
@@ -50,6 +57,9 @@ void find_bkg(TH1F** h);//obsolete, but maybe still useful if the fit fails., or
 Double_t fpow(Double_t *x, Double_t *par);
 Double_t flin(Double_t *x, Double_t *par);
 Double_t fcon(Double_t *x, Double_t *par);
+Double_t fexp(Double_t *x, Double_t *par);
+Double_t fpol3(Double_t *x, Double_t *par);
+Double_t fpol2(Double_t *x, Double_t *par);
 		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
 		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
 		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
@@ -57,21 +67,44 @@ Double_t fcon(Double_t *x, Double_t *par);
 Bool_t reject;//needed for communicaiton with fpow
 Double_t fpow(Double_t *x, Double_t *par){
 		//Fit function definition
-		//if(x[0]>tag_lb && x[0]<tag_ub){
 	if(reject && x[0]>=lsb_ub && x[0]<=usb_lb){
 		TF1::RejectPoint();
 		return 0;
 	}
 	return par[0]*pow(x[0],par[1]);
 }
-Double_t flin(Double_t *x, Double_t *par){
+Double_t fexp(Double_t *x, Double_t *par){
 		//Fit function definition
-		//if(x[0]>tag_lb && x[0]<tag_ub){
 	if(reject && x[0]>=lsb_ub && x[0]<=usb_lb){
 		TF1::RejectPoint();
 		return 0;
 	}
-	return par[0]*x[0]*par[1];
+	//if(par[1] > 0 ) return 0;
+	return par[0] * TMath::Exp(x[0]*par[1]);
+}
+Double_t fpol3(Double_t *x, Double_t *par){
+		//Fit function definition
+	if(reject && x[0]>=lsb_ub && x[0]<=usb_lb){
+		TF1::RejectPoint();
+		return 0;
+	}
+	return par[0]*pow(x[0],3) + par[1]*x[0]*x[0] + par[2]*x[0] + par[3];
+}
+Double_t fpol2(Double_t *x, Double_t *par){
+		//Fit function definition
+	if(reject && x[0]>=lsb_ub && x[0]<=usb_lb){
+		TF1::RejectPoint();
+		return 0;
+	}
+	return par[0]*pow(x[0],2) + par[1]*x[0] + par[2];
+}
+Double_t flin(Double_t *x, Double_t *par){
+		//Fit function definition
+	if(reject && x[0]>=lsb_ub && x[0]<=usb_lb){
+		TF1::RejectPoint();
+		return 0;
+	}
+	return par[0]+x[0]*par[1];
 }
 Double_t fcon(Double_t *x, Double_t *par){
 		//Fit function definition
@@ -96,6 +129,9 @@ void fitmgg_simpler(TH1F* hmgg, Double_t lb, Double_t ub, TF1** fitcurve, float&
 	//cout << "in fitmgg_simple"<<endl;
 
 	TString name = "mgg"+type+"fit";
+	//*fitcurve = new TF1(name,fpol3,lb,ub,4);preset_fitter = false;//the last 2 says 2params.
+	//*fitcurve = new TF1(name,fpol2,lb,ub,3);preset_fitter = false;//the last 2 says 2params.
+	//*fitcurve = new TF1(name,fexp,lb,ub,2);//the last 2 says 2params.
 	*fitcurve = new TF1(name,fpow,lb,ub,2);//the last 2 says 2params.
 
 	int lb_bin = hmgg->GetXaxis()->FindBin(lb);
@@ -106,6 +142,7 @@ void fitmgg_simpler(TH1F* hmgg, Double_t lb, Double_t ub, TF1** fitcurve, float&
 		if( preset_fitter){
 			/*prepare the fit result*/
 			float param0, param1;
+			//find_preset_params_exp(hmgg,lb_bin,higgslb_bin,higgsub_bin,ub_bin,param0,param1);
 			find_preset_params_powerlaw(hmgg,lb_bin,higgslb_bin,higgsub_bin,ub_bin,param0,param1);
 			printf("Presetting parameters to p0 = %f, p1 = %f \n",param0,param1);
 			(*fitcurve)->SetParameter(0,param0);
@@ -122,6 +159,7 @@ void fitmgg_simpler(TH1F* hmgg, Double_t lb, Double_t ub, TF1** fitcurve, float&
 
 			//now force this to be a decreasing function. If it's not, try a simpler fit function.
 		if(fitresult->GetParams()[1]>0.0){ //if exponent > 0 = rising exponential
+		//if(status != 0 ){ //use for pol3
 			*fitcurve = new TF1(name,flin,lb,ub,2); //fit with a line
 			cout << "The fit is obviously nonsense, try with a line"<<endl;
 			status = hmgg->Fit(*fitcurve,"L","",lb,ub);
@@ -145,13 +183,15 @@ void fitmgg_simpler(TH1F* hmgg, Double_t lb, Double_t ub, TF1** fitcurve, float&
 			//get chi2 per degree of freedom.
 		chi2 = (*fitcurve)->GetChisquare()/((float)((*fitcurve)->GetNDF() - 1));
 			//	chi2 = res->Chi2()/((float)(npoints - 3)); // to retrieve the fit chi2
-		printf("chi2 from fit: %f from ResultPointer %f\n",chi2,fitresult->Chi2()/((float)((*fitcurve)->GetNDF() - 1)));
+		printf("chi2 from fit: %f nDOF = %f chi2/ndof-1: %f\n",(*fitcurve)->GetChisquare(),(float)((*fitcurve)->GetNDF()) ,chi2);
+		printf("chi2 from ResultPointer %f, nDOF = %f, chi2/ndof-1 %f\n",fitresult->Chi2(), (float)((*fitcurve)->GetNDF()), fitresult->Chi2()/((float)((*fitcurve)->GetNDF() - 1)));
 			//could also do that with Int_t TF1::GetNumberFitPoints() const
 
 			//Do Integrals. For help, see here: http://root.cern.ch/root/html/TF1.html#TF1:IntegralError
 		reject = false;
 		B_integral = (*fitcurve)->Integral(tag_lb,tag_ub);
 		B_integral_error = (*fitcurve)->IntegralError(tag_lb,tag_ub,fitresult->GetParams(), cov.GetMatrixArray() );
+		if(B_integral <0.0){ B_integral = 0; B_integral_error = 0;}
 		reject = true;
 		cout<<"integral: "<<B_integral<<" +- "<<B_integral_error<<endl;
 		
@@ -549,7 +589,62 @@ void find_preset_params_powerlaw(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgs
                 param0 = 1.f;
                 param1 = 0.f;
         }
-}
+}//end find_preset_params_powerlaw
+
+void find_preset_params_exp(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin,float &param0,float &param1){
+        //makes a guess at what the power law fit parameters should be
+	//y = param0 * exp(x*param1)
+        int npoints_l = 0;
+        int npoints_u = 0;
+        float avg_l = 0.;
+        float avg_u = 0.;
+        float avgX_l = 0.;
+        float avgX_u = 0.;
+
+	if (avg_l<0.0001) avg_l = 0.1;
+	if (avg_u<0.0001) avg_u = 0.1;
+
+	//take averages of lower and upper side bands -> one point for upper, one point for lower
+        for (int i=lb_bin; i<higgslb_bin; i++) {
+                avg_l += hmgg->GetBinContent(i);
+                avgX_l += hmgg->GetXaxis()->GetBinCenter(i);
+                npoints_l++;
+        }
+        avg_l /= ((float) npoints_l);
+        avgX_l /= ((float) npoints_l);
+	printf("preseting parameters for the exponential\n");
+        printf("avg_l %f, avgX_l %f\n",avg_l,avgX_l);
+        for (int i=higgsub_bin+1; i<=ub_bin; i++) {
+                avg_u += hmgg->GetBinContent(i);
+                avgX_u += hmgg->GetXaxis()->GetBinCenter(i);
+                npoints_u++;
+        }
+        avg_u /= ((float) npoints_u);
+        avgX_u /= ((float) npoints_u);
+        printf("avg_u %f, avgX_u %f\n",avg_u,avgX_u);
+	//averages made
+	//you now have the average x and y of the lower and upper side bands, effectively two points.
+	//draw a curve between them. 
+        if (avgX_u != avgX_l) {
+		param0 = TMath::Exp( (avgX_l*log(avg_u) - avgX_u*log(avg_l))/(avgX_l-avgX_u));
+		param1 = log(avg_l/avg_u)/(avgX_l-avgX_u); 
+        }
+        else{
+        	printf("ERROR!! avgX_u == avgX_l !! INVESTIGATE!!\n"); 
+                param0 = 1.f;
+                param1 = 0.f;
+        }
+	if(param1 > 0){
+		param0 = 1.f;
+		param1 = 0.f;
+		printf("preset is predicting a rising exponential, so preset to a constant\n");	
+	}
+}//end find_preset_params_exp
+
+
+
+
+
 
 bool check_statistics(TH1F* hmgg,int lb_bin,int higgslb_bin,int higgsub_bin, int ub_bin){
 		//if both side bands are empty, return false.
@@ -587,6 +682,10 @@ void get_bkg_integral(float* fit_parameters, float* covarianceMx, float & B_inte
 	//B_integral_error = GetError(expo_integral,4, centralvals, uncertainties,zero_limited); //replace me
 	B_integral_error = GetError_2correlated(expo_integral, centralvals, covarianceMx, 4);
 	//printf("withing get_bkg_integral: bint = %f, binterr = %f\n",B_integral,B_integral_error);	
+	if(B_integral < 0.0){
+		B_integral = 0;
+		B_integral_error = 0;
+	}
 }
 
 
@@ -618,8 +717,25 @@ void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float
 //	else printf("         find_bkg_with_fit is ok\n");
 
 
+	/*float integL = h[0]->Integral();
+	float integU = h[2]->Integral();
+	if(fabs(lsb_int- integL)>0.1 || fabs(usb_int- integU) > 0.1){
+		printf("on %s\n",h[0]->GetName());
+		printf("lsb_int %.1f, actual integral %.1f\n",lsb_int, integL);
+		printf("usb_int %.1f, actual integral %.1f\n",usb_int, integU);
+	}*/
+	//printf("on %s\n",h[0]->GetName());
+
+	string tmp = "hMET2JbML!Gbar2Mbb_lowSB";
+	bool printcalc = tmp.compare(h[0]->GetName()) == 0;
+
 		//Scale side bands and set error
 	for (int ibin = 0; ibin <= h[5]->GetNbinsX()+1; ibin++) {
+			//make sure the bin errors make sense. 
+			//This matters only for the last bin where the over flow resets the bin content but not the bin errro.
+		h[0]->SetBinError(ibin,sqrt(h[0]->GetBinContent(ibin)));
+		h[1]->SetBinError(ibin,sqrt(h[1]->GetBinContent(ibin)));
+		h[2]->SetBinError(ibin,sqrt(h[2]->GetBinContent(ibin)));
 			//Scale them
 		if(lsb_int>0) h[5]->SetBinContent(ibin,(h[0]->GetBinContent(ibin)*B_integral/lsb_int));
 		else h[5]->SetBinContent(ibin,0.);
@@ -627,34 +743,116 @@ void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float
 		else h[6]->SetBinContent(ibin,0.);
 		
 			//SetErrors
-		if(h[0]->GetBinContent(ibin) > 0 && lsb_int >0 && B_integral>0){
-			h[5]->SetBinError(ibin, h[5]->GetBinContent(ibin)*sqrt(pow((h[0]->GetBinError(ibin)/h[0]->GetBinContent(ibin)),2) +
-												  (1./lsb_int)+pow(B_integral_error/B_integral,2)));
-//			printf("lsb bin %i bincontentfracerr %f lsbfracerr %f integral fractional error %f\n",ibin,(h[0]->GetBinError(ibin)/h[0]->GetBinContent(ibin)),sqrt(1./lsb_int),B_integral_error/B_integral);
+		float LSB_minus_N = (float) lsb_int - h[0]->GetBinContent(ibin);
+		float USB_minus_N = (float) usb_int - h[2]->GetBinContent(ibin);
+		if(h[0]->GetBinContent(ibin) > 0 && lsb_int >0 && B_integral>0 ){
+			//h[5]->SetBinError(ibin, h[5]->GetBinContent(ibin)*sqrt(pow((h[0]->GetBinError(ibin)/h[0]->GetBinContent(ibin)),2) +
+												  //(1./lsb_int)+pow(B_integral_error/B_integral,2)));
+			h[5]->SetBinError(ibin, h[5]->GetBinContent(ibin)*sqrt(
+						pow((LSB_minus_N*h[0]->GetBinError(ibin)/(((float)lsb_int)*h[0]->GetBinContent(ibin))),2) +
+						(LSB_minus_N/((float)(lsb_int*lsb_int))) +
+						pow(B_integral_error/B_integral,2)));
+			float checkit = h[5]->GetBinContent(ibin)*sqrt((1.0/((float)h[0]->GetBinContent(ibin))) - (1.0/((float)lsb_int)) + pow(B_integral_error/B_integral,2));
+		if(printcalc)	printf("individ bin %i old %f, new %f, diff %f \%\n",ibin, h[5]->GetBinError(ibin),checkit, 100*( h[5]->GetBinError(ibin) - checkit)/checkit);
+
+			//may want to multiply pow(B_integral_error/B_integral,2) by 2 so after the average 
+			//we don't count the fit as two seperate measurements, artifically shrinking the uncertianty.
 		}
 		else {
 			h[5]->SetBinError(ibin,h[5]->GetBinContent(ibin));
 //			printf("lsb bin %i something is zero bin content %f sideband %f integral %f\n",ibin,h[0]->GetBinContent(ibin),lsb_int,B_integral);
 		}
 						  
-		if(h[2]->GetBinContent(ibin) > 0 && usb_int >0 && B_integral>0)
-			h[6]->SetBinError(ibin, h[6]->GetBinContent(ibin)*sqrt(pow((h[2]->GetBinError(ibin)/h[2]->GetBinContent(ibin)),2) +
-												  (1./usb_int)+pow(B_integral_error/B_integral,2)));
+		if(h[2]->GetBinContent(ibin) > 0 && usb_int >0 && B_integral>0 ){
+			//h[6]->SetBinError(ibin, h[6]->GetBinContent(ibin)*sqrt(pow((h[2]->GetBinError(ibin)/h[2]->GetBinContent(ibin)),2) +
+												  //(1./usb_int)+pow(B_integral_error/B_integral,2)));
+			h[6]->SetBinError(ibin, h[6]->GetBinContent(ibin)*sqrt(
+						pow((USB_minus_N*h[2]->GetBinError(ibin)/(usb_int*h[2]->GetBinContent(ibin))),2) +
+						(USB_minus_N/(usb_int*usb_int)) +
+						pow(B_integral_error/B_integral,2)));
+			float checkit = h[6]->GetBinContent(ibin)*sqrt((1.0/((float)h[2]->GetBinContent(ibin))) - (1.0/((float)usb_int)) + pow(B_integral_error/B_integral,2));
+		if(printcalc)	printf("individ bin %i old %f, new %f, diff %f \%\n",ibin, h[6]->GetBinError(ibin),checkit, 100*( h[6]->GetBinError(ibin) - checkit)/checkit);
+		}
 		else h[6]->SetBinError(ibin, h[6]->GetBinContent(ibin));
+
+
 	}
 	//h[5]->Sumw2(); h[6]->Sumw2();
 
 	//find combined background
 	h[3]->Add(h[5],h[6]);
 	h[3]->Scale(0.5);//finish the average
-	for (int ibin = 0; ibin <= h[3]->GetNbinsX()+1; ibin++) { //make error for combined bkg. 
-		h[3]->SetBinError(ibin,sqrt(pow(h[3]->GetBinError(ibin),2)+pow(0.5*(h[5]->GetBinContent(ibin) - h[6]->GetBinContent(ibin)),2))); //add systematic error
+	//find the uncertainty in the average, taking into account that both side bands use the same integral and not double couting it. 
+	for (int ibin = 1; ibin <= h[3]->GetNbinsX()+1; ibin++) {
 
-		if(fabs(h[3]->GetBinContent(ibin) )< 0.0001 ) h[3]->SetBinError(ibin, 0.5*B_integral/lsb_int ); //insert an uncertainty on zero = lsb has 1 and usb has 0. 
-	}
+
+		       float LSB_minus_N = lsb_int - h[0]->GetBinContent(ibin);
+		       float USB_minus_N = usb_int - h[2]->GetBinContent(ibin);
+
+		//if anything is going to make this calculation blow up in a divide by 0 error, don't do it. 
+		float L;
+		float U;
+		if(h[0]->GetBinContent(ibin) > 0) L = h[0]->GetBinContent(ibin)/((float) lsb_int);
+		else{
+			//printf("lower bin is empty\n");
+			 L = 0;
+		}
+		if(h[2]->GetBinContent(ibin) > 0) U = h[2]->GetBinContent(ibin)/((float) usb_int);
+		else{
+			//printf("upper bin is empty\n");
+			 U = 0;
+		}
+
+		float sL2;
+		float sU2; 
+		float checkL;
+		float checkU;
+		if(lsb_int <0.001 || h[0]->GetBinContent(ibin) < 0.001 ){
+			sL2 = 0;
+			checkL = 0;
+			//printf("either the lsb or lower bin are empty. lsb: %.1f, bin %.1f\n",lsb_int,h[0]->GetBinContent(ibin));
+		}
+		else{ 
+			sL2 =L*L*(pow((LSB_minus_N*h[0]->GetBinError(ibin)/((float)lsb_int*h[0]->GetBinContent(ibin))),2) +
+					(LSB_minus_N/((float)(lsb_int*lsb_int))));
+			checkL = L*L*((1.0/h[0]->GetBinContent(ibin)) - (1.0/(float)lsb_int));
+		}
+		if(usb_int <0.001 || h[2]->GetBinContent(ibin) < 0.001 ){
+			sU2 = 0;
+			checkU = 0;
+			//printf("either the usb or upper bin are empty. usb: %.1f, bin %.1f\n",usb_int,h[2]->GetBinContent(ibin));
+		}
+		else{ 
+			sU2 =U*U*(pow((USB_minus_N*h[2]->GetBinError(ibin)/((float)usb_int*h[2]->GetBinContent(ibin))),2) +
+					(USB_minus_N/((float)(usb_int*usb_int))));
+
+			checkU = U*U*((1.0/h[2]->GetBinContent(ibin)) - (1.0/(float)usb_int)); }
+
+		if( (U+L)*B_integral > 0.0001)
+			h[3]->SetBinError(ibin,h[3]->GetBinContent(ibin)*sqrt( ((sU2+sL2)/pow(U+L,2)) + pow(B_integral_error/B_integral,2) ));
+		else h[3]->SetBinError(ibin, 0.5*B_integral/(lsb_int+usb_int) ); //insert an uncertainty on zero = lsb has 1 and usb has 0. 
+
+
+		if(printcalc){
+			printf("U bin %i, USB=%.1f USB/ =%.1f bin=%.1f +-%f(sqrt(bin)=%f U=%f +- %f by old, %f by check, diff %f \%\n",
+				ibin, usb_int, USB_minus_N, h[0]->GetBinContent(ibin), h[0]->GetBinError(ibin),sqrt(h[0]->GetBinContent(ibin)), U, 
+				sqrt(sU2), sqrt(checkU),100*(sqrt(sU2)-sqrt(checkU))/sqrt(checkU) );
+			printf("L bin %i, LSB=%.1f LSB/ =%.1f bin=%.1f +-%f(sqrt(bin)=%f L=%f +- %f by old, %f by check, diff %f \%\n",
+				ibin, lsb_int, LSB_minus_N, h[2]->GetBinContent(ibin), h[2]->GetBinError(ibin),sqrt(h[2]->GetBinContent(ibin)), L, 
+				sqrt(sL2), sqrt(checkL),100*(sqrt(sL2)-sqrt(checkL))/sqrt(checkL) );
+			printf("resultant uncert in the avg %f\n\n\n",h[3]->GetBinError(ibin));
+		}
+
+
+		//add in the systematic error for the combination. 
+		h[3]->SetBinError(ibin,sqrt(pow(h[3]->GetBinError(ibin),2)+pow(0.5*(h[5]->GetBinContent(ibin) - h[6]->GetBinContent(ibin)),2))); //add systematic error
+	} //end find uncertainty on fit. 
+
+	//printf("for bin 2, Expecting bin error %f and get %f\n",sqrt(pow(0.5*(h[5]->GetBinContent(2) - h[6]->GetBinContent(2)),2)+0.25*pow(h[5]->GetBinError(2),2)+ 0.25*pow(h[6]->GetBinError(2),2)) , h[3]->GetBinError(2) );//debug xxx
+
 	h[4]->Add(h[1],h[3],1.,-1.); //subtract the bkg.
 
-		//you should check that these are producing something sensible for their errors.
+		//you should check that these are producing something sensible for their errors. (no one cares, no one looks at it).
 	h[7] = (TH1F*)h[5]->Clone(h[7]->GetName());
 	h[7]->Reset();
 	h[7]->Divide(h[5],h[6]); //lsb_over_usb
@@ -665,7 +863,7 @@ void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float
 //	printf("divide %f/%f = %f, outcome is %f\n",h[1]->GetBinContent(1),h[3]->GetBinContent(1),h[1]->GetBinContent(1)/h[3]->GetBinContent(1),h[8]->GetBinContent(1));
 	fixNAN(h[7]);
 	fixNAN(h[8]);
-}
+}//end find_bkg_with_fit
 
 void find_bkg(TH1F** h){
 		//used in SusyMainAna for a dumb simple way of getting a dummy background
@@ -789,6 +987,8 @@ LabelKinVars setupKinematicVar(){
         allKinVars["PtGG"] = temp;}
 
 	allKinVars["LepT"] = new KinematicVar("LepT","Leptonic Transverse Energy", "Lep #sigmaE_{T} (GeV)", false, 20.f, 0.f, 150.f),
+
+	allKinVars["LepPt"] = new KinematicVar("LepT","Lepton Transverse Energy", "Lepton E_{T} (GeV)", false, 20.f, 0.f, 150.f),
 
         allKinVars["phoPt0"] = new KinematicVar("phoPt0",  "", "P_{t}^{#gamma0} (GeV)",false, 4, 0.f, 144);
 

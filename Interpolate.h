@@ -35,8 +35,8 @@ void interpolate_collumn(TH2F* hin, int col, int rowstart, int rowend); //wad
 void interpolate_uneven_column(TH2F* hin, int col, int rowstart, int rowend);//wad
 void interpolate_collumn_rowwise(TH2F* hin, int col, int rowstart, int rowend); //wad
 TH2F* HistOr(TH2F* h1, TH2F* h2, float blankval, float tollorence);
-void interpolate_Zywicki(TH2F* shittyhist);
-void interpolate_Zywicki(TH2D* shittyhist);
+void interpolate_Zywicki(TH2F* shittyhist,bool bigcol = true);
+void interpolate_Zywicki(TH2D* shittyhist,bool bigcol = true);
 
 	///////////TH2D///////////////
 void interpolate_collumn(TH2D* hin, int col, int rowstart, int rowend); //wad
@@ -187,10 +187,10 @@ TH2D* HistOr(TH2D* h1, TH2D* h2, float blankval, float tollorence){
 }
 
 
-void interpolate_Zywicki(TH2D* shittyhist){
-	interpolate_Zywicki((TH2F* )shittyhist);
+void interpolate_Zywicki(TH2D* shittyhist,bool bigcol){
+	interpolate_Zywicki((TH2F* )shittyhist,bigcol);
 }
-void interpolate_Zywicki(TH2F* shittyhist){
+void interpolate_Zywicki(TH2F* shittyhist,bool bigcol){
 	//This assumes a histogram with the following binning: 
 	//float mSBins[nS+1] = {187.5, 212.5, 237.5 ,262.5 ,287.5, 312.5, 337.5, 362.5,    375, 425, 475, 525}
 	//float mHBins[nH+1] = {130, 140, 160, 190, 210,    220, 230, 235,245, 255,     260, 270, 280, 285,295,     305, 310,320, 330};

@@ -1,3 +1,42 @@
+
+	//
+	//                                              _
+	//                                           _/|X|\
+	//                                         _/  |X| \
+	//                                       _/    |X|  \
+	//                                     _/      |X|   \
+	//                                   _/        |X|    \
+	//                                 _/          |X|     \
+	//                               _/            |X|      \
+	//                             _/              |X|       \
+	//   _________________________/________________|X|________\_____[][][]
+	//  /_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/MM|_\/_\/_\/_\/_\[][][]
+	//              | |                        /  |\/|              [][][]
+	//              | |                       |'  |/\|              [][][]
+	//              | |                       |___|\/|              [][][]
+	//              | |                           |\/|
+	//              | |                           |/\|
+	//              | |                           |\/|
+	//              | |                           |/\|
+	//              | |                           |\/|
+	//              (o)                           |/\|
+	//               J                            |\/|
+	//           ,__/_\__,                        |/\|
+	//           |H(gg)+X|                        |\/|
+	//           '-------'                        |/\|
+	//                                            |\/|
+	//                                            |/\|
+	//                                            |\/|
+	//                                            |/\|
+	//            ______ .______         ___      .__   __.  _______
+	//           /      ||   _  \       /   \     |  \ |  | |   ____|
+	//          |  ,----'|  |_)  |     /  ^  \    |   \|  | |  |__
+	//          |  |     |      /     /  /_\  \   |  . `  | |   __|
+	//          |  `----.|  |\  \---./  _____  \  |  |\   | |  |____
+	//           \______|| _| `.____/__/     \__\ |__| \__| |_______|
+	// 
+	//          Anthony Barker, 2013
+
 #include "TFractionFitter.h"
 #include "TAxis.h"
 #include "TH1.h"
@@ -70,19 +109,19 @@ void format_plots_combined(){
 	bool DrawLimits = true; //switch this off it it segfaults
 
 		//which plots to produce
-	bool makeDesignLinPlots = 1;
-	bool makeDesignLogPlots = 1;
+	bool makeDesignLinPlots = 0;
+	bool makeDesignLogPlots = 0;
 
 	bool makeSigcompFullLinPlots = 0;
 	bool makeSigcompFullLogPlots = 0;
-	bool makeSigComp1 = 1;
-	bool makeSigComp1log = 1;
+	bool makeSigComp1    = 0;
+	bool makeSigComp1log = 0;
 
 	bool makeBkgSubPlots = false; //keep this false
 	bool makeTagToBkgRatPlots = false;//keep false
 	bool makeNormPlots = false;//keep false
 	bool makeExclusionPlots = 0;
-	bool makeExclusionPlotsMinimal = 0;
+	bool makeExclusionPlotsMinimal = 1;
 	bool makeXSecPlot = 0;
 	bool makeEffPlots = 0;
 	bool makeDesignSummary = 0;
@@ -306,17 +345,30 @@ void format_plots_combined(){
 		//canv4->SetBottomMargin(0.15);
 		//if(saveImages)SaveCanvas(canv4,plotsdir+"Exclusion_bbin4_MET",savewhat);
 		printf("***** going to make limit plots now**** \n");
+		printf("***** Do bbin3 **** \n");
 		MakeLimitPlot("bbin3", "MET", showTag,true); //this saves the plot for you
+		printf("***** Do 2JbMLgbar2 **** \n");
 		MakeLimitPlot("2JbMLgbar2", "MET", showTag,true); //this saves the plot for you
+		printf("***** Do bbin3MM **** \n");
+		MakeLimitPlot("bbin3MM", "MET", showTag,true); //this saves the plot for you
+		printf("***** Do 2JbMMgbar2 **** \n");
+		MakeLimitPlot("2JbMMgbar2", "MET", showTag,true); //this saves the plot for you
 		printf("***** done makeing limit plots now**** \n");
 	}
 	if(makeXSecPlot){
 		MakeXSecPlot(saveImages);
 	}
 	if(makeEffPlots){
-		MakeEffPlots();
+		//MakeEffPlots();
 		//MakeEffPlot("NULL");
-		//MakeEffPlot("2JbMLgbar2");
+		MakeEffPlot("2JbMLgbar2",0);
+		MakeEffPlot("2JbMLgbar2",1);
+		MakeEffPlot("2JbMLgbar2",2);
+		MakeEffPlot("2JbMLgbar2",3);
+		MakeEffPlotComb("2JbMLgbar2");
+		MakeEffPlotComb("2JbML!Gbar2Mbb");
+		MakeEffPlotComb("2JbML!Gbar2Mbb!");
+		MakeEffPlotComb("3JbMLLGbar2");
 	}
 
 		////////////////////////////// Load Kin Var Plots //////////////////////////////////////

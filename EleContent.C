@@ -29,6 +29,8 @@ void makePtDist( TH1F* bkg, TH1F* gg, TH1F* eg,TH1F* ee, short whichshift);
 float GetEleBkg(float gg, float eg, float ee, float geff, float eeff, float efg, float gfe,bool checkmath = false);
 void Whichshift(short whichshift, short& shift_efg, short& shift_gfe, short& shift_eeff, short& shift_geff, short& shift_gg, short& shift_eg, short& shift_ee);
 inline float Efg(float pt);
+float phoEff(float pt);
+float phoEff_UC(float pt);
 	//////////////////////////////
 
 void EleContent(){
@@ -49,6 +51,15 @@ void EleContent(){
 	TH1F* h_elebkg_met[129];
 	TH1F* h_elebkg_pt[129];
 		//the first 128 are shifts, the 129th is the central value.
+		//There are seven uncertainties that you wiggle: 
+		//n pho pho 
+		//n ele pho
+		//n ele ele
+		//photon efficiency
+		//electron efficiency
+		//photon to electron fake rate
+		//electorn to photon fake rate
+		//129 = 2^7 + 1
 	for (short i=0; i<129; i++) {
 		h_elebkg_met[i] = (TH1F*)h_pvpv_met->Clone(Form("elebkgmet%i",i));
 		h_elebkg_met[i]->Reset();
@@ -159,11 +170,11 @@ void makeMetDist(TH1F* bkg, TH1F* gg, TH1F* eg,TH1F* ee, short whichshift){
 									   gg->GetBinContent(i) + shift_gg*gg->GetBinError(i),
 									   eg->GetBinContent(i) + shift_eg*eg->GetBinError(i),
 									   ee->GetBinContent(i) + shift_ee*ee->GetBinError(i),
-									   0.9 + shift_geff*0.05,//probably out of date; made up
-									   0.9 + shift_eeff*0.05,//assumed to match pho; made up
+									   0.875 + shift_geff*0.025,//from Poter and Andrew Askew
+									   0.875 + shift_eeff*0.05,//assumed to match pho; made up
 									   0.0200 + shift_efg*0.00021, //from Yutaro
-									   0.001 + shift_gfe*0.001,
-									   whichshift==128) );//made up
+									   0.11 + shift_gfe*0.05, //made up
+									   whichshift==128) );
 	}
 }//end for met
 
@@ -179,10 +190,10 @@ void makePtDist(TH1F* bkg, TH1F* gg, TH1F* eg,TH1F* ee, short whichshift){
 									   gg->GetBinContent(i) + shift_gg*gg->GetBinError(i),
 									   eg->GetBinContent(i) + shift_eg*eg->GetBinError(i),
 									   ee->GetBinContent(i) + shift_ee*ee->GetBinError(i),
-									   0.9 + shift_geff*0.05,
-									   0.9 + shift_eeff*0.05,
+									   phoEff(x) + shift_geff*phoEff_UC(x), //from Poter and Andrew
+									   phoEff(x) + 2*shift_eeff*phoEff_UC(x), //assume it matches the photon, but more uncertain
 									   Efg(x) + shift_efg*0.0012,//from linear fit
-									   0.001 + shift_gfe*0.001,
+									   0.11 + shift_gfe*0.05, //made up
 									   whichshift==128));
 	}
 }//end for Pt
@@ -258,6 +269,42 @@ inline float Efg(float pt){return 0.0280688 - 0.000184919*pt;}
 	//acurate to within 0.0012
 	//unbinned, use 0.0200 +- 0.00021
 
+float phoEff(float pt){
+	//the falt value is 0.87.5% +- 2.5%
+	//that is, eff_Loose * eff_PV/eff_EV = 0.92 * 0.78/0.82 = 0.875 = Loose_PV efficiency. 
+	//with uncertainty 
+	//(0.92*0.78/0.82)*sqrt((0.02/0.92)^2+(0.01/0.82)^2+(0.01/0.78)^2) = 0.0245
+	//the 0.82 and 0.78 are pulled off Andrew's PV plots, giving us a w conversion between PV and EV
+	//the rest are off of Poter's official performance plots. 
+	flaot w = 0.78/0.82;
+	if(pt < 30) return w*0.905;
+	else if(pt < 40) return w*0.92;
+	else if(pt < 50) return w*0.93;
+	else return w*0.94;
+}
+
+float phoEff_UC(float pt){
+	//return the uncertiainty in phoEff(pt);
+	float c = pow(0.02/0.82,2) + pow(0.02/0.78,2);
+	if(pt < 30) return sqrt(pow(0.005/0.905,2)+c)*phoEff(pt);
+	else if(pt < 40) return sqrt(pow(0.005/0.92,2)+c)*phoEff(pt);
+	else if(pt < 50) return sqrt(pow(0.010/0.93,2)+c)*phoEff(pt);
+	else return sqrt(pow(0.010/0.94,2)+c)*phoEff(pt);
+}
+
+float pho_to_ele(float pt){
+        //the falt value is 0.87.5% +- 2.5%
+        //that is, eff_Loose * eff_PV/eff_EV = 0.92 * 0.78/0.82 = 0.875 = Loose_PV efficiency. 
+        //with uncertainty 
+        //(0.92*0.78/0.82)*sqrt((0.02/0.92)^2+(0.01/0.82)^2+(0.01/0.78)^2) = 0.0245
+        //the 0.82 and 0.78 are pulled off Andrew's PV plots, giving us a w conversion between PV and EV
+        //the rest are off of Poter's official performance plots. 
+        flaot w = (1.0-0.78)/0.82;
+        if(pt < 30) return w*0.905;
+        else if(pt < 40) return w*0.92;
+        else if(pt < 50) return w*0.93;
+        else return w*0.94;
+}
 
 /*      TLatex * TEX_CMSPrelim = new TLatex(1.177136,0.953368,"CMS Preliminary 2013");
  PrettyLatex(TEX_CMSPrelim,0.03);

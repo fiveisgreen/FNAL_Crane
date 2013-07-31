@@ -59,7 +59,8 @@ void postanaana(){
 	string s_EventTopology_v4[nEventTopologies]={
 		"with no extra cuts",
 		"with both pho in the barrel",
-
+		"with four pho and hgg in the barrel",
+		"with MET > 30",
 		"with at least 1 lep and both pho in the barrel",
 		"with exactly 1 lep and both pho in the barrel",//"1!lepgbar2",
 		"with at least one electron and both pho in the barrel",//"1Elegbar2",
@@ -69,9 +70,11 @@ void postanaana(){
 		"with at least 3 leptons, and both pho in the barrel",//"3lepgbar2",
 		"with 2 or 3 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"23JbML!gbar2Mbb0lep",
 		"with at least 2 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"2JbML!gbar2Mbb0lep", //2
+		"with 2 or 3 jets, B-tags 2!L with M, <2 leptons, barrel photons, and 95<Mbb<155", //"23JbML!gbar2Mbb0lep",
+		"with at least 2 jets, B-tags 2!L with M, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbML!gbar2Mbb0lep", //2
 		"with at least 2 light flavor jets, and both pho in the barrel", //2lJgbar2",
-		"with at least 2 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"2lJEWKgbar2",
-		"with at 2 or 3 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"23lJEWKgbar2", //"2lJMWgbar2", "2lJMZgbar2", //4
+		"with at least 2 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"2lJewkMllgbar2",
+		"with at 2 or 3 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"23lJewkMllgbar2", //"2lJMWgbar2", "2lJMZgbar2", //4
 		"with 2 Jets, B-tags:ML", //"2JbML"
 		"with 2 Jets, B-tags:ML, and both pho in the barrel", //"2JbMLgbar2",
 		"with 2 Jets, B-tags:MM, and both pho in the barrel", //"2JbMMgbar2",
@@ -85,11 +88,11 @@ void postanaana(){
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !110<bestMjj<140", //"2JbML!gbar2bestOff",
 		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 110<bestMjj<140", //"2JbMM!gbar2bestOn",
 		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !110<bestMjj<140", //"2JbMM!gbar2bestOff", //4
-
-		"with 2 or 3 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"23JMllEWK0lepgbar2", //for WH
-		"with 2-5 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"0lep25JMllEWKgbar2",
-		"with 2-3 jets, light flavor jets with 70<Mljlj<110, exaclty 1 lepton, and barrel pho",//1!lep23JMllEWKgbar2",
-		"with 2-3 jets, light flavor jets with !70<Mljlj<110, exaclty 1 lepton, and barrel pho",//"1!lep23J!MllEWKgbar2"
+		"with 2 Jets, B-tag T, with pho in the barrel, and 110<M(Tight B +1Jet)<140",
+		"with 2 or 3 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"23Jb01MewkMll0lepgbar2", //for WH
+		"with 2-5 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"0lep25Jb01MewkMllgbar2",
+		"with 2-3 jets, light flavor jets with 70<Mljlj<110, exaclty 1 lepton, and barrel pho",//1!lep23Jb01MewkMllgbar2,
+		"with 2-3 jets, light flavor jets with !70<Mljlj<110, exaclty 1 lepton, and barrel pho",//"1!lep23Jb01M!ewkMllgbar2"
 		"with 2 Jets, B-tags:M, 2 leptons, and both pho in the barrel",//"2JbM2lepgbar2",
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and exactly one lepton", //"2JbML!1lepgbar2",
 
@@ -261,7 +264,7 @@ void postanaana(){
 	for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {
 		ha_diPhotonMass[iTopo] = lh_mGG_unsliced[s_EventTopology[iTopo]];
 		//printf("dipho %s mass integ %.0f\n",(char*)s_EventTopology[iTopo].c_str(),ha_diPhotonMass[iTopo]->Integral() );
-		logfile<<Form("dipho %s mass integ %.0f\n",(char*)s_EventTopology[iTopo].c_str(),ha_diPhotonMass[iTopo]->Integral() );
+		//logfile<<Form("dipho %s mass integ %.0f\n",(char*)s_EventTopology[iTopo].c_str(),ha_diPhotonMass[iTopo]->Integral() );
 	}
 
 	if(debug>2) cout << "a"<<endl;
@@ -282,7 +285,7 @@ void postanaana(){
 		}
 	}
 	if(debug>1) printf("finished find_bkg_with_fit for all groups\n");
-
+//hereherehere
 	
 	fout->cd();
 	if(debug>3) printf("Wrote the set of mgg fit curves\n");
@@ -305,12 +308,15 @@ void postanaana(){
 		ha_diPhotonMass[iTopo]->SetTitle((char*)mggTitle.c_str());
 		ha_diPhotonMass[iTopo]->Draw("EP");
 		mgg_fit_curve[iTopo]->SetLineColor(kRed);
-		mgg_fit_curve[iTopo]->SetLineWidth(2);
+		mgg_fit_curve[iTopo]->SetLineWidth(5);
 		mgg_fit_curve[iTopo]->Draw("same");
 		mggCanv->Write();
 
 		//print the data driven bkg
-		printf("Data Driven Bkg %s %f\n",(char*)s_EventTopology[iTopo].c_str(),lha2[s_EventTopology[iTopo]]["MET"][3]->Integral() );
+		//printf("Data Driven Bkg %s %f Integ %f +- %f \n",(char*)s_EventTopology[iTopo].c_str(),lha2[s_EventTopology[iTopo]]["MET"][3]->Integral(), B_integral[iTopo], B_integral_error[iTopo]);
+		//logfile<<Form("Data Driven Bkg %s %f\n",(char*)s_EventTopology[iTopo].c_str(),lha2[s_EventTopology[iTopo]]["MET"][3]->Integral());
+		printf("Data Driven Bkg %s %.1f +- %.1f \n",(char*)s_EventTopology[iTopo].c_str(),B_integral[iTopo], B_integral_error[iTopo]);
+		logfile<<Form("Data Driven Bkg %s %.1f +- %.1f \n",(char*)s_EventTopology[iTopo].c_str(),B_integral[iTopo], B_integral_error[iTopo]);
 	}
 	logfile.close();
 	fout->cd();

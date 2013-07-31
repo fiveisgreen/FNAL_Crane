@@ -172,6 +172,26 @@ bool is_loose_2012_neglectPixelSeed(float pt,
 		int nPixelSeeds, //int!!
 		float rho25);
 
+//for skimming, a looser version of is_loose_2012, neglects mention of pixel seed
+bool is_skimmerPho_2012(float pt,
+                                   float eta,
+                                   float PFchargedHadIso,
+                                   float PFneutralHadIso,
+                                   float PFphoIso,
+                                   float HoverE,  //single tower, same cut though
+                                   float sigma_IetaIeta,
+                                   float rho25);
+
+
+bool is_superskimmer_pho(float pt,
+		float eta,
+		float PFchargedHadIso,
+		float PFneutralHadIso,
+		float PFphoIso,
+		float HoverE,  //single tower, same cut though
+		float sigma_IetaIeta,
+		float sigmaIphiIphi,
+		float rho25);
 
 float max(float a, double b);
 float MCsmear(float eta, float r9,TRandom* r);
@@ -710,7 +730,82 @@ bool is_loose_2012_neglectPixelSeed(float pt,
 	}
 }
 
+bool is_skimmerPho_2012(float pt,
+                                   float eta,
+                                   float PFchargedHadIso,
+                                   float PFneutralHadIso,
+                                   float PFphoIso,
+                                   float HoverE,  //single tower, same cut though
+                                   float sigma_IetaIeta,
+                                   float rho25){
+	//This is a loosened up version of is_Loose_2012 for use in skimming
+	//in particular it has no electron veto or pixel veto
 
+        PFchargedHadIso = max(PFchargedHadIso - rho25*EA_charged_hadron(eta),0.);
+        PFneutralHadIso = max(PFneutralHadIso - rho25*EA_neutral_hadron(eta),0.);
+        PFphoIso = max(PFphoIso - rho25*EA_photon(eta),0.);
+        if( HoverE   <0.10 &&
+           //sigma_IetaIeta > 0.001 &&
+           //sigmaIphiIphi > 0.001 &&
+           //(ChargeSafeEleVeto) &&
+           ((is_bar(eta) &&
+                 PFchargedHadIso  < 3 && //2.6 &&
+                 PFneutralHadIso  < 4+0.06*pt && // 3.5+0.04*pt &&
+                 PFphoIso  < 1.6+0.007*pt && // 1.3+0.005*pt &&
+                 sigma_IetaIeta< 0.014 // 0.012
+                 ) || (
+                           is_ec(eta) &&
+                           PFchargedHadIso  < 3.0 && // < 2.3 &&
+                           PFneutralHadIso  < 3.5+0.06*pt && // < 2.9+0.04*pt &&
+                           sigma_IetaIeta<0.038 //sigma_IetaIeta<0.034
+                           )
+                ))return true;
+        else{
+                 return false;
+        }
+}
+
+bool is_superskimmer_pho(float pt,
+		float eta,
+		float PFchargedHadIso,
+		float PFneutralHadIso,
+		float PFphoIso,
+		float HoverE,  //single tower, same cut though
+		float sigma_IetaIeta,
+		float sigmaIphiIphi,
+		float rho25){
+		//This is to identify Electrons
+		//Just like loose_2012 but neglects the seed requirement entirely.
+		//We also multiply the pt scalings by w to make sure they don't interfere
+		//with photon energy scale corrections.
+		//so with this we skim out the cuts up to loose, but neglect pv/ele veto
+		//and allow ourselves enough leeway to mess with 
+		//the photon energy scales without interference
+	PFchargedHadIso = max(PFchargedHadIso - rho25*EA_charged_hadron(eta),0.);
+	PFneutralHadIso = max(PFneutralHadIso - rho25*EA_neutral_hadron(eta),0.);
+	PFphoIso = max(PFphoIso - rho25*EA_photon(eta),0.);
+	float w = 2;
+	if( HoverE   <0.05 &&
+	   //nPixelSeeds > 0 && //select ele!!
+	   sigma_IetaIeta > 0.001 &&
+	   sigmaIphiIphi > 0.001 &&
+	   ((is_bar(eta) &&
+		 PFchargedHadIso  < 2.6 &&
+		 PFneutralHadIso  < 3.5+w*0.04*pt &&
+		 PFphoIso  < 1.3+w*0.005*pt &&
+		 sigma_IetaIeta< 0.012
+		 ) || (
+			   is_ec(eta) &&
+			   PFchargedHadIso  < 2.3 &&
+			   PFneutralHadIso  < 2.9+w*0.04*pt &&
+			   //yes really, no PhoIsoCut..
+			   sigma_IetaIeta<0.034
+			   )
+		))return true;
+	else{
+		return false;
+	}
+}//end is_superskimmer_pho
 
 float max(float a, double b){
 	if(a >= (float)b) return a;
@@ -754,13 +849,13 @@ float MCsmear(float eta, float r9,TRandom* r){
 }
 
 float higgsness(float PtGG, float phoDphi, float phoMinR9, float phoEtaMax){
-	float sb_phi;
+	float sb_phi = 0.25;
 	if(phoDphi < 1.8) sb_phi = 1.0;
 	else if(phoDphi < 2.6) sb_phi = 0.429;
 	else if(phoDphi < 2.9) sb_phi = 0.444;
 	else sb_phi = 0.25;
 
-	float sb_eta;
+	float sb_eta = 0.05;
 	if(phoDphi < 1.0f) sb_eta = 1.0;
 	else if(phoDphi < 1.4442f) sb_eta = 0.667;
 	else if(phoDphi < 2.0f) sb_eta = 0.136;

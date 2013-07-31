@@ -32,6 +32,7 @@ public:
 
 	int NGenPoints;//always around 2,500,000
 	double cs; //1.923E-11 in mbarns
+	double cs_uncert; //in percent
 
 	string pointName;//name used in the map.
 	int processID; // a numeric name for use in passing it from the jdl file
@@ -83,6 +84,7 @@ TString MCpoint::makeLimitResultBundleName(){return makeLimitResultBundleName_(T
 
 void MCpoint::setType(int type_){
 	type = type_;
+	cs_uncert = -1;
 	if(type == 1){	//higgino only type
 		pointName = Form("ho_%i",Mhiggsino);
 		outroot_mc = Form("susyEvents_MC_ho%i.root",Mhiggsino);
@@ -118,10 +120,11 @@ void MCpoint::setType(int type_){
 		string plotsroot_mc_copy(plotsroot_mc);
 		size_t pos1 = plotsroot_mc_copy.find(".root");
 		logplotsroot_mc = plotsroot_mc_copy.replace(pos1,std::string(".root").length(),".log");
-		plotsAndBackground_mc = plotsAndBackground_data;
-		string plotsAndBackground_data_copy(plotsAndBackground_data);
-		size_t pos2 = plotsAndBackground_data_copy.find(".root");
-		logplotsAndBackground_mc = plotsAndBackground_data_copy.replace(pos2,std::string(".root").length(),".log");
+		plotsAndBackground_mc = plotsAndBackground_data_lim;
+		logplotsAndBackground_mc = logplotsAndBackground_data_lim;
+		//string plotsAndBackground_data_copy(plotsAndBackground_data_lim);
+		//size_t pos2 = plotsAndBackground_data_copy.find(".root");
+		//logplotsAndBackground_mc = plotsAndBackground_data_copy.replace(pos2,std::string(".root").length(),".log");
 		formatedplotsroot_mc= formatedplotsroot_data;
 
 		s_DataAndMcFiles = Data;
@@ -244,7 +247,6 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		s_DataAndMcFiles_v3 = "MC";
 		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
-		//s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i, %s",Mstop,Mhiggsino, nicelable.data());
 	}
 	
 	else if(type >= 20 && type < 30){ //new strong production
@@ -255,6 +257,7 @@ void MCpoint::setType(int type_){
 			//
 		string typelable;
 		string nicelable;
+		cs_uncert = 5;//5%
 		int randSeed=0;
 		if (type == 20){  //tree_ElectroHiggs_chargino135_15_hh_bbaa.root
 			typelable = "bbaa";
@@ -290,7 +293,6 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles_v2 = Form("MC_%s",pointName.data());
 		s_DataAndMcFiles_v3 = "MC";
 		s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i",Mhiggsino);
-		//s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i, %s",Mhiggsino,nicelable.data());
 	}
 	else{ //assume type 0	Stop-higgsion type
 			//     ___      ___          ____
@@ -382,24 +384,29 @@ std::vector<MCpoint*> setupMCpoints(){
 	int ngen = 1000000;
 	MCpoints.push_back(new MCpoint(185,5050,150,443138,5.490900E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(185,5050,175,554992,5.496100E-10,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(210,5050,150,354025,3.541100E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(210,5050,175,474309,3.547700E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(210,5050,200,570199,3.564800E-10,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(235,5050,150,270220,2.299700E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(235,5050,175,387713,2.304700E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(235,5050,200,493440,2.316200E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(235,5050,225,578117,2.329800E-10,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(260,5050,150,199989,1.514400E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(260,5050,175,304227,1.515400E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(260,5050,200,410061,1.517300E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(260,5050,225,503790,1.522400E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(260,5050,250,578579,1.524700E-10,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(285,5050,150,157355,1.117200E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(285,5050,175,230270,1.006400E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(285,5050,200,326837,1.005900E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(285,5050,225,424092,1.010400E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(285,5050,250,507641,1.010800E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(285,5050,275,577679,1.015100E-10,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(310,5050,150,158669,1.114100E-10,2,type2filedir));
 	MCpoints.push_back(new MCpoint(310,5050,175,170054,6.781000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(310,5050,200,252237,6.769000E-11,2,type2filedir));
@@ -407,6 +414,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(310,5050,250,431087,6.804000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(310,5050,275,509904,6.828000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(310,5050,300,575064,6.848000E-11,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(335,5050,150,126632,8.548000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(335,5050,175,188737,7.603000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(335,5050,200,189411,4.595000E-11,2,type2filedir));
@@ -415,6 +423,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(335,5050,275,434645,4.637000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(335,5050,300,507500,4.648000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(335,5050,325,569324,4.660000E-11,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(360,5050,150,97439,6.375000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(360,5050,175,154852,5.949000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(360,5050,200,211492,5.197000E-11,2,type2filedir));
@@ -423,6 +432,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(360,5050,275,359063,3.197400E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(360,5050,300,434246,3.186600E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(360,5050,325,503935,3.201300E-11,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(385,5050,150,73291,4.672000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(385,5050,175,120794,4.463000E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(385,5050,200,177876,4.155000E-11,2,type2filedir));
@@ -433,6 +443,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(385,5050,300,360822,2.220600E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(385,5050,325,431618,2.219600E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(385,5050,375,556384,2.239200E-11,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(410,5050,150,54347,3.422800E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(410,5050,175,93212,3.333300E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(410,5050,200,141430,3.160200E-11,2,type2filedir));
@@ -443,6 +454,7 @@ std::vector<MCpoint*> setupMCpoints(){
 		//410 5050 300    261 81540 4.353E-12 264 209497 1.120E-11
 	MCpoints.push_back(new MCpoint(410,5050,325,362130,1.567700E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(410,5050,375,492187,1.569700E-11,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(460,5050,150,29968,1.828800E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(460,5050,175,52518,1.798100E-11,2,type2filedir));
 	MCpoints.push_back(new MCpoint(460,5050,200,83617,1.750500E-11,2,type2filedir));
@@ -454,6 +466,7 @@ std::vector<MCpoint*> setupMCpoints(){
 		//460 5050 325    261 71445 2.431E-12 264 162066 5.509E-12
 	MCpoints.push_back(new MCpoint(460,5050,375,356439,7.964000E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(460,5050,425,477281,7.990000E-12,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(510,5050,150,16458,9.977000E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(510,5050,175,29197,9.767000E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(510,5050,200,47923,9.670000E-12,2,type2filedir));
@@ -465,6 +478,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(510,5050,375,235742,4.184000E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(510,5050,425,348621,4.205000E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(510,5050,475,462418,4.233000E-12,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(610,5050,150,5303,3.137000E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(610,5050,175,9538,3.129000E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(610,5050,200,15900,3.117000E-12,2,type2filedir));
@@ -478,6 +492,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(610,5050,475,230089,1.272900E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(610,5050,525,327968,1.275700E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(610,5050,575,428587,1.280900E-12,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(660,5050,150,3100,1.849800E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(660,5050,175,5589,1.830900E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(660,5050,200,9290,1.824700E-12,2,type2filedir));
@@ -492,6 +507,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(660,5050,525,224446,7.247000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(660,5050,575,315236,7.269000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(660,5050,625,412770,7.287000E-13,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(710,5050,150,1824,1.100600E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(710,5050,175,3209,1.058400E-12,2,type2filedir));
 	MCpoints.push_back(new MCpoint(710,5050,200,5586,1.076400E-12,2,type2filedir));
@@ -507,6 +523,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(710,5050,575,218104,4.216000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(710,5050,625,303717,4.221000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(710,5050,675,397887,4.250000E-13,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(810,5050,150,655,3.878000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(810,5050,175,1202,3.955000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(810,5050,200,2117,4.054000E-13,2,type2filedir));
@@ -523,6 +540,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(810,5050,625,236020,2.787000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(810,5050,675,204040,1.491900E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(810,5050,725,281923,1.496300E-13,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(910,5050,150,273,1.535000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(910,5050,175,428,1.418300E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(910,5050,200,743,1.489600E-13,2,type2filedir));
@@ -540,6 +558,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(910,5050,675,175995,1.204600E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(910,5050,725,223114,1.032000E-13,2,type2filedir));
 	MCpoints.push_back(new MCpoint(910,5050,825,260364,5.566000E-14,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(1010,5050,150,103,5.866000E-14,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1010,5050,175,152,5.656000E-14,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1010,5050,200,302,5.672000E-14,2,type2filedir));
@@ -558,6 +577,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(1010,5050,725,120924,4.910000E-14,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1010,5050,825,209119,3.952000E-14,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1010,5050,925,241679,2.136000E-14,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(1510,5050,1025,20172,1.454600E-15,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1510,5050,1125,44090,1.444400E-15,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1510,5050,1225,94283,1.447400E-15,2,type2filedir));
@@ -579,6 +599,7 @@ std::vector<MCpoint*> setupMCpoints(){
 	MCpoints.push_back(new MCpoint(1510,5050,725,1806,6.418000E-16,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1510,5050,825,4011,6.115000E-16,2,type2filedir));
 	MCpoints.push_back(new MCpoint(1510,5050,925,9487,6.106000E-16,2,type2filedir));
+
 	MCpoints.push_back(new MCpoint(2010,5050,1025,250,1.776100E-17,2,type2filedir));
 	MCpoints.push_back(new MCpoint(2010,5050,1125,523,1.690500E-17,2,type2filedir));
 	MCpoints.push_back(new MCpoint(2010,5050,1225,1173,1.615000E-17,2,type2filedir));
@@ -726,267 +747,269 @@ std::vector<MCpoint*> setupMCpoints(){
 	string type10_Strongbbaa_filedir = "/eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/bbaa/SusyNtuple/cms533v1_v1/";
 	int ngen_bbaa = 6000;
 		//tree_StopHiggs_stop200_chargino150_15_hh_bbaa.root
-	MCpoints.push_back(new MCpoint(200,-1,150,ngen_bbaa,17.3*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(200,-1,175,ngen_bbaa,17.3*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,150,ngen_bbaa,9.28*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,175,ngen_bbaa,9.28*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,200,ngen_bbaa,9.28*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,215,ngen_bbaa,9.28*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,135,ngen_bbaa,5.24*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,150,ngen_bbaa,5.24*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,175,ngen_bbaa,5.24*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,200,ngen_bbaa,5.24*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,225,ngen_bbaa,5.24*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,240,ngen_bbaa,5.24*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,135,ngen_bbaa,3.09*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,150,ngen_bbaa,3.09*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,175,ngen_bbaa,3.09*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,200,ngen_bbaa,3.09*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,225,ngen_bbaa,3.09*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,250,ngen_bbaa,3.09*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,265,ngen_bbaa,3.09*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,135,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,150,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,175,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,200,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,225,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,250,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,275,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,290,ngen_bbaa,1.89*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,135,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,150,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,175,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,200,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,225,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,250,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,275,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,300,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,315,ngen_bbaa,1.19*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,135,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,150,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,175,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,200,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,225,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,250,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,275,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,300,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(375,-1,135,ngen_bbaa,0.768*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,135,ngen_bbaa,0.341*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,150,ngen_bbaa,0.341*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,200,ngen_bbaa,0.341*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,250,ngen_bbaa,0.341*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,300,ngen_bbaa,0.341*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,350,ngen_bbaa,0.341*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(425,-1,135,ngen_bbaa,0.234*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,150,ngen_bbaa,0.163*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,200,ngen_bbaa,0.163*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,250,ngen_bbaa,0.163*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,300,ngen_bbaa,0.163*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,350,ngen_bbaa,0.163*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,150,ngen_bbaa,0.0818*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,200,ngen_bbaa,0.0818*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,250,ngen_bbaa,0.0818*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,300,ngen_bbaa,0.0818*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,350,ngen_bbaa,0.0818*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir));
+
+	MCpoints.push_back(new MCpoint(200,-1,150,ngen_bbaa,18.5245*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(200,-1,175,ngen_bbaa,18.5245*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(225,-1,150,ngen_bbaa,9.90959*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,175,ngen_bbaa,9.90959*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,200,ngen_bbaa,9.90959*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,215,ngen_bbaa,9.90959*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(250,-1,135,ngen_bbaa,5.57596*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,150,ngen_bbaa,5.57596*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,175,ngen_bbaa,5.57596*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,200,ngen_bbaa,5.57596*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,225,ngen_bbaa,5.57596*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,240,ngen_bbaa,5.57596*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(275,-1,135,ngen_bbaa,3.2781*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,150,ngen_bbaa,3.2781*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,175,ngen_bbaa,3.2781*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,200,ngen_bbaa,3.2781*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,225,ngen_bbaa,3.2781*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,250,ngen_bbaa,3.2781*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,265,ngen_bbaa,3.2781*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(300,-1,135,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,150,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,175,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,200,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,225,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,250,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,275,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,290,ngen_bbaa,1.99608*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(325,-1,135,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,150,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,175,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,200,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,225,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,250,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,275,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,300,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,315,ngen_bbaa,1.25277*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(350,-1,135,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,150,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,175,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,200,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,225,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,250,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,275,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,300,ngen_bbaa,0.807323*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(375,-1,135,ngen_bbaa,0.576882*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2712;
+	MCpoints.push_back(new MCpoint(400,-1,135,ngen_bbaa,0.35683*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,150,ngen_bbaa,0.35683*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,200,ngen_bbaa,0.35683*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,250,ngen_bbaa,0.35683*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,300,ngen_bbaa,0.35683*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,350,ngen_bbaa,0.35683*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(425,-1,135,ngen_bbaa,0.243755*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.0504;
+	MCpoints.push_back(new MCpoint(450,-1,150,ngen_bbaa,0.169668*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,200,ngen_bbaa,0.169668*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,250,ngen_bbaa,0.169668*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,300,ngen_bbaa,0.169668*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,350,ngen_bbaa,0.169668*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(500,-1,150,ngen_bbaa,0.0855847*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,200,ngen_bbaa,0.0855847*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,250,ngen_bbaa,0.0855847*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,300,ngen_bbaa,0.0855847*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,350,ngen_bbaa,0.0855847*bbaa_br*mb_per_pb,10,type10_Strongbbaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+
 	
 	string type11_Strongwwaa_filedir = "/eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/wwaa/SusyNtuple/cms533v1_v1/";
 	int ngen_wwaa = 3000;
 		//tree_StopHiggs_stop200_chargino150_5_hh_wwaa.root
-	MCpoints.push_back(new MCpoint(200,-1,150,ngen_wwaa,17.3*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(200,-1,175,ngen_wwaa,17.3*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,150,ngen_wwaa,9.28*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,175,ngen_wwaa,9.28*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,200,ngen_wwaa,9.28*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,215,ngen_wwaa,9.28*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,135,ngen_wwaa,5.24*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,150,ngen_wwaa,5.24*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,175,ngen_wwaa,5.24*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,200,ngen_wwaa,5.24*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,225,ngen_wwaa,5.24*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,240,ngen_wwaa,5.24*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,135,ngen_wwaa,3.09*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,150,ngen_wwaa,3.09*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,175,ngen_wwaa,3.09*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,200,ngen_wwaa,3.09*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,225,ngen_wwaa,3.09*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,250,ngen_wwaa,3.09*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,265,ngen_wwaa,3.09*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,135,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,150,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,175,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,200,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,225,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,250,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,275,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,290,ngen_wwaa,1.89*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,135,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,150,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,175,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,200,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,225,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,250,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,275,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,300,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,315,ngen_wwaa,1.19*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,135,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,150,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,175,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,200,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,225,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,250,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,275,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,300,ngen_wwaa,0.768*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(375,-1,135,ngen_wwaa,0.507*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,135,ngen_wwaa,0.341*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,150,ngen_wwaa,0.341*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,200,ngen_wwaa,0.341*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,250,ngen_wwaa,0.341*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,300,ngen_wwaa,0.341*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,350,ngen_wwaa,0.341*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(425,-1,135,ngen_wwaa,0.234*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,150,ngen_wwaa,0.163*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,200,ngen_wwaa,0.163*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,250,ngen_wwaa,0.163*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,300,ngen_wwaa,0.163*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,350,ngen_wwaa,0.163*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,150,ngen_wwaa,0.0818*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,200,ngen_wwaa,0.0818*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,250,ngen_wwaa,0.0818*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,300,ngen_wwaa,0.0818*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,350,ngen_wwaa,0.0818*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir));
-
+	MCpoints.push_back(new MCpoint(200,-1,150,ngen_wwaa,18.5245*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(200,-1,175,ngen_wwaa,18.5245*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(225,-1,150,ngen_wwaa,9.90959*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,175,ngen_wwaa,9.90959*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,200,ngen_wwaa,9.90959*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,215,ngen_wwaa,9.90959*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(250,-1,135,ngen_wwaa,5.57596*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,150,ngen_wwaa,5.57596*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,175,ngen_wwaa,5.57596*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,200,ngen_wwaa,5.57596*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,225,ngen_wwaa,5.57596*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,240,ngen_wwaa,5.57596*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(275,-1,135,ngen_wwaa,3.2781*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,150,ngen_wwaa,3.2781*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,175,ngen_wwaa,3.2781*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,200,ngen_wwaa,3.2781*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,225,ngen_wwaa,3.2781*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,250,ngen_wwaa,3.2781*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,265,ngen_wwaa,3.2781*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(300,-1,135,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,150,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,175,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,200,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,225,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,250,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,275,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,290,ngen_wwaa,1.99608*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(325,-1,135,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,150,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,175,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,200,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,225,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,250,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,275,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,300,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,315,ngen_wwaa,1.25277*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(350,-1,135,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,150,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,175,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,200,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,225,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,250,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,275,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,300,ngen_wwaa,0.807323*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(375,-1,135,ngen_wwaa,0.576882*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2712;
+	MCpoints.push_back(new MCpoint(400,-1,135,ngen_wwaa,0.35683*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,150,ngen_wwaa,0.35683*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,200,ngen_wwaa,0.35683*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,250,ngen_wwaa,0.35683*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,300,ngen_wwaa,0.35683*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,350,ngen_wwaa,0.35683*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(425,-1,135,ngen_wwaa,0.243755*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.0504;
+	MCpoints.push_back(new MCpoint(450,-1,150,ngen_wwaa,0.169668*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,200,ngen_wwaa,0.169668*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,250,ngen_wwaa,0.169668*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,300,ngen_wwaa,0.169668*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,350,ngen_wwaa,0.169668*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(500,-1,150,ngen_wwaa,0.0855847*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,200,ngen_wwaa,0.0855847*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,250,ngen_wwaa,0.0855847*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,300,ngen_wwaa,0.0855847*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,350,ngen_wwaa,0.0855847*wwaa_br*mb_per_pb,11,type11_Strongwwaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
 
 	string type12_Strongzzaa_filedir = "/eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/zzaa/SusyNtuple/cms533v1_v1/";
 		//tree_StopHiggs_stop200_chargino150_10_hh_zzaa.root
 	int ngen_zzaa = 300;
-	MCpoints.push_back(new MCpoint(200,-1,150,ngen_zzaa,17.3*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(200,-1,175,ngen_zzaa,17.3*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,150,ngen_zzaa,9.28*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,175,ngen_zzaa,9.28*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,200,ngen_zzaa,9.28*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,215,ngen_zzaa,9.28*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,135,ngen_zzaa,5.24*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,150,ngen_zzaa,5.24*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,175,ngen_zzaa,5.24*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,200,ngen_zzaa,5.24*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,225,ngen_zzaa,5.24*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,240,ngen_zzaa,5.24*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,135,ngen_zzaa,3.09*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,150,ngen_zzaa,3.09*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,175,ngen_zzaa,3.09*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,200,ngen_zzaa,3.09*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,225,ngen_zzaa,3.09*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,250,ngen_zzaa,3.09*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,265,ngen_zzaa,3.09*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,135,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,150,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,175,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,200,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,225,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,250,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,275,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,290,ngen_zzaa,1.89*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,135,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,150,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,175,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,200,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,225,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,250,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,275,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,300,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,315,ngen_zzaa,1.19*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,135,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,150,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,175,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,200,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,225,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,250,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,275,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,300,ngen_zzaa,0.768*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(375,-1,135,ngen_zzaa,0.507*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,135,ngen_zzaa,0.341*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,150,ngen_zzaa,0.341*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,200,ngen_zzaa,0.341*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,250,ngen_zzaa,0.341*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,300,ngen_zzaa,0.341*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,350,ngen_zzaa,0.341*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(425,-1,135,ngen_zzaa,0.234*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,150,ngen_zzaa,0.163*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,200,ngen_zzaa,0.163*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,250,ngen_zzaa,0.163*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,300,ngen_zzaa,0.163*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,350,ngen_zzaa,0.163*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,150,ngen_zzaa,0.0818*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,200,ngen_zzaa,0.0818*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,250,ngen_zzaa,0.0818*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,300,ngen_zzaa,0.0818*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,350,ngen_zzaa,0.0818*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir));
+	MCpoints.push_back(new MCpoint(200,-1,150,ngen_zzaa,18.5245*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(200,-1,175,ngen_zzaa,18.5245*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(225,-1,150,ngen_zzaa,9.90959*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,175,ngen_zzaa,9.90959*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,200,ngen_zzaa,9.90959*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,215,ngen_zzaa,9.90959*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(250,-1,135,ngen_zzaa,5.57596*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,150,ngen_zzaa,5.57596*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,175,ngen_zzaa,5.57596*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,200,ngen_zzaa,5.57596*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,225,ngen_zzaa,5.57596*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,240,ngen_zzaa,5.57596*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(275,-1,135,ngen_zzaa,3.2781*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,150,ngen_zzaa,3.2781*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,175,ngen_zzaa,3.2781*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,200,ngen_zzaa,3.2781*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,225,ngen_zzaa,3.2781*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,250,ngen_zzaa,3.2781*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,265,ngen_zzaa,3.2781*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(300,-1,135,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,150,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,175,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,200,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,225,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,250,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,275,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,290,ngen_zzaa,1.99608*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(325,-1,135,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,150,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,175,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,200,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,225,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,250,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,275,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,300,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,315,ngen_zzaa,1.25277*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(350,-1,135,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,150,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,175,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,200,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,225,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,250,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,275,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,300,ngen_zzaa,0.807323*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(375,-1,135,ngen_zzaa,0.576882*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2712;
+	MCpoints.push_back(new MCpoint(400,-1,135,ngen_zzaa,0.35683*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,150,ngen_zzaa,0.35683*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,200,ngen_zzaa,0.35683*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,250,ngen_zzaa,0.35683*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,300,ngen_zzaa,0.35683*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,350,ngen_zzaa,0.35683*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(425,-1,135,ngen_zzaa,0.243755*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.0504;
+	MCpoints.push_back(new MCpoint(450,-1,150,ngen_zzaa,0.169668*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,200,ngen_zzaa,0.169668*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,250,ngen_zzaa,0.169668*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,300,ngen_zzaa,0.169668*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,350,ngen_zzaa,0.169668*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(500,-1,150,ngen_zzaa,0.0855847*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,200,ngen_zzaa,0.0855847*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,250,ngen_zzaa,0.0855847*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,300,ngen_zzaa,0.0855847*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,350,ngen_zzaa,0.0855847*zzaa_br*mb_per_pb,12,type12_Strongzzaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
 
 	string type13_Strongttaa_filedir = "/eos/uscms/store/user/lpcpjm/PrivateMC/FastSim/533p3_full/ewkinoLHEs/StopHiggs/ttaa/SusyNtuple/cms533v1_v1/";
 		//tree_StopHiggs_stop200_chargino150_13_hh_ttaa.root
 	int ngen_ttaa = 600;
-	MCpoints.push_back(new MCpoint(200,-1,150,ngen_ttaa,17.3*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(200,-1,175,ngen_ttaa,17.3*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,150,ngen_ttaa,9.28*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,175,ngen_ttaa,9.28*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,200,ngen_ttaa,9.28*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(225,-1,215,ngen_ttaa,9.28*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,135,ngen_ttaa,5.24*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,150,ngen_ttaa,5.24*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,175,ngen_ttaa,5.24*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,200,ngen_ttaa,5.24*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,225,ngen_ttaa,5.24*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(250,-1,240,ngen_ttaa,5.24*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,135,ngen_ttaa,3.09*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,150,ngen_ttaa,3.09*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,175,ngen_ttaa,3.09*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,200,ngen_ttaa,3.09*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,225,ngen_ttaa,3.09*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,250,ngen_ttaa,3.09*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(275,-1,265,ngen_ttaa,3.09*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,135,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,150,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,175,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,200,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,225,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,250,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,275,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(300,-1,290,ngen_ttaa,1.89*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,135,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,150,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,175,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,200,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,225,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,250,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,275,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,300,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(325,-1,315,ngen_ttaa,1.19*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,135,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,150,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,175,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,200,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,225,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,250,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,275,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(350,-1,300,ngen_ttaa,0.768*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(375,-1,135,ngen_ttaa,0.507*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,135,ngen_ttaa,0.341*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,150,ngen_ttaa,0.341*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,200,ngen_ttaa,0.341*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,250,ngen_ttaa,0.341*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,300,ngen_ttaa,0.341*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(400,-1,350,ngen_ttaa,0.341*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(425,-1,135,ngen_ttaa,0.234*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,150,ngen_ttaa,0.163*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,200,ngen_ttaa,0.163*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,250,ngen_ttaa,0.163*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,300,ngen_ttaa,0.163*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(450,-1,350,ngen_ttaa,0.163*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,150,ngen_ttaa,0.0818*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,200,ngen_ttaa,0.0818*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,250,ngen_ttaa,0.0818*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,300,ngen_ttaa,0.0818*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
-	MCpoints.push_back(new MCpoint(500,-1,350,ngen_ttaa,0.0818*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir));
+	MCpoints.push_back(new MCpoint(200,-1,150,ngen_ttaa,18.5245*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(200,-1,175,ngen_ttaa,18.5245*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9147;
+	MCpoints.push_back(new MCpoint(225,-1,150,ngen_ttaa,9.90959*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,175,ngen_ttaa,9.90959*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,200,ngen_ttaa,9.90959*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(225,-1,215,ngen_ttaa,9.90959*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9662;
+	MCpoints.push_back(new MCpoint(250,-1,135,ngen_ttaa,5.57596*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,150,ngen_ttaa,5.57596*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,175,ngen_ttaa,5.57596*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,200,ngen_ttaa,5.57596*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,225,ngen_ttaa,5.57596*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(250,-1,240,ngen_ttaa,5.57596*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7529;
+	MCpoints.push_back(new MCpoint(275,-1,135,ngen_ttaa,3.2781*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,150,ngen_ttaa,3.2781*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,175,ngen_ttaa,3.2781*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,200,ngen_ttaa,3.2781*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,225,ngen_ttaa,3.2781*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,250,ngen_ttaa,3.2781*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(275,-1,265,ngen_ttaa,3.2781*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.7341;
+	MCpoints.push_back(new MCpoint(300,-1,135,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,150,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,175,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,200,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,225,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,250,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,275,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(300,-1,290,ngen_ttaa,1.99608*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.6905;
+	MCpoints.push_back(new MCpoint(325,-1,135,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,150,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,175,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,200,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,225,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,250,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,275,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,300,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(325,-1,315,ngen_ttaa,1.25277*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2875;
+	MCpoints.push_back(new MCpoint(350,-1,135,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,150,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,175,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,200,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,225,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,250,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,275,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(350,-1,300,ngen_ttaa,0.807323*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.3597;
+	MCpoints.push_back(new MCpoint(375,-1,135,ngen_ttaa,0.576882*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2712;
+	MCpoints.push_back(new MCpoint(400,-1,135,ngen_ttaa,0.35683*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,150,ngen_ttaa,0.35683*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,200,ngen_ttaa,0.35683*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,250,ngen_ttaa,0.35683*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,300,ngen_ttaa,0.35683*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(400,-1,350,ngen_ttaa,0.35683*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2848;
+	MCpoints.push_back(new MCpoint(425,-1,135,ngen_ttaa,0.243755*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.0504;
+	MCpoints.push_back(new MCpoint(450,-1,150,ngen_ttaa,0.169668*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,200,ngen_ttaa,0.169668*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,250,ngen_ttaa,0.169668*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,300,ngen_ttaa,0.169668*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(450,-1,350,ngen_ttaa,0.169668*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.2368;
+	MCpoints.push_back(new MCpoint(500,-1,150,ngen_ttaa,0.0855847*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,200,ngen_ttaa,0.0855847*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,250,ngen_ttaa,0.0855847*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,300,ngen_ttaa,0.0855847*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+	MCpoints.push_back(new MCpoint(500,-1,350,ngen_ttaa,0.0855847*ttaa_br*mb_per_pb,13,type13_Strongttaa_filedir)); MCpoints.back()->cs_uncert=14.9611;
+
 
 		//     ______        __           __ ___
 		//    / __/ /__ ____/ /________  / // (_)__ ____ ____
@@ -1278,7 +1301,8 @@ MCpoint * setupMCpoint(string pointname, string filepath){
 
 TString makeLimitCardName_(TString MCpointname, TString topo, TString kinvar){
 		//returns the name of the card file to be used for this Mass point, topo, and kinvar.
-	return "LimitCard_"+MCpointname+"_"+topo+"_"+kinvar+".txt";
+	TString topo_fixed = topo.ReplaceAll('!','_');
+	return "LimitCard_"+MCpointname+"_"+topo_fixed+"_"+kinvar+".txt";
 }//Done writing? Yes. Debugged? No
 
 TString makeRootLimitPackageName_(TString MCpointname, TString topo, TString kinvar){
@@ -1303,6 +1327,12 @@ TString makeLimitResultName_(TString MCpointname, TString topo, TString kinvar){
 TString makeLimitResultBundleName_(TString MCpointname){
 		//Returns the name of the text file containing all the CLs limits for one MC point. This is the limit output of your condor job.
 	return "LimitResultBundle_"+MCpointname+".txt";
+		//	TString newname = MCpointname;
+//	newname.ReplaceAll("_bbaa","");
+//	newname.ReplaceAll("_zzaa","");
+//	newname.ReplaceAll("_wwaa","");
+//	newname.ReplaceAll("_ttaa","");
+//	return "LimitResultBundle_"+newname+".txt";
 }//Done writing? Yes. Debugged? No
 
 
