@@ -58,6 +58,7 @@ int type_to_run = 10;
 long int probeevent = 10496;
 
 string which_MC_to_use2 = "mst_235_mu_225";
+//string which_MC_to_use2 = "st_400_mu_300"; //more modern. 
 
 string which_higgsMC_to_use2 = "GluGluToHToGG";
 //string which_higgsMC_to_use2 = "GluGluToHToGG_quick"; //shorter version of GluGluToHToGG
@@ -77,29 +78,23 @@ string plotsdir = "plots_bbin/";
 	///LISTS FOR INDEXING
 const int nPhoMassAndBkgDists = 9;
 string s_MassBkgDists[nPhoMassAndBkgDists] = {"lowSB","tag","upperSB","bkg","tag_subbkg","lowSB_scaled","upperSB_scaled","lsb_over_usb","tag_over_bkg"};
-const int nEventTopologies = 41; // the number of types of cuts selected, like 1JB...
+const int nEventTopologies = 7; // the number of types of cuts selected, like 1JB...
+//const int nEventTopologies = 40; // the number of types of cuts selected, like 1JB...
 string s_EventTopology[nEventTopologies] = { 
-	"NULL","gbar2","1lepgbar2","1!lepgbar2","1Elegbar2","1Mugbar2",//6
-	"2lepgbar2","2!lepZgbar2","3lepgbar2", //3
-	"23JbMM!gbar2Mbb0lep", "2JbMM!gbar2Mbb0lep", //2
-	"23JbMM!gbar2Mbb01lep", "2JbML!gbar2Mbb01lep",//2
-	"2JbMM!gbar2Mbb01lep","2JbTL!gbar2Mbb01lep","2JbTM!gbar2Mbb01lep",//3 //new
-	"2lJgbar2", "2lJewkMllgbar2", "23lJewkMllgbar2", //"2lJMWgbar2", "2lJMZgbar2", //3
-	"2JbMM", "2JbMMgbar2", //2 
-	"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2",//3 //legacy
-	"2JbMM!Gbar2Mbb", "2JbMM!Gbar2Mbb!","3JbMMLGbar2",//3 //legacy
-	"2JbT!gbar2ProbeMJJ", "2JbMLextgbar2Mbb01lep","2JbMLmaxgbar2Mbb01lep", //3
-	"23Jb01MewkMll0lepgbar2", //for WH
-
-	"0lep25Jb01MewkMllgbar2", "1!lep23Jb01MewkMllgbar2","1!lep23Jb01M!ewkMllgbar2",  //for WWbins //3
-
-	"2JbM2lepgbar2", "2JbMM!1lepgbar2", "2JbMM!gbar2bestOn0lep", //3
-	"4JbMM!gbar2ewkMllbestOff0lep", "2JbMM!gbar2bothOff0lep", //2
-	"01J0lep0Bgbar2", //1
-	"4phogbar2"}; //1
+	"NULL","gbar2", "2JbML","2JbMLgbar2", 
+	"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2"};//3
+	//"2JbMM!Gbar2Mbb", "2JbMM!Gbar2Mbb!","3JbMMLGbar2",//3
+	//"2JbML!gbar2bestOn","2JbML!gbar2bestOff", "2JbMM!gbar2bestOn","2JbMM!gbar2bestOff", //4
+	//"2JbT!gbar2ProbeMJJ",
+	//"23Jb01MewkMll0lepgbar2", //for WH
+	//"0lep25Jb01MewkMllgbar2", "1!lep23Jb01MewkMllgbar2","1!lep23Jb01M!ewkMllgbar2",  //for WWbins //3
+	//"2JbM2lepgbar2", "2JbML!1lepgbar2", "2JbML!gbar2bestOn0lep",
+	//"4JbML!gbar2ewkMllbestOff0lep", "2JbML!gbar2bothOff0lep",
+	//"01J0lep0Bgbar2"}; //5
 
 		//higgs + met only: 0lep, 0B's at most one other jet,
 
+	
 		//WH
 //"WHbins" = "1!lepgbar2", "23Jb01MewkMll0lepgbar2"
 		//ZH
@@ -109,65 +104,120 @@ string s_EventTopology[nEventTopologies] = {
 		//ZZ
 //"ZZbins" = "3lepgbar2", "2!lepZgbar2", "1!lep23Jb01M!ewkMllgbar2", "1!lep23Jb01MewkMllgbar2", "0lep25Jb01MewkMllgbar2"
 		//stop-higgsino done right:
-//"SHbins" = "2JbM2lepgbar2", "2JbMM!1lepgbar2", "2JbMM!gbar2bestOn0lep", "4JbMM!gbar2ewkMllbestOff0lep", "2JbMM!gbar2bothOff0lep","3JbMMLGbar2"
+//"SHbins" = "2JbM2lepgbar2", "2JbML!1lepgbar2", "2JbML!gbar2bestOn0lep", "4JbML!gbar2ewkMllbestOff0lep", "2JbML!gbar2bothOff0lep","3JbMLLGbar2"
 	//so bestMjj is not on the Mh and no Mll combos are on the M_EWK
 
-const int nEventTopologies_limit = 28; // the number of types of cuts selected, like 1JB...
-string s_EventTopology_limit[nEventTopologies_limit] = {
-	"NULL","gbar2","1lepgbar2","1!lepgbar2","1Elegbar2","1Mugbar2","2lepgbar2","2!lepZgbar2", //2lepZgbar2",//8
-	"23JbMM!gbar2Mbb0lep", "2JbMM!gbar2Mbb0lep", //2
-	"2JbML!Gbar2Mbb","2JbMM!Gbar2Mbb",
-	"2lJgbar2", "2lJewkMllgbar2", "23lJewkMllgbar2",//"2lJMWgbar2", "2lJMZgbar2", //3
-	"2JbMM","2JbMMgbar2", //2
-	"2JbT!gbar2ProbeMJJ", "2JbMLextgbar2Mbb01lep","2JbMLmaxgbar2Mbb01lep",
-	"bbin3","bbin3MM","EHbin3", //4
-	"WHbins","ZHbins","WWbins","ZZbins","SHbins"}; //5
 
-const int nKinemVars_all = 56;		//always keep MET in the first position, it's special.
+//"NULL","2JbML","2JbMLgbar2", "2JbMLm20", "2JbMLgbar1", "2JbMLm20gbar2",
+//"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2", "4JbMLLLGbar2","2JbML!Gbar2",
+//"2JbTLgbar2","2JbMLgbar2Tpho", "2JbTLgbar2Tpho", "2JbMLgbar2Mpho", "2JbTLgbar2Mpho",
+//"1lep", "2lep","2JbMLgbar2bestOn","2JbMLgbar2bestOff","2JbTLgbar2bestOn","2JbTLgbar2bestOff",
+//"2JbTgbar2","2JbTMgbar2","2JbMMgbar2","2JbTTgbar2"};
+
+//"NULL","gbar2",
+//"1!lep","1lep","1ele1mu","2lep", "2lepZ","3lep", 
+//"1!lepgbar2","1lepgbar2","1ele1mugbar2","2lepgbar2", "2lepZgbar2",
+//"23JbML!gbar2Mbb0Lep", "2JbML!gbar2Mbb0Lep",
+//"2ljets", "2ljetsEWK", "2ljetsW", "2ljetsZ",
+//"2JbMLgbar2","2JbMMgbar2",
+
+const int nEventTopologies_limit = 8; // the number of types of cuts selected, like 1JB...
+string s_EventTopology_limit[nEventTopologies_limit] = {
+	"NULL","gbar2", "2JbML","2JbMLgbar2", 
+	"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2", "bbin3"};
+
+
+
+
+		//build a channel to catch WW...
+		//1lep
+
+
+
+
+
+//	"NULL","2JbML","2JbMLgbar2", "2JbMLm20", "2JbMLgbar1", "2JbMLm20gbar2",
+//	"2JbTLgbar2","2JbMLgbar2Tpho", "2JbTLgbar2Tpho", "2JbMLgbar2Mpho", "2JbTLgbar2Mpho",
+//	"1lep", "2lep","bbin3","bbinMLbest","bbinTLbest",
+//	"2JbTgbar2","2JbTMgbar2","2JbMMgbar2","2JbTTgbar2"};
+
+
+
+
+/*
+"NULL","2JbML","2JbMLgbar2", "2JbMLm20", "2JbMLm20gbar1", "2JbMLm20gbar2",
+"2JbML!m20Gbar2Mbb", "2JbML!m20Gbar2Mbb!","3JbMLLm20Gbar2", "4JbMLLLm20Gbar2","2JbML!m20Gbar2",
+"2JbTLm20gbar2","2JbMLm20gbar2Tpho", "2JbTLm20gbar2Tpho", "2JbMLm20gbar2Mpho", "2JbTLm20gbar2Mpho"};
+*/
+
+
+/*"NULL",        		 "2JbMLm20",	"2JbMLm20gbar1", "2JbMLm20gbar2",	//"2JbMLm20gbar1jdn15",	
+//"2JbMLm20gbar2n15",	 "2JHjjgbar1",	 "2JHjjgbar2",	 "2JHjjgbar1jdn15",	 "2JHjjgbar2jdn15",
+"4JbMLm20gbar1",	"4JbMLm20gbar2",  "4JbMm20gbar1","4JbMm20gbar2", 	"4JbLLLLm20gbar1",	
+"4JbLLLLm20gbar2",	 "2JbTLm20",	"4JbTm20",	"4JbTLm20",	 	"8Jgbar1",	
+"8Jgbar2",	 	"0!lep",        "1!lep",        "1lep",			"1Ele1Mu",	
+"3lep",		 	"2lep",         "2lepZ",        "1Mu",			"2Tphos"};*/
+
+
+/*
+string s_EventTopology[nEventTopologies] = { 
+"NULL",         "2Jm20",        "3Jm20",        "3JbMm20",      "3JbLm20",
+"4Jm20",        "metCut",       "4JbLLLLm20",   "2JbMLm20", 	"4JbMLm20",
+"4JbMLLm20",    "4JbMLLLm20",   "4JbMm20", 	"8J",	 	"1Mu", 
+"0!lep",        "1!lep",        "1lep",		"1ele1mu",	"3lep",
+"2lep",         "2lepZ",        "2JHjj",        "2JHbM",       "2JbM",
+"2JbML", 	"2Tphos"};
+*/
+
+const int nKinemVars_all = 11;		//always keep MET in the first position, it's special.
 string s_KinemVars_all[nKinemVars_all] = {
-"MET","ST","HT","MHT","PtGG","LHT","LepT","LepPt", //8
-"phoPt0","phoPt1","phoPhi","phoEta","phoEtaMax", //5
-"nJets","nLep","nMu","nEle", "nLFjets", //5
-"nBjets","phoDPhi","phoDEta", //3
-"jetPt","jetEta","jetPhi","phoMinR9", //4
-"dijetM01","dPhiJetMet","dijetPt01",  //2
-"Bt","bestMjj","bestMbb","allMjj","allMbb", //5
-"Mbb01","Mbb01gg01", //2
-"MJJ01gg01","Mleplep", "MZllHgg","MTggMET","MTlepMET",
-"PhocosThetaStar","JetcosThetaStar",
-"HHcosThetaStar",//expect signal will be flat, what does bkg do?
-"bjetEtaMax",//can we make an eta cut. 
-"phoDR", //as I recall, dR cuts worked better than dphi
-"bjetDR",//
-"phobDRMin",//pho really part of one of the b-jets? 
-"Mphoele",//do we get Z? 
-"bjetDPhi",
-"MphobMin",
-"metfit",// MET - (pho+pho+b+b).Et 
-"phobDR",//are pho and b overlaid? 
-"bjetmetDPhi",//is the met from a mis measured photon?
-"phometDPhi",//W-edge?
-"MTphoMet",
-"phobDPhiMax"}; //are we getting gJets with one pho directly bk to bk with one of the jets? 
+"MET","ST","HT","MHT","PtGG",//5
+"phoEta","phoEtaMax", //2
+"nJets", "nBjets", "Bt", "Mbb01"};//4
+
+
+//BMet = sum_bness * MET
+//BST =  sum_bness * ST
+//BPtGG= sum_bness * PtGG
+//BnBjets = sum(Bness)
+//BunBjets = sum(beautifullness)
+//BBt = sum(Bness*BjetEt)
+//BuHT = sum(beautifullness*jetEt)
+//phoSep = PtGG*(s/b phoDPhi)*(s/b phiEtaMax)*(s/b phiMinR9)
 
 
 		//Will be used if either bumpBtagEff != 0 or bumpJEC != 0. 
 		//list of kin vars to make limits on. These must be singly-filled per event and otherwise make sense.
-const int nKinemVars_limit = 40;
+const int nKinemVars_limit = 11;
 string s_KinemVars_limit[nKinemVars_limit] = {
-"MET","ST","HT","MHT","PtGG","LHT","LepT","LepPt", //8
-"phoPt0","phoEtaMax",  //2
-"nJets","nLep","nMu","nLFjets",  //4
-"nBjets","phoDPhi","phoDEta","phoMinR9",  //4
-	"dijetM01","dijetPt01",  //2
-"Bt","bestMjj","bestMbb", "Mbb01","Mbb01gg01",  //5
-"MJJ01gg01","Mleplep", "MZllHgg","MTggMET","MTlepMET", //5
-"PhocosThetaStar","JetcosThetaStar"};//2
-
+"MET","ST","HT","MHT","PtGG",//5
+"phoEta","phoEtaMax", //2
+"nJets", "nBjets", "Bt", "Mbb01"};//4
 
 		//news: nEle, nLFjets, and the bottom row. 
+/*
+Useless varriables that I'm tired of having in front of me: 
+MTphoMET and dPhiPhoMET -- just let there be a cominatoric bkg. 
+diJet eta01 
+*/
+
 //MTlepMET, use all permutations instead of leading lepton.  
 //create allMjj nad allMbb
+
+//"dijetDPhi01"
+/*{
+"MET","ST","HT","MHT","PtGG",
+"PhiGG","EtaGG","phoPt0","phoPt1","phoPhi0",
+"phoPhi1","phoEta0","phoEta1","phoEtaMax","phoEtaMin",
+"phoDR", "nJets","nLep","nMu","nEle",
+"nBjets","MTpho0MET","MTpho1MET","cosThetaStar","phoDPhi",
+"dPhiPho0Met","dPhiPho1Met", "PitGG","jetPt","jetEta",
+"jetPhi","dPhiJetMet","dijetDPhi01","dijetDR01","dijetDEta01",
+"dijetEta01","dijetM01","dijetPt01","dPhiJet0Met","dPhiJet1Met",
+"Bt","bestMjj","bestMbb","Mbb01","Mbb01gg01",
+"MJJ01gg01","Mleplep", "MZllHgg","MTggMET","MTlepMET",
+"HGt","HGt_prime","dPhiHG","dPhiHG_prime","HLMGt"};*/
+
 
 
 

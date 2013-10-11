@@ -1,3 +1,42 @@
+
+	//
+	//                                              _
+	//                                           _/|X|\
+	//                                         _/  |X| \
+	//                                       _/    |X|  \
+	//                                     _/      |X|   \
+	//                                   _/        |X|    \
+	//                                 _/          |X|     \
+	//                               _/            |X|      \
+	//                             _/              |X|       \
+	//   _________________________/________________|X|________\_____[][][]
+	//  /_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/_\/MM|_\/_\/_\/_\/_\[][][]
+	//              | |                        /  |\/|              [][][]
+	//              | |                       |'  |/\|              [][][]
+	//              | |                       |___|\/|              [][][]
+	//              | |                           |\/|
+	//              | |                           |/\|
+	//              | |                           |\/|
+	//              | |                           |/\|
+	//              | |                           |\/|
+	//              (o)                           |/\|
+	//               J                            |\/|
+	//           ,__/_\__,                        |/\|
+	//           |H(gg)+X|                        |\/|
+	//           '-------'                        |/\|
+	//                                            |\/|
+	//                                            |/\|
+	//                                            |\/|
+	//                                            |/\|
+	//            ______ .______         ___      .__   __.  _______
+	//           /      ||   _  \       /   \     |  \ |  | |   ____|
+	//          |  ,----'|  |_)  |     /  ^  \    |   \|  | |  |__
+	//          |  |     |      /     /  /_\  \   |  . `  | |   __|
+	//          |  `----.|  |\  \---./  _____  \  |  |\   | |  |____
+	//           \______|| _| `.____/__/     \__\ |__| \__| |_______|
+	// 
+	//          Anthony Barker, 2013
+
 #include "TFractionFitter.h"
 #include "TAxis.h"
 #include "TH1.h"
@@ -51,6 +90,9 @@ typedef std::map<string,Lable2HistArr> Lable3HistArr;
 typedef std::map<string,float> Labledflaot;
 typedef std::map<string,TFile*>   TFileMap;
 typedef std::map<string,TFileMap> TFileMap2;
+enum cutmode {left=0, right=1, doublesided=2, higgs=3};
+TH1F* CutEffComp(TH1F* sig, TH1F* bkg, cutmode approach);
+TH1F* MakeCutEffScan(TH1F* hin, cutmode approach);
 
 void format_plots_combined(){
 	cout<<"hello world"<<endl;
@@ -63,20 +105,20 @@ void format_plots_combined(){
 
 	bool saveImages = true;
 	bool writeRootFile = true;
-	string savewhat = "ggifpdf";//ggifpdfeps
+	string savewhat = "gpng";//ggifpdfeps
 //	string savewhat = "ggifpdfepsjpgpng";//ggifpdfeps
 	bool divideOutBinWidths = true;
 	float nominalBinWidth = 10;//GeV, for those measured in GeV
 	bool DrawLimits = true; //switch this off it it segfaults
 
 		//which plots to produce
-	bool makeDesignLinPlots = 1;
-	bool makeDesignLogPlots = 1;
+	bool makeDesignLinPlots = 0;
+	bool makeDesignLogPlots = 0;
 
 	bool makeSigcompFullLinPlots = 0;
 	bool makeSigcompFullLogPlots = 0;
-	bool makeSigComp1 = 1;
-	bool makeSigComp1log = 1;
+	bool makeSigComp1    = 0;
+	bool makeSigComp1log = 0;
 
 	bool makeBkgSubPlots = false; //keep this false
 	bool makeTagToBkgRatPlots = false;//keep false
@@ -84,8 +126,11 @@ void format_plots_combined(){
 	bool makeExclusionPlots = 0;
 	bool makeExclusionPlotsMinimal = 0;
 	bool makeXSecPlot = 0;
-	bool makeEffPlots = 0;
+	bool makeEffPlots = 1;
 	bool makeDesignSummary = 0;
+
+	bool makeMggPlot = 0; //yuri style
+	int MggMc = 3;
 
 		///////////////////////////// File Work ///////////////////////////////////////
 	/*Debug*/ if(printlevel > 0) cout << "Start File work" << endl;
@@ -98,8 +143,10 @@ void format_plots_combined(){
 
 	const int nchannels = 4;
 	string channel[nchannels] = {"bbaa","wwaa","zzaa","ttaa"};
+	const int nchannels_mu = 4;
+	string channel_mu[nchannels_mu] = {"bbaa","wwaa","zzaa","ttaa"};
 
-	MCpoint* MCpoints[nDataAndMcFiles][nchannels];//the 0th is going to be the data.
+	MCpoint* MCpoints[nDataAndMcFiles][nchannels+nchannels_mu];//the 0th is going to be the data.
 	/*
 	 MCpoint is going to have the following structure: 
 	 [0][0]  = data
@@ -111,8 +158,10 @@ void format_plots_combined(){
 	 */
 
 		//	string indexNames[nDataAndMcFiles] = {Data,"st_200_mu_150_bbaa", "st_225_mu_215_bbaa",  "st_250_mu_150_bbaa"};
-	string indexNames[nDataAndMcFiles] = {Data,"st_350_mu_135", "st_400_mu_300",  "st_300_mu_290"};
-	//string indexNames[nDataAndMcFiles] = {Data,"st_200_mu_150", "st_225_mu_215",  "st_250_mu_150"};
+	//string indexNames[nDataAndMcFiles] = {Data,"st_350_mu_135", "st_400_mu_300",  "st_300_mu_290"};
+	//string indexNames_mu[nDataAndMcFiles] = {Data,"mu_135", "mu_300",  "mu_290"};
+	string indexNames[4] = {Data,"st_350_mu_135", "st_400_mu_300",  "st_300_mu_290"};
+	string indexNames_mu[4] = {Data,"mu_135", "mu_300",  "mu_290"};
 
 
 		//setup MC points and acouple associated strings. 
@@ -132,6 +181,10 @@ void format_plots_combined(){
 			MCpoints[i][j] = setupMCpoint(indexNames[i]+"_"+channel[j],"");
 //			s_DataAndMcFiles[i][j] = MCpoints[i][j]->s_DataAndMcFiles;
 //			s_DataAndMcFiles_v4[i][j] = MCpoints[i][j]->s_DataAndMcFiles_v4;
+		}
+		for(int j=0;j<nchannels_mu;j++){
+			printf("asking for MCpoint %s\n",(indexNames_mu[i]+"_"+channel_mu[j]).data());
+			MCpoints[i][j+nchannels] = setupMCpoint(indexNames_mu[i]+"_"+channel_mu[j],"");
 		}
 	}
 
@@ -168,18 +221,27 @@ void format_plots_combined(){
 	cout<<"open post ana files"<<endl;
 	for(int i=0;i<nDataAndMcFiles;i++){
 		TFileMap temp;
+		TFileMap temp_mu;
 		if (i==0) {
 			cout<<"Try to open "<<MCpoints[0][0]->plotsAndBackground_mc.c_str()<<endl;
 			temp[Data] = new TFile(MCpoints[0][0]->plotsAndBackground_mc.c_str());
+			PostAnaAnaFiles[indexNames[i]] = temp;
 		}
 		else{
 			for (int jchan=0; jchan<nchannels; jchan++) {
 				cout<<"Try to open "<<MCpoints[i][jchan]->plotsAndBackground_mc.c_str()<<endl;
 				temp[channel[jchan]]= new TFile(MCpoints[i][jchan]->plotsAndBackground_mc.c_str());
 			}
+			PostAnaAnaFiles[indexNames[i]] = temp;
+
+			for (int jchan=0; jchan<nchannels_mu; jchan++) {
+				cout<<"Try to open "<<MCpoints[i][jchan+nchannels]->plotsAndBackground_mc.c_str()<<endl;
+				temp_mu[channel_mu[jchan]]= new TFile(MCpoints[i][jchan+nchannels]->plotsAndBackground_mc.c_str());
+			}//end for each channel
+			PostAnaAnaFiles[indexNames_mu[i]] = temp_mu;
 		}
-		PostAnaAnaFiles[indexNames[i]] = temp;
-	}
+	} //end for
+
 /*	cout<<"that worked, now try main ana files"<<endl;
 	for(int i=0;i<nDataAndMcFiles;i++){
 		cout<<"Try to open "<<MCpoints[i]->plotsroot_mc.c_str()<<endl;
@@ -239,42 +301,92 @@ void format_plots_combined(){
 	int nMCcolor = nDataAndMcFiles-1>6?nDataAndMcFiles-1:6;
 	int MCcolors[nMCcolor];
 	for (int i=0; i<nMCcolor; i++) MCcolors[i] = i<6?tempMCcolors[i]:i;// if more than six--which there never will be, autofill'em.
+	//int MCmarkers[nMCcolor];
+	//for (int i=0; i<nMCcolor; i++) MCmarkers[i] = i<=10?21+i:20;//circle, square, triangle...
+	int MClines[nMCcolor];
+	for (int i=0; i<nMCcolor; i++) MClines[i] = i<=10?1+i:1;//defaults to solid
 
 		///////////////////////////// STANDARD MARKINGS ///////////////////////////////////////
-	TLatex * TEX_CMSPrelim = new TLatex(0.177136,0.953368,"CMS Preliminary 2013");
-	PrettyLatex(TEX_CMSPrelim,0.03);
-	TLatex * TEX_E_TeV = new TLatex(0.800251,0.953368,"#sqrt{s} = 8 TeV");
-	PrettyLatex(TEX_E_TeV,0.03);
-	TLatex * TEX_lumi_fb = new TLatex(0.621859,0.953368,Form("#intL dt = %.0f fb^{-1}",Integrated_Luminosity_Data));
-	PrettyLatex(TEX_lumi_fb,0.03);
+	//TLatex * TEX_CMSPrelim = new TLatex(0.177136,0.953368,"CMS Preliminary");
+	//PrettyLatex(TEX_CMSPrelim,0.03);
+	//TLatex * TEX_E_TeV = new TLatex(0.800251,0.953368,"#sqrt{s} = 8 TeV");
+	//PrettyLatex(TEX_E_TeV,0.03);
+	//TLatex * TEX_lumi_fb = new TLatex(0.621859,0.953368,Form("#intL dt = %.1f fb^{-1}",Integrated_Luminosity_Data));
+	//PrettyLatex(TEX_lumi_fb,0.03);
+
+        TLatex * TEX_CMSPrelim;
+	if(preliminary) TEX_CMSPrelim = new TLatex(0.138191,0.935315,Form("CMS Preliminary, #sqrt{s} = 8 TeV, #scale[0.75]{#int}#it{L} d#it{t} = %.1f fb^{-1}",Integrated_Luminosity_Data));
+	else TEX_CMSPrelim = new TLatex(0.138191,0.935315,Form("CMS, #sqrt{s} = 8 TeV, #scale[0.75]{#int}#it{L} d#it{t} = %.1f fb^{-1}",Integrated_Luminosity_Data));
+        PrettyLatex(TEX_CMSPrelim,0.05);
 		////////////////////////////////////////////////////////////////////
 		///////////////////////////////Load h_mGG/////////////////////////////////////
-/*	if(printlevel > 0) cout << "Load h_mGG" << endl;
+	if(printlevel > 0) cout << "Load h_mGG" << endl;
 		//load mGG_unsliced histograms from all files.
-	Lable2Hist h_mGG_unsliced;
+	Lable2Hist h_mGG_unsliced; //h_mGG_unsliced[file][topo]
 	for (int jFile=0; jFile<nDataAndMcFiles; jFile++) { //loop over all files
 		LableHist tmp; // this is the collection of histograms, indexed by topology name
 		if(printlevel > 2) cout << "first loop, jFile = "<<jFile << endl;
 		for (int iTop = 0; iTop<nEventTopologies; iTop++) {
-			if(printlevel > 4) cout << "second loop, iTop = "<<iTop <<endl;
-			string instring = string("h_mGG") +s_EventTopology[iTop] + "_unsliced";
-			if(printlevel > 4) cout << "loading "<<instring<< " from file " << indexNames[jFile] << " for topology "<<s_EventTopology[iTop] <<endl;
-			tmp[s_EventTopology[iTop]] = (TH1F*)PostAnaAnaFiles[indexNames[jFile]]->Get(instring.c_str());
-			if(printlevel > 4) cout << "succeeded"<<endl;
+			if (jFile == 0) {
+				if(printlevel > 4) cout << "second loop, iTop = "<<iTop <<endl;
+				string instring = string("h_mGG") +s_EventTopology[iTop] + "_unsliced";
+				if(printlevel > 4) cout << "loading "<<instring<< " from file " << indexNames[jFile] << " for topology "<<s_EventTopology[iTop] <<endl;
+				tmp[s_EventTopology[iTop]] = (TH1F*)PostAnaAnaFiles[indexNames[jFile]][Data]->Get(instring.c_str()); //this line fails
+				if(printlevel > 4) cout << "succeeded"<<endl;
 
 				//fix the root names
-			string newname = instring+"_"+s_DataAndMcFiles[jFile];
-			if(printlevel > 4) cout << "resetting name to "<<newname<<" for topology "<<s_EventTopology[iTop]<<endl;
+				string newname = instring+"_"+MCpoints[jFile][0]->s_DataAndMcFiles;
+				if(printlevel > 4) cout << "resetting name to "<<newname<<" for topology "<<s_EventTopology[iTop]<<endl;
 
 
-			tmp[s_EventTopology[iTop]]->SetName((newname).c_str());
-			if(printlevel > 4) cout << "succeeded"<<endl;
-		}
-		if(printlevel > 2) cout << "Attempting to write tmp to h_mGG_unsliced with tag "<<s_DataAndMcFiles[jFile] << endl;
+				tmp[s_EventTopology[iTop]]->SetName((newname).c_str());
+				if(printlevel > 4) cout << "succeeded"<<endl;
+			}//end if data
+			else{ //MC
+				if(printlevel > 4) cout << "second loop, iTop = "<<iTop <<endl;
+				string instring = string("h_mGG") +s_EventTopology[iTop] + "_unsliced";
+				if(printlevel > 4) cout << "loading "<<instring<< " from file " << indexNames[jFile] << " for topology "<<s_EventTopology[iTop] <<endl;
+
+				for (int ichan = 0; ichan < nchannels+nchannels_mu; ichan++) {
+					//if(ichan == 7 && jFile == 3) continue;//skup mu_290_ttaa because it failed.
+					if (ichan == 0) {
+						if(printlevel > 4) cout << "ichan = "<<ichan<<endl;
+						tmp[s_EventTopology[iTop]] = (TH1F*)PostAnaAnaFiles[indexNames[jFile]][channel[ichan]]->Get(instring.c_str());
+						if(printlevel > 4) cout << "succeeded"<<endl;
+
+						//fix the root names
+						string newname = instring+"_"+MCpoints[jFile][ichan]->s_DataAndMcFiles;
+						if(printlevel > 4) cout << "resetting name to "<<newname<<" for topology "<<s_EventTopology[iTop]<<endl;
+
+
+						tmp[s_EventTopology[iTop]]->SetName((newname).c_str());
+						tmp[s_EventTopology[iTop]]->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );
+						if(printlevel > 4) cout << "succeeded"<<endl;
+					}//end if ichan0
+					else if(ichan<4){
+						TH1F* temp = (TH1F*)PostAnaAnaFiles[indexNames[jFile]][channel[ichan]]->Get(instring.c_str());
+						temp->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );
+						tmp[s_EventTopology[iTop]]->Add(temp);
+					}
+					else{
+
+						
+						/*Debug*/ if(printlevel >8) cout<<"reaching into file "<<indexNames_mu[jFile]<<" for channel "<<channel_mu[ichan-nchannels]<<" and trying to access hist "<<instring.c_str()<<endl;
+						TH1F* temp = (TH1F*)PostAnaAnaFiles[indexNames_mu[jFile]][channel_mu[ichan-nchannels]]->Get(instring.c_str());
+						/*Debug*/ if(printlevel >8) cout << "Supposedly loaded hist "<<instring.c_str()<<", now try touching it"<<endl;
+						temp->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );//segfaults
+						/*Debug*/ if(printlevel >9) cout << "scaled it"<<endl;
+						tmp[s_EventTopology[iTop]]->Add(temp);
+					}//end higgsino channels
+				}//end for every cahnnel
+			}//end else MC
+
+		}//end for every topo
+		if(printlevel > 2) cout << "Attempting to write tmp to h_mGG_unsliced with tag "<<MCpoints[jFile][0]->s_DataAndMcFiles << endl;
 		h_mGG_unsliced[indexNames[jFile]] = tmp;
 		if(printlevel > 2) cout << "succeeded"<<endl;
 	}
-*/
+
 		////////////////////////////// MAKE EXCLUSION PLOTS //////////////////////////////////////
 
 	if(makeExclusionPlots){
@@ -291,7 +403,8 @@ void format_plots_combined(){
 			//canv4->SetBottomMargin(0.15);
 			//if(saveImages)SaveCanvas(canv4,plotsdir+"Exclusion_bbin4_"+s_KinemVars_limit[kKinVar],savewhat);
 			TCanvas* canv3 = MakeLimitPlot(allLims, "bbin3", s_KinemVars_limit[kKinVar], showTag,true);
-			canv3->SetTopMargin(0.06);
+			canv3->SetTopMargin(0.10);
+			//canv3->SetTopMargin(0.06);
 			canv3->SetBottomMargin(0.15);
 
 			MakeLimitPlot(allLims, "bbinMLbest", s_KinemVars_limit[kKinVar], showTag,true);
@@ -306,17 +419,48 @@ void format_plots_combined(){
 		//canv4->SetBottomMargin(0.15);
 		//if(saveImages)SaveCanvas(canv4,plotsdir+"Exclusion_bbin4_MET",savewhat);
 		printf("***** going to make limit plots now**** \n");
+		printf("***** Do bbin3 **** \n");
 		MakeLimitPlot("bbin3", "MET", showTag,true); //this saves the plot for you
+		printf("***** Do 2JbMLgbar2 **** \n");
 		MakeLimitPlot("2JbMLgbar2", "MET", showTag,true); //this saves the plot for you
+		printf("***** Do bbin3MM **** \n");
+		MakeLimitPlot("bbin3MM", "MET", showTag,true); //this saves the plot for you
+		printf("***** Do 2JbMMgbar2 **** \n");
+		MakeLimitPlot("2JbMMgbar2", "MET", showTag,true); //this saves the plot for you
+
+		printf("***** Do 2JbMLgbar2 ST **** \n");
+		MakeLimitPlot("2JbMLgbar2", "ST", showTag,true); //this saves the plot for you
+
+		printf("***** Do 2JbMLgbar2 HT **** \n");
+		MakeLimitPlot("2JbMLgbar2", "HT", showTag,true); //this saves the plot for you
+		MakeLimitPlot("bbin3", "HT", showTag,true); //this saves the plot for you
+		printf("***** Do 2JbMLgbar2 MHT **** \n");
+		MakeLimitPlot("2JbMLgbar2", "MHT", showTag,true); //this saves the plot for you
+		MakeLimitPlot("bbin3", "MHT", showTag,true); //this saves the plot for you
+		printf("***** Do 2JbMLgbar2 Bt **** \n");
+		MakeLimitPlot("2JbMLgbar2", "Bt", showTag,true); //this saves the plot for you
+		MakeLimitPlot("bbin3", "Bt", showTag,true); //this saves the plot for you
+		printf("***** Do 2JbMLgbar2 PtGG **** \n");
+		MakeLimitPlot("2JbMLgbar2", "PtGG", showTag,true); //this saves the plot for you
+		MakeLimitPlot("bbin3", "PtGG", showTag,true); //this saves the plot for you
 		printf("***** done makeing limit plots now**** \n");
 	}
 	if(makeXSecPlot){
 		MakeXSecPlot(saveImages);
 	}
 	if(makeEffPlots){
-		MakeEffPlots();
+		//MakeEffPlots();
 		//MakeEffPlot("NULL");
-		//MakeEffPlot("2JbMLgbar2");
+		MakeEffPlot("2JbMLgbar2",10);
+		MakeEffPlot("2JbMLgbar2",11);
+		MakeEffPlot("2JbMLgbar2",12);
+		MakeEffPlot("2JbMLgbar2",13);
+		MakeEffPlot("2JbMLgbar2",20);
+
+		MakeEffPlotComb("2JbMLgbar2");
+		MakeEffPlotComb("2JbML!Gbar2Mbb");
+		MakeEffPlotComb("2JbML!Gbar2Mbb!");
+		MakeEffPlotComb("3JbMLLGbar2");
 	}
 
 		////////////////////////////// Load Kin Var Plots //////////////////////////////////////
@@ -331,7 +475,7 @@ void format_plots_combined(){
 
 			LableHistArr tmpMapKinVar;
 			for (int kKinVar = 0; kKinVar<nKinemVars; kKinVar++) {
-				/*Debug*/ if(printlevel >6) cout << "third loop, kKinVar = "<<kKinVar <<endl;
+				/*Debug*/ if(printlevel >5) cout << "third loop, kKinVar = "<<kKinVar <<endl;
 
 					//there is no MET dist for metCut, so don't try to load it.
 				if (s_EventTopology[iTop].compare("metCut") == 0 && strCmp(s_KinemVars[kKinVar],"MET") ) continue;
@@ -365,20 +509,26 @@ void format_plots_combined(){
 							/*Debug*/ if(printlevel >8) cout << "rename hist "<<newname <<endl;
 							tmpHistArray[lMassDist]->SetName((newname).c_str()); //this segfaults!! for hMETNULL_lowSB_mst_185_M3_5050_mu_150
 							/*Debug*/ if(printlevel >8) cout << "success" <<endl;
+							string xlabel = s_KinemVars[kKinVar];
+							if(xlabel.compare("MET") ==0) xlabel = "E_{T}^{miss} (GeV)";
+							else if(xlabel.compare("MHT") ==0) xlabel = "H_{T}^{miss} (GeV)";
+							else if(xlabel.compare("PtGG") ==0) xlabel = "p_{T}^{#gamma #gamma} (GeV)";
+							else if(xlabel.compare("jetPt") ==0) xlabel = "p_{T}^{jet} (GeV)";
+							else if(s_KinemVars[kKinVar].compare("Bt") ==0) xlabel = "B_{T} (GeV)";
+							else if(xlabel.compare("HT") ==0) xlabel = "H_{T} (GeV)";
+							else if(xlabel.compare("ST") ==0) xlabel = "S_{T} (GeV)";
+							else if(xlabel.compare("Mbb01") ==0) xlabel = "M_{01}^{bb} (GeV)";
+
 							string newtitle;
-							if(s_KinemVars[kKinVar].compare("Phi") >=0 ||
-							   s_KinemVars[kKinVar].compare("Eta") >=0 ||
-							   s_KinemVars[kKinVar][0] == 'n' ||
-							   strCmp(s_KinemVars[kKinVar],"cosThetaStar") ||
-							   strCmp(s_KinemVars[kKinVar],"SumRootCSV")){
-								newtitle = string(";")+s_KinemVars[kKinVar];
-							}
-							else{
-								newtitle = string(";")+s_KinemVars[kKinVar]+" (GeV)";
-								if(divideOutBinWidths && (lMassDist<4 || lMassDist == 5 || lMassDist == 6)){
+							if(divideOutBinWidths){ 
+								newtitle = string(";")+xlabel;
+								if(lMassDist<4 || lMassDist == 5 || lMassDist == 6){
 									DivideOutBinWidths(tmpHistArray[lMassDist],nominalBinWidth);
 									newtitle = newtitle + Form(";Events per %.0f GeV",nominalBinWidth);
 								}
+							}
+							else{
+								newtitle = string(";")+xlabel+string(";Events per bin");
 							}
 							tmpHistArray[lMassDist]->SetTitle((char*)newtitle.c_str());
 						}
@@ -390,18 +540,40 @@ void format_plots_combined(){
 					int lMassDist = 1;
 					string instring = string("h")+s_KinemVars[kKinVar]+s_EventTopology[iTop]+"_"+s_MassBkgDists[lMassDist];
 						/////////////////////
-					for (int ichan = 0; ichan < nchannels; ichan++) {
-						/*Debug*/ if(printlevel >8) cout << "Load and scale hist "<<instring<< " from file "<< indexNames[jFile]<<"_"<<channel[ichan] << " into tmpHistArray["<<lMassDist<<"]"<<endl;
+					for (int ichan = 0; ichan < nchannels+nchannels_mu; ichan++) {
 
 						if (ichan == 0) {
+							/*Debug*/ if(printlevel >8) cout << "Load and scale hist "<<instring<< " from file "<< indexNames[jFile]<<"_"<<channel[ichan] << " into tmpHistArray["<<lMassDist<<"]"<<endl;
 							TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames[jFile]][channel[ichan]]->Get( instring.c_str() );
 							temp->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );
 							tmpHistArray[lMassDist] = temp;
 						}
-						else{
-							TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames[jFile]][channel[ichan]]->Get( instring.c_str() ); 
+						else if(ichan<4){
+							/*Debug*/ if(printlevel >8) cout << "Load and scale hist "<<instring<< " from file "<< indexNames[jFile]<<"_"<<channel[ichan] << " into tmpHistArray["<<lMassDist<<"]"<<endl;
+							TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames[jFile]][channel[ichan]]->Get( instring.c_str() );
 							temp->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );
 							tmpHistArray[lMassDist]->Add(temp);
+					/*Debug*/ if(printlevel >7) printf("ichan %i, Adding %f, sum %f\n",ichan,temp->GetBinContent(2), tmpHistArray[lMassDist]->GetBinContent(2) );
+						}
+						else{
+							/*Debug*/ if(printlevel >8) cout << "Load and scale hist "<<instring<< " from file "<< indexNames_mu[jFile]<<"_"<<channel_mu[ichan-nchannels] << " into tmpHistArray["<<lMassDist<<"]"<<endl;
+
+							/*Debug*/ if(printlevel>=11){
+								cout<<"try to access indexNames_mu[jFile]"<<endl;
+								cout<<indexNames_mu[jFile]<<endl;
+								cout<<"try to access channel_mu[ichan-nchannels]"<<endl;
+								cout<<channel_mu[ichan-nchannels]<<endl;
+								cout<<"try to access the TFile"<<endl;
+								TFile* junk = PostAnaAnaFiles[indexNames_mu[jFile]][channel_mu[ichan-nchannels]];
+								cout<<"Now try to get hist "<<instring <<endl;
+							}
+							TH1F* temp = (TH1F*) PostAnaAnaFiles[indexNames_mu[jFile]][channel_mu[ichan-nchannels]]->Get( instring.c_str() );
+							/*Debug*/ if(printlevel >8) cout << "Got the hist"<<endl;
+							temp->Scale(MCpoints[jFile][ichan]->lumiscalefactor(Integrated_Luminosity_Data) );
+							/*Debug*/ if(printlevel >9) cout << "scaled it"<<endl;
+							tmpHistArray[lMassDist]->Add(temp);
+							/*Debug*/ if(printlevel >8) printf("ichan %i, Adding %f, sum %f\n",ichan,temp->GetBinContent(2), tmpHistArray[lMassDist]->GetBinContent(2) );
+								///xxx
 						}
 					}//end for each channel
 						//so all histograms come in from here summed and loaded.
@@ -411,22 +583,30 @@ void format_plots_combined(){
 					/*Debug*/ if(printlevel >8) cout << "rename hist "<<newname <<endl;
 					tmpHistArray[lMassDist]->SetName((newname).c_str()); //this segfaults!! for hMETNULL_lowSB_mst_185_M3_5050_mu_150
 					/*Debug*/ if(printlevel >8) cout << "success" <<endl;
+						string xlabel = s_KinemVars[kKinVar];
+						if(xlabel.compare("MET") ==0) xlabel = "E_{T}^{miss} (GeV)";
+						else if(xlabel.compare("MHT") ==0) xlabel = "H_{T}^{miss} (GeV)";
+						else if(xlabel.compare("PtGG") ==0) xlabel = "p_{T}^{#gamma #gamma} (GeV)";
+						else if(xlabel.compare("jetPt") ==0) xlabel = "p_{T}^{jet} (GeV)";
+						else if(s_KinemVars[kKinVar].compare("Bt") ==0) xlabel = "B_{T} (GeV)";
+						else if(xlabel.compare("HT") ==0) xlabel = "H_{T} (GeV)";
+						else if(xlabel.compare("ST") ==0) xlabel = "S_{T} (GeV)";
+						else if(xlabel.compare("Mbb01") ==0) xlabel = "M_{01}^{bb} (GeV)";
+
 					string newtitle;
-					if(s_KinemVars[kKinVar].compare("Phi") >=0 ||
-					   s_KinemVars[kKinVar].compare("Eta") >=0 ||
-					   s_KinemVars[kKinVar][0] == 'n' ||
-					   strCmp(s_KinemVars[kKinVar],"cosThetaStar") ||
-					   strCmp(s_KinemVars[kKinVar],"SumRootCSV")){
-						newtitle = string(";")+s_KinemVars[kKinVar];
-					}
-					else{
-						newtitle = string(";")+s_KinemVars[kKinVar]+" (GeV)";
-						if(divideOutBinWidths && (lMassDist<4 || lMassDist == 5 || lMassDist == 6)){
+					if(divideOutBinWidths){
+						newtitle = string(";")+xlabel;
+						if(lMassDist<4 || lMassDist == 5 || lMassDist == 6){
 							DivideOutBinWidths(tmpHistArray[lMassDist],nominalBinWidth);
 							newtitle = newtitle + Form(";Events per %.0f GeV",nominalBinWidth);
 						}
 					}
+					else{
+						newtitle = string(";")+xlabel+string(";Events per bin");
+					}
 					tmpHistArray[lMassDist]->SetTitle((char*)newtitle.c_str());
+					/*Debug*/ if(printlevel >8) cout << "end if MC" <<endl;
+					
 
 				}//if MC
 				tmpMapKinVar[s_KinemVars[kKinVar]] = tmpHistArray;
@@ -509,8 +689,8 @@ void format_plots_combined(){
 				h[4]->Draw("ep");
 				l1->Draw("same");
 				TEX_CMSPrelim->Draw("same");
-				TEX_E_TeV->Draw("same");
-				TEX_lumi_fb->Draw("same");
+				//TEX_E_TeV->Draw("same");
+				//TEX_lumi_fb->Draw("same");
 				TAxis* x = h[4]->GetXaxis();
 				TLine *OneLine = new TLine(x->GetXmin(),0.0,x->GetXmax(),0.0);
 				OneLine->SetLineColor(kBlack);
@@ -580,7 +760,8 @@ void format_plots_combined(){
 			canv->Range(-4.24581,-6.654991,18.01117,40.42032);
 			canv->SetLeftMargin(0.1907631);
 			canv->SetRightMargin(0.11);
-			canv->SetTopMargin(0.02);
+			canv->SetTopMargin(0.10);
+			//canv->SetTopMargin(0.06);
 			canv->SetBottomMargin(0.141369);
 			canv->SetFrameBorderMode(0);
 			DesignWalls[jFile-1]->GetXaxis()->SetLabelSize(0.043);
@@ -599,6 +780,11 @@ void format_plots_combined(){
 	}//end if makeDesignSummary
 
 
+	//     ___          _             ___  __     __    
+	//    / _ \___ ___ (_)__ ____    / _ \/ /__  / /____
+	//   / // / -_|_-</ / _ `/ _ \  / ___/ / _ \/ __(_-<
+	//  /____/\__/___/_/\_, /_//_/ /_/  /_/\___/\__/___/
+	//  
 
 		///Make Design Plots--plot The combined bkg and all the MC.
 	TH1F * box = new TH1F("box","asdf",1,0,1);
@@ -613,10 +799,12 @@ void format_plots_combined(){
 			string canvName = string("Design_")+s_KinemVars[kKinVar]+s_EventTopology_v2[iTop];
 			string canvName2 = string("Designlog_")+s_KinemVars[kKinVar]+s_EventTopology_v2[iTop];
 			TCanvas* tempCanv = newTCanvas(canvName.data(),canvName.data());
-			tempCanv->SetTopMargin(0.06);
+			tempCanv->SetTopMargin(0.10);
+			//tempCanv->SetTopMargin(0.06);
 			tempCanv->SetBottomMargin(0.15);
 			TCanvas* tempCanv2 = newTCanvas(canvName2.data(),canvName2.data());
-			tempCanv2->SetTopMargin(0.06);
+			tempCanv2->SetTopMargin(0.10);
+			//tempCanv2->SetTopMargin(0.06);
 			tempCanv2->SetBottomMargin(0.15);
 
 				//make an array of the signal dists in the tag region.
@@ -654,7 +842,8 @@ void format_plots_combined(){
 				///MAKE LINEAR ARRANGE3 PLOTS///
 			TH1F** h =KinVarHistMap[Data][s_EventTopology[iTop]][s_KinemVars[kKinVar]];
 			tempCanv->cd();
-			TLegend* l1=makeL1_v2();
+			//TLegend* l1=makeL1_v2();
+			TLegend* l1=makeL1_v2( 0.1997487,0.693005,0.3404523,0.874352);
 
 			PrettyHist(h[3],dgBkgBoxColor);
 			PrettyHist(h[5],lsbColor);
@@ -663,7 +852,8 @@ void format_plots_combined(){
 			PrettyBlock2(h[5],lsbColor,3354,2);//PrettyMarker(h[5],kBlue,4);
 			PrettyBlock2(h[6],usbColor,3345,2);//PrettyMarker(h[6],kGreen,4);
 
-			h[3]->SetFillStyle(0);//open rectangle
+			h[3]->SetFillStyle(3002);//dots
+			//h[3]->SetFillStyle(0);//open rectangle
 			h[3]->SetLineColor(kRed);
 			h[3]->SetLineWidth(4);
 
@@ -675,8 +865,9 @@ void format_plots_combined(){
 				//				PrettyBlock2(h[3],kRed,3345,2);
 				//PrettyBlock(h[3],kRed,string("transparent"));//PrettyMarker(h[3],kRed);
 			for (int i=0; i<nDataAndMcFiles-1; i++) { //there should be nDataAndMcFiles -1 MC files
-				PrettyHist(MC_hists[i],MCcolors[i]);//xyxy
-				PrettyMarker(MC_hists[i],MCcolors[i]);
+				PrettyHist(MC_hists[i],MCcolors[i],4,MClines[i]);//xyxy
+				PrettyMarker(MC_hists[i],MCcolors[i],kDot,0);
+				//PrettyMarker(MC_hists[i],MCcolors[i],MCmarkers[i], 2.2);
 				playNiceWithLegend(MC_hists[i],0.30,0.0);
 			}
 			h[3]->SetMinimum(0.0);
@@ -696,9 +887,9 @@ void format_plots_combined(){
 
 			SameRange(h[3],h[5],h[6]);
 			h[3]->Draw("e2p");
-			for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
 			h[5]->Draw("e2psame");
 			h[6]->Draw("e2psame");
+			for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("samehist");
 			h[3]->Draw("e2psame");
 			l1->AddEntry(box,"Data Driven Background");//h[3]
 			l1->AddEntry(h[5],"LSB Bkg Estimate");
@@ -711,17 +902,27 @@ void format_plots_combined(){
 			l1->Draw("same");
 			if(DrawLimits && allthere) textlims->Draw("same"); //Limit
 			TEX_CMSPrelim->Draw("same");
-			TEX_E_TeV->Draw("same");
-			TEX_lumi_fb->Draw("same");
+			//TEX_E_TeV->Draw("same");
+			//TEX_lumi_fb->Draw("same");
 
 			if(makeDesignLinPlots){
 				if(writeRootFile) tempCanv->Write();
 				if(saveImages)SaveCanvas(tempCanv,plotsdir+tempCanv->GetName(),savewhat);
 			}
-				///END MAKE LINEAR PLOTS///
+			///END MAKE LINEAR PLOTS///
 
-                ///MAKE LOG PLTOS///
-			TLegend* l2 = makeL1_v2();
+			//     ___          _             ___  __     __    
+			//    / _ \___ ___ (_)__ ____    / _ \/ /__  / /____
+			//   / // / -_|_-</ / _ `/ _ \  / ___/ / _ \/ __(_-<
+			//  /____/\__/___/_/\_, /_//_/ /_/  /_/\___/\__/___/
+			//    / /  ___  ___/___/ __/______ _/ /__           
+			//   / /__/ _ \/ _ `/ _\ \/ __/ _ `/ / -_)          
+			//  /____/\___/\_, / /___/\__/\_,_/_/\__/           
+			//            /___/                                 
+
+			///MAKE LOG PLTOS///
+			//TLegend* l2 = makeL1_v2();
+			TLegend* l2 = makeL1_v2( 0.1997487,0.693005,0.3404523,0.874352);
 			tempCanv2->cd();
 			PrettyHist(h[3],dgBkgBoxColor);
 
@@ -730,7 +931,8 @@ void format_plots_combined(){
 
 
 				//PrettyBlock2(h[3],kRed,3345,2);
-			h[3]->SetFillStyle(0);//open rectangle
+			//h[3]->SetFillStyle(0);//open rectangle
+			h[3]->SetFillStyle(3002);//dots
 			h[3]->SetLineColor(dgBkgBoxColor);
 			h[3]->SetLineWidth(4);
 			PrettyBlock2(h[5],kCyan-7,3354,2);//PrettyMarker(h[5],kBlue,4);
@@ -738,8 +940,9 @@ void format_plots_combined(){
 
 
 			for (int i=0; i<nDataAndMcFiles-1; i++) { //there should be nDataAndMcFiles -1 MC files
-				PrettyHist(MC_hists[i],MCcolors[i]);
-				PrettyMarker(MC_hists[i],MCcolors[i]);
+				PrettyHist(MC_hists[i],MCcolors[i],4,MClines[i]);
+				PrettyMarker(MC_hists[i],MCcolors[i],kDot,0);
+				//PrettyMarker(MC_hists[i],MCcolors[i],MCmarkers[i],2.2);
 				playNiceWithLegendLog(MC_hists[i],0.30,0.05);
 			}
 				//h[3]->SetMaximum(TMath::Max(100.,h[3]->GetMaximum()));
@@ -760,7 +963,7 @@ void format_plots_combined(){
 			h[5]->Draw("e2psame");
 			h[6]->Draw("e2psame");
 				//	cout << "final MC integral "<<MC_hists[0]->Integral()<<endl;
-			for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");//e1psame
+			for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("samehist");//e1psame
 			h[3]->Draw("e2psame");
 				//l2->AddEntry(h[3],"Data Driven Background");
 			l2->AddEntry(box,"Data Driven Background");//h[3]
@@ -773,8 +976,8 @@ void format_plots_combined(){
 			l2->Draw("same");
 			if(DrawLimits&&allthere) textlims->Draw("same"); //Limit
 			TEX_CMSPrelim->Draw("same");
-			TEX_E_TeV->Draw("same");
-			TEX_lumi_fb->Draw("same");
+			//TEX_E_TeV->Draw("same");
+			//TEX_lumi_fb->Draw("same");
 			if(makeDesignLogPlots){
 				if(writeRootFile) tempCanv2->Write();
 				if(saveImages)SaveCanvas(tempCanv2,plotsdir+tempCanv2->GetName(),savewhat);
@@ -783,6 +986,12 @@ void format_plots_combined(){
 			h[3]->SetMinimum(linmin);
 		}//edn for each kinematic varriable
 	}//end for each topology
+
+	//     _____      _____                  ____     ____
+	//    / __(_)__ _/ ___/__  __ _  ___    / __/_ __/ / /
+	//   _\ \/ / _ `/ /__/ _ \/  ' \/ _ \  / _// // / / / 
+	//  /___/_/\_, /\___/\___/_/_/_/ .__/ /_/  \_,_/_/_/  
+	//        /___/               /_/                     
 
 		///SigCompFull: Make Full Final Plot--plot the tag, combined bkg, all the MC, then on a lower subplot make the sig/bkg.
 	if(showTag && (makeSigcompFullLinPlots || makeSigcompFullLogPlots)){
@@ -793,10 +1002,12 @@ void format_plots_combined(){
 				string canvName = string("SigCompFull_")+s_KinemVars[kKinVar]+s_EventTopology_v2[iTop];
 				string canvName2 = string("SigCompFulllog_")+s_KinemVars[kKinVar]+s_EventTopology_v2[iTop];
 				TCanvas* tempCanv = newTCanvas(canvName.data());
-				tempCanv->SetTopMargin(0.06);
+				tempCanv->SetTopMargin(0.10);
+				//tempCanv->SetTopMargin(0.06);
 				tempCanv->SetBottomMargin(0.15);
 				TCanvas* tempCanv2 = newTCanvas(canvName2.data());
-				tempCanv2->SetTopMargin(0.06);
+				tempCanv2->SetTopMargin(0.10);
+				//tempCanv2->SetTopMargin(0.06);
 				tempCanv2->SetBottomMargin(0.15);
 
 				TPad *p1lin = new TPad("p1lin","",0.,0.32,1.,1.);
@@ -840,7 +1051,8 @@ void format_plots_combined(){
 				TH1F** h =KinVarHistMap[Data][s_EventTopology[iTop]][s_KinemVars[kKinVar]];
 					//				tempCanv->cd();
 				p1lin->cd();
-				TLegend* l1=makeL1_v2( 0.201005,0.6889313,0.4007538,0.9198473);
+				//TLegend* l1=makeL1_v2( 0.201005,0.693005,0.4007538,0.874352);
+				TLegend* l1=makeL1_v2( 0.1997487,0.693005,0.3404523,0.874352);
 				PrettyHist(h[3],dgBkgThatchColor);//bkg
 				PrettyHist(h[1],dataColor);//tag
 
@@ -851,12 +1063,13 @@ void format_plots_combined(){
 					//PrettyBlock2(h[3],kRed,4050);
 				PrettyBlock2(h[3],kRed,3345,2);
 					//PrettyBlock(h[3],kRed,string("transparent"));//PrettyMarker(h[3],kRed);
-				PrettyMarker(h[1],kBlack,kFullCircle,1.3);
+				PrettyMarker(h[1],kBlack,kFullCircle,2.2);
 
 
 				for (int i=0; i<nDataAndMcFiles-1; i++) { //there should be nDataAndMcFiles -1 MC files
-					PrettyHist(MC_hists[i],MCcolors[i]);
-					PrettyMarker(MC_hists[i],MCcolors[i]);
+					PrettyHist(MC_hists[i],MCcolors[i],3,MClines[i]);
+					//PrettyMarker(MC_hists[i],MCcolors[i],MCmarkers[i],2.2);
+					PrettyMarker(MC_hists[i],MCcolors[i],kDot,0);
 				}
 				h[3]->SetMinimum(0.0);
 				float linmax = h[3]->GetMaximum();
@@ -893,8 +1106,8 @@ void format_plots_combined(){
 				l1->Draw("same");
 				if(DrawLimits&&allthere) textlims->Draw("same"); //Limit
 				TEX_CMSPrelim->Draw("same");
-				TEX_E_TeV->Draw("same");
-				TEX_lumi_fb->Draw("same");
+				//TEX_E_TeV->Draw("same");
+				//TEX_lumi_fb->Draw("same");
 				p2lin->cd();
 				PrettyHist(h[8],TagToBkgRatColor);
 				PrettyMarker(h[8],TagToBkgRatColor);
@@ -932,7 +1145,8 @@ void format_plots_combined(){
 					///END MAKE LINEAR PLOTS///
 
 					///MAKE LOG PLTOS///
-				TLegend* l2 = makeL1_v2(0.201005,0.6889313,0.4007538,0.9198473);
+				//TLegend* l2 = makeL1_v2(0.201005,0.6889313,0.4007538,0.9198473);
+				TLegend* l2 = makeL1_v2(0.1997487,0.693005,0.3404523,0.874352);
 					//				tempCanv2->cd();
 				p1log->cd();
 				PrettyHist(h[3],dgBkgThatchColor);//bkg
@@ -944,10 +1158,11 @@ void format_plots_combined(){
 					//PrettyBlock2(h[3],kRed,4050);
 				PrettyBlock2(h[3],kRed,3345,2);
 					//PrettyBlock(h[3],kRed,string("transparent"));//PrettyMarker(h[3],kRed);
-				PrettyMarker(h[1],kBlack,kFullCircle,1.3);
+				PrettyMarker(h[1],kBlack,kFullCircle,2.2);
 				for (int i=0; i<nDataAndMcFiles-1; i++) { //there should be nDataAndMcFiles -1 MC files
-					PrettyHist(MC_hists[i],MCcolors[i]);
-					PrettyMarker(MC_hists[i],MCcolors[i]);
+					PrettyHist(MC_hists[i],MCcolors[i],3,MClines[i]);
+					//PrettyMarker(MC_hists[i],MCcolors[i],MCmarkers[i],2.2);
+					PrettyMarker(MC_hists[i],MCcolors[i],kDot,0);
 					playNiceWithLegendLog(MC_hists[i],0.30,0.05);
 				}
 					//				h[3]->SetMaximum(TMath::Max(100.,h[3]->GetMaximum()));
@@ -981,8 +1196,8 @@ void format_plots_combined(){
 				l2->Draw("same");
 				if(DrawLimits&&allthere) textlims->Draw("same");//Limit
 				TEX_CMSPrelim->Draw("same");
-				TEX_E_TeV->Draw("same");
-				TEX_lumi_fb->Draw("same");
+				//TEX_E_TeV->Draw("same");
+				//TEX_lumi_fb->Draw("same");
 				tempCanv2->cd();
 				p1log->Draw();
 				p2lin->Draw();
@@ -1009,10 +1224,12 @@ void format_plots_combined(){
 				string canvName = string("SigComp1_")+s_KinemVars[kKinVar]+s_EventTopology_v2[iTop];
 				string canvName2 = string("SigComp1log_")+s_KinemVars[kKinVar]+s_EventTopology_v2[iTop];
 				TCanvas* tempCanv = newTCanvas(canvName.data());
-				tempCanv->SetTopMargin(0.06);
+				tempCanv->SetTopMargin(0.10);
+				//tempCanv->SetTopMargin(0.06);
 				tempCanv->SetBottomMargin(0.15);
 				TCanvas* tempCanv2 = newTCanvas(canvName2.data());
-				tempCanv2->SetTopMargin(0.06);
+				tempCanv2->SetTopMargin(0.10);
+				//tempCanv2->SetTopMargin(0.06);
 				tempCanv2->SetBottomMargin(0.15);
 
 					//make an array of the signal dists in the tag region.
@@ -1047,22 +1264,26 @@ void format_plots_combined(){
 					///MAKE LINEAR ARRANGE3 PLOTS///
 				TH1F** h =KinVarHistMap[Data][s_EventTopology[iTop]][s_KinemVars[kKinVar]];
 				tempCanv->cd();
-				TLegend* l1=makeL1_v2( 0.1997487,0.742228,0.3404523,0.9235751);
+				TLegend* l1=makeL1_v2( 0.1997487,0.693005,0.3404523,0.874352);
 
-				PrettyHist(h[3],dgBkgThatchColor);//bkg
+				
+				PrettyHist(h[3],dgBkgThatchColor,1);//bkg
 				PrettyHist(h[1],dataColor);//tag
 
-				if (s_KinemVars[kKinVar].compare("HT") == 0) {
+				if (s_KinemVars[kKinVar].compare("HT") == 0 ||
+			            s_KinemVars[kKinVar].compare("ST") == 0) {
 					h[3]->GetXaxis()->SetLabelSize(0.04);}
 
 					//PrettyBlock2(h[3],kRed,4050);
-				PrettyBlock2(h[3],kRed,3345,2);
+				PrettyBlock2(h[3],kRed,3002,2); //small dots
+				//PrettyBlock2(h[3],kRed,3345,2); // thatched with  \\\ 
 					//PrettyBlock(h[3],kRed,string("transparent"));//PrettyMarker(h[3],kRed);
-				PrettyMarker(h[1],kBlack,kFullCircle,1.3);
+				PrettyMarker(h[1],kBlack,kFullCircle,2.2);
 
 				for (int i=0; i<nDataAndMcFiles-1; i++) { //there should be nDataAndMcFiles -1 MC files
-					PrettyHist(MC_hists[i],MCcolors[i]);
-					PrettyMarker(MC_hists[i],MCcolors[i]);
+					PrettyHist(MC_hists[i],MCcolors[i],3,MClines[i]);
+					//PrettyMarker(MC_hists[i],MCcolors[i],MCmarkers[i],2.2);
+					PrettyMarker(MC_hists[i],MCcolors[i],kDot,0);
 					playNiceWithLegend(MC_hists[i],0.30,0.0);
 				}
 				h[3]->SetMinimum(0.0);
@@ -1086,20 +1307,21 @@ void format_plots_combined(){
 				h[3]->Draw("e2p");
 				if(showTag) h[1]->Draw("e1psame");//tag
 					//already done
-				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
+				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("samehist");
 				h[3]->Draw("e2psame");
 				h[1]->Draw("e1psame");
 				l1->AddEntry(h[1],"Higgs Mass Region");
-				l1->AddEntry(h[3],"Data Driven Background");
+				l1->AddEntry(h[3],"Data Driven Background","f");
 				for (int i=0; i<nDataAndMcFiles-1; i++){
 					string lablestring = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
-					l1->AddEntry(MC_hists[i],lablestring.c_str());
+					MC_hists[i]->SetMarkerStyle(1);
+					l1->AddEntry(MC_hists[i],lablestring.c_str(),"lp");
 				}
 				l1->Draw("same");
 				if(DrawLimits&&allthere) textlims->Draw("same"); //Limit
 				TEX_CMSPrelim->Draw("same");
-				TEX_E_TeV->Draw("same");
-				TEX_lumi_fb->Draw("same");
+				//TEX_E_TeV->Draw("same");
+				//TEX_lumi_fb->Draw("same");
 
 				if(makeSigComp1){
 					if(writeRootFile) tempCanv->Write();
@@ -1109,20 +1331,23 @@ void format_plots_combined(){
 
 					///MAKE LOG PLTOS///
 					//TLegend* l2 = makeL1_v2();
-				TLegend* l2 = makeL1_v2( 0.190955,0.756477,0.390704,0.92487); //0.414573, 0.819948, 0.614322, 0.92228);
+				//TLegend* l2 = makeL1_v2( 0.190955,0.756477,0.390704,0.92487); //0.414573, 0.819948, 0.614322, 0.92228);
+				TLegend* l2 = makeL1_v2( 0.1997487,0.693005,0.3404523,0.874352);
 				tempCanv2->cd();
 				PrettyHist(h[3],dgBkgThatchColor);//bkg
 				PrettyHist(h[1],dataColor);//tag
 
 				if (s_KinemVars[kKinVar].compare("HT") == 0) {
 					h[5]->GetXaxis()->SetLabelSize(0.04);}
-				PrettyBlock2(h[3],kRed,3345,2);
+				PrettyBlock2(h[3],kRed,3002,2);
+				//PrettyBlock2(h[3],kRed,3345,2);
 					//PrettyBlock2(h[3],kRed,4050);
 					//PrettyBlock(h[3],kRed,string("transparent"));//PrettyMarker(h[3],kRed);
-				PrettyMarker(h[1],kBlack,kFullCircle,1.3);
+				PrettyMarker(h[1],kBlack,kFullCircle,2.2);
 				for (int i=0; i<nDataAndMcFiles-1; i++) { //there should be nDataAndMcFiles -1 MC files
-					PrettyHist(MC_hists[i],MCcolors[i]);
-					PrettyMarker(MC_hists[i],MCcolors[i]);
+					PrettyHist(MC_hists[i],MCcolors[i],3,MClines[i]);
+					//PrettyMarker(MC_hists[i],MCcolors[i],MCmarkers[i],2.2);
+					PrettyMarker(MC_hists[i],MCcolors[i],kDot,0);
 					playNiceWithLegendLog(MC_hists[i],0.30,0.05);
 				}
 					//				h[3]->SetMaximum(TMath::Max(100.,h[3]->GetMaximum()));
@@ -1142,21 +1367,22 @@ void format_plots_combined(){
 				h[3]->Draw("e2p");
 				h[1]->Draw("e1psame");//tag
 					//	cout << "final MC integral "<<MC_hists[0]->Integral()<<endl;
-				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("same");
+				for (int i=0; i<nDataAndMcFiles-1; i++) MC_hists[i]->Draw("samehist");
 				h[3]->Draw("e2psame");
 				h[1]->Draw("e1psame");
 				if(showTag) h[1]->Draw("e1psame");
 				l2->AddEntry(h[1],"Higgs Mass Region");
-				l2->AddEntry(h[3],"Data Driven Background");
+				l2->AddEntry(h[3],"Data Driven Background","f");
 				for (int i=0; i<nDataAndMcFiles-1; i++){
 					string lablestring2 = string("MC Signal: ")+MCpoints[i+1][0]->s_DataAndMcFiles_v4;
-					l2->AddEntry(MC_hists[i],lablestring2.c_str());
+					MC_hists[i]->SetMarkerStyle(0);
+					l2->AddEntry(MC_hists[i],lablestring2.c_str(),"lp");
 				}
 				l2->Draw("same");
 				if(DrawLimits&&allthere) textlims->Draw("same");//Limit
 				TEX_CMSPrelim->Draw("same");
-				TEX_E_TeV->Draw("same");
-				TEX_lumi_fb->Draw("same");
+				//TEX_E_TeV->Draw("same");
+				//TEX_lumi_fb->Draw("same");
 				if(makeSigComp1log){
 					if(writeRootFile) tempCanv2->Write();
 					if(saveImages)SaveCanvas(tempCanv2,plotsdir+tempCanv2->GetName(),savewhat);
@@ -1200,8 +1426,8 @@ void format_plots_combined(){
 				l1->AddEntry(h[8],"Tag to Background Ratio");
 				l1->Draw("same");
 				TEX_CMSPrelim->Draw("same");
-				TEX_E_TeV->Draw("same");
-				TEX_lumi_fb->Draw("same");
+				//TEX_E_TeV->Draw("same");
+				//TEX_lumi_fb->Draw("same");
 				if(writeRootFile) tempCanv->Write();
 				if(saveImages)SaveCanvas(tempCanv,plotsdir+tempCanv->GetName(),savewhat);//save as all types
 			}//edn for each kinematic varriable
@@ -1252,7 +1478,8 @@ void format_plots_combined(){
 				PrettyBlock2(h[5],lsbColor,3354,2);//PrettyMarker(h[5],kBlue,4);
 				PrettyBlock2(h[6],usbColor,3345,2);//PrettyMarker(h[6],kGreen,4);
 
-				h[3]->SetFillStyle(0);//open rectangle
+				//h[3]->SetFillStyle(0);//open rectangle
+				h[3]->SetFillStyle(3002);//dots
 				h[3]->SetLineColor(dgBkgBoxColor);
 				h[3]->SetLineWidth(4);
 
@@ -1263,8 +1490,9 @@ void format_plots_combined(){
 					//			PrettyBlock2(h[3],kRed,3345,2);
 					//PrettyBlock(h[3],kRed,string("transparent"));//PrettyMarker(h[3],kRed);
 				for (int i=0; i<nDataAndMcFiles-1; i++) { //there should be nDataAndMcFiles -1 MC files
-					PrettyHist(MC_hists[i],MCcolors[i]);
-					PrettyMarker(MC_hists[i],MCcolors[i]);
+					PrettyHist(MC_hists[i],MCcolors[i],3,MClines[i]);
+					PrettyMarker(MC_hists[i],MCcolors[i],kDot,0);
+					//PrettyMarker(MC_hists[i],MCcolors[i],MCmarkers[i],2.2);
 				}
 				h[3]->SetMinimum(0.0);
 				float linmax = h[3]->GetMaximum();
@@ -1297,8 +1525,8 @@ void format_plots_combined(){
 				}
 				l1->Draw("same");
 				TEX_CMSPrelim->Draw("same");
-				TEX_E_TeV->Draw("same");
-				TEX_lumi_fb->Draw("same");
+				//TEX_E_TeV->Draw("same");
+				//TEX_lumi_fb->Draw("same");
 
 				if(writeRootFile) tempCanv->Write();
 				if(saveImages)SaveCanvas(tempCanv,plotsdir+tempCanv->GetName(),savewhat);
@@ -1310,6 +1538,99 @@ void format_plots_combined(){
 			}//edn for each kinematic varriable
 		}//end for each topology
 	}//end if makeNormPlots
+
+		//     __  ___            ___  __     __
+		//    /  |/  /__ ____ _  / _ \/ /__  / /_
+		//   / /|_/ / _ `/ _ `/ / ___/ / _ \/ __/
+		//  /_/  /_/\_, /\_, / /_/  /_/\___/\__/
+		//         /___//___/
+
+
+	/*Debug*/ if(printlevel > 0) cout << "Build mass plots" << endl;
+
+		//diphoton mass plots, one for each data plot, for each topology.
+	if(makeMggPlot){
+        for (int iTop = 0; iTop<nEventTopologies; iTop++) {
+
+			string canvName = string("c_mgg")+s_EventTopology_v2[iTop]+"_ygstyle";
+			TCanvas* tempCanv = newTCanvas(canvName.c_str()); //char*error
+			tempCanv->cd();
+			tempCanv->SetTopMargin(0.10);
+
+				//The main resources
+			TH1F* hdata =(TH1F*)h_mGG_unsliced[Data][s_EventTopology[iTop]]->Clone();
+			TH1F* hMC =(TH1F*)h_mGG_unsliced[indexNames[MggMc]][s_EventTopology[iTop]]->Clone();
+			TF1* fitcurve = mgg_fit_curve[iTop];
+
+			float p0 = fitcurve->GetParameter(0);
+			float p1 = fitcurve->GetParameter(1);
+			TF1 * fit_upper = new TF1("fit_upper",Form("%f*x**%f",p0,p1), usb_lb,160);
+			TF1 * fit_lower = new TF1("fit_lower",Form("%f*x**%f",p0,p1), 105,lsb_ub);
+			TF1 * fit_higgs = new TF1("fit_higgs",Form("%f*x**%f",p0,p1), lsb_ub,usb_lb);
+			fit_upper->SetLineColor(kRed);
+			fit_lower->SetLineColor(kRed);
+			fit_higgs->SetLineColor(kRed);
+			fit_upper->SetLineWidth(4);
+			fit_lower->SetLineWidth(4);
+			fit_higgs->SetLineWidth(2);
+			fit_upper->SetLineStyle(kSolid);
+			fit_lower->SetLineStyle(kSolid);
+			fit_higgs->SetLineStyle(kDashed);
+
+			TLatex text2;
+			text2.SetNDC(true);
+			text2.SetTextAlign(12);
+			text2.SetTextFont(42);
+			text2.SetTextSize(0.04);
+			string label = "";
+			if(s_EventTopology[iTop].find("2JbMLgbar2") != std::string::npos) label = "#geq2 b-jets";
+			else if(s_EventTopology[iTop].find( "2JbML!Gbar2Mbb!") != std::string::npos) label = "2 b-jets off H";
+			else if(s_EventTopology[iTop].find( "2JbML!Gbar2Mbb") != std::string::npos) label = "2 b-jets on H";
+			else if(s_EventTopology[iTop].find( "3JbMLLGbar2") != std::string::npos) label = "#geq3 b-jets";
+
+			PrettyHist(hdata,kBlack,1);
+			PrettyHist(hMC,kRed,1);
+			PrettyMarker(hdata,kBlack,20,1);
+			hMC->SetFillStyle(3002);
+			hMC->SetFillColor(kRed);
+			hdata->SetTitle(";M_{#gamma #gamma} (GeV);Events per GeV");
+
+//			float ymax = 0.75*hdiPhoMass->GetMaximum();
+//			hdata->GetXaxis()->SetRange(90,170);
+			hdata->SetAxisRange(95.0,170.0);
+
+			TLegend* leg = new TLegend(0.35,0.7,0.9,0.85);
+			PrettyLegend(leg);
+			leg->SetBorderSize(0);
+			leg->SetTextFont(132);
+			leg->SetTextSize(0.03067876);
+			leg->SetLineColor(1);
+			leg->SetLineStyle(1);
+			leg->SetLineWidth(1);
+			leg->SetFillColor(0);
+
+			leg->AddEntry(hdata,"Data","lp");
+			leg->AddEntry(fit_upper,"Sideband Fit","l");
+			leg->AddEntry(hMC,"MC Signa: M(#tilde{t}_{R}) =300, M(#tilde{#chi}^{0})=290","f");
+			//leg->AddEntry(hMC,"MC Signa: M(#tilde{t}_{R}) =300 GeV, M(#tilde{#chi}^{0})=290 GeV","f");
+//			leg->AddEntry(hMC,("MC Signa: "+MCpoints[MggMc][0]->s_DataAndMcFiles_v4).data(),"f");
+			//leg->SetTextSize(0.03067876);
+
+			hdata->Draw("ep");
+			fit_upper->Draw("same");
+			fit_lower->Draw("same");
+			fit_higgs->SetLineStyle(kDashed);
+			fit_higgs->Draw("lsame");
+			hdata->Draw("epsame");
+			hMC->Draw("samehist");
+			TEX_CMSPrelim->Draw("same");
+			leg->Draw("same");
+			text2.DrawLatex( 0.683417,0.840659,label.data());
+			tempCanv->Write();
+			if(saveImages) SaveCanvas(tempCanv,plotsdir+tempCanv->GetName(),"ggifpdfpngCroot");//save as all types
+
+        }//end for every topology
+	}//end makeMggPlot
 
 		///END MAKE PLOTS
 	/*Debug*/ if(printlevel > 0) cout << "Close Files" << endl;
@@ -1324,6 +1645,12 @@ void format_plots_combined(){
 	for(int i=1;i<nDataAndMcFiles;i++){
 		for (int jchan=0; jchan<nchannels; jchan++) {
 			PostAnaAnaFiles[indexNames[i]][channel[jchan]]->Close();
+		}
+		printf(".");
+		fflush(stdout);
+
+		for (int jchan=0; jchan<nchannels_mu; jchan++) {
+			PostAnaAnaFiles[indexNames_mu[i]][channel_mu[jchan]]->Close();
 		}
 		printf(".");
 		fflush(stdout);
@@ -1350,14 +1677,19 @@ void format_plots_combined(){
 }//end format plots
 
 void diphoMassPlot(TH1F* hdiPhoMass, TCanvas* canv, TF1* fitcurve){
-	canv->SetTopMargin(0.06);
+	canv->SetTopMargin(0.10);
+	//canv->SetTopMargin(0.06);
 	canv->SetBottomMargin(0.15);
-	TLatex * TEX_CMSPrelim = new TLatex(0.177136,0.953368,"CMS Preliminary 2013");
-	PrettyLatex(TEX_CMSPrelim,0.03);
-	TLatex * TEX_E_TeV = new TLatex(0.800251,0.953368,"#sqrt{s} = 8 TeV");
-	PrettyLatex(TEX_E_TeV,0.03);
-	TLatex * TEX_lumi_fb = new TLatex(0.621859,0.953368,Form("#intL dt = %.0f fb^{-1}",Integrated_Luminosity_Data));
-	PrettyLatex(TEX_lumi_fb,0.03);
+	TLatex * TEX_CMSPrelim;
+	if(preliminary) TEX_CMSPrelim = new TLatex(0.138191,0.935315,Form("CMS Preliminary, #sqrt{s} = 8 TeV, #scale[0.75]{#int}#it{L} d#it{t} = %.1f fb^{-1}",Integrated_Luminosity_Data));
+	else TEX_CMSPrelim = new TLatex(0.138191,0.935315,Form("CMS, #sqrt{s} = 8 TeV, #scale[0.75]{#int}#it{L} d#it{t} = %.1f fb^{-1}",Integrated_Luminosity_Data));
+        PrettyLatex(TEX_CMSPrelim,0.05);
+	//TLatex * TEX_CMSPrelim = new TLatex(0.177136,0.953368,"CMS Preliminary");
+	//PrettyLatex(TEX_CMSPrelim,0.03);
+	//TLatex * TEX_E_TeV = new TLatex(0.800251,0.953368,"#sqrt{s} = 8 TeV");
+	//PrettyLatex(TEX_E_TeV,0.03);
+	//TLatex * TEX_lumi_fb = new TLatex(0.621859,0.953368,Form("#intL dt = %.1f fb^{-1}",Integrated_Luminosity_Data));
+	//PrettyLatex(TEX_lumi_fb,0.03);
 	canv->cd();
 	PrettyHist(hdiPhoMass);
 	float ymax = 0.5*hdiPhoMass->GetMaximum();
@@ -1382,8 +1714,8 @@ void diphoMassPlot(TH1F* hdiPhoMass, TCanvas* canv, TF1* fitcurve){
 	L_lsb_ub->Draw("same");
 	fitcurve->Draw("same");
 	TEX_CMSPrelim->Draw("same");
-	TEX_E_TeV->Draw("same");
-	TEX_lumi_fb->Draw("same");
+	//TEX_E_TeV->Draw("same");
+	//TEX_lumi_fb->Draw("same");
 }
 
 
@@ -1527,4 +1859,113 @@ bool KinvarIsLimit(string kinvar){
 
 	return false;
 }//end TopoIsLimit*/
+
+TH1F* MakeCutEffScan(TH1F* hin, cutmode approach){
+		//just do the integrals.
+	float integ = hin->Integral();
+	int nbinsx = hin->GetXaxis()->GetNbins();
+	switch (approach) {
+		case 0://start cutting from the left
+		{
+			TH1F* hout = (TH1F*) hin->Clone("hout");
+			for (int ibin = 1; ibin<=nbinsx; ibin++) {
+				hout->SetBinContent(ibin,hin->Integral(ibin,nbinsx)/integ);
+			}
+			return hout;
+		}
+		case 1://start cutting from the right
+		{
+			Double_t edgesin[nbinsx+3];
+			cout<<"in case 1, nbinsx = "<<nbinsx<<endl;
+			hin->GetXaxis()->GetLowEdge(edgesin); // this segfaults
+			cout<<"1"<<endl;
+			Double_t newedges[nbinsx+2];
+			cout<<"2"<<endl;
+			for (int i=0; i<nbinsx; i++) {
+				newedges[i] = edgesin[i];
+				cout<<"i="<<i<<"edgesin[i]="<<edgesin[i]<<endl;
+			}
+			newedges[nbinsx] = hin->GetXaxis()->GetXmax();
+			cout<<"3"<<endl;
+			newedges[nbinsx+1] = 2.0*newedges[nbinsx] - newedges[nbinsx-1];
+			cout<<"4"<<endl;
+			for (int i=0; i<nbinsx+2; i++) {
+				cout<<"newedges["<<i<<"] = "<<newedges[i]<<endl;
+			}
+			TH1F* hout = new TH1F("hout","",nbinsx+1,newedges);//gives error, complains that they are not in order.
+			cout<<"5"<<endl;
+//			TH1F* hout = (TH1F*) hin->Clone("hout");
+			cout<<"6"<<endl;
+			hout->SetBinContent(1,0);
+			for (int ibin = nbinsx; ibin>0; ibin--) {
+				cout<<"ibin"<<ibin<<endl;
+				hout->SetBinContent(ibin+1,hin->Integral(1,ibin)/integ);
+			}
+			cout<<"7"<<endl;
+			return hout;
+		}
+		case 2://start cutting at the edges and work to the center.
+		{
+//			cout<<"in case 2, nbinsx = "<<nbinsx<<endl;
+			int centerbin = (nbinsx/2)+1;//they're integers so you get the floor
+			bool odd = nbinsx%2;
+//			cout<<"centerbin = "<<centerbin<<endl;
+			Double_t edgesin[nbinsx+3];
+			hin->GetXaxis()->GetLowEdge(edgesin);
+			Double_t newedges[centerbin+1-!odd];
+			for (int i=0; i<centerbin-1; i++) {
+				newedges[i] = edgesin[i+centerbin];
+//				cout<<"i="<<i<<" edgesin[i+centerbin]="<<edgesin[i+centerbin]<<endl;
+			}
+			newedges[centerbin-1-!odd] = hin->GetXaxis()->GetXmax();
+			newedges[centerbin-!odd] = 2.0*newedges[centerbin-1-!odd] - newedges[centerbin-2-!odd];
+			for (int i=0; i<=centerbin-!odd; i++) {
+//				cout<<"newedges["<<i<<"] = "<<newedges[i]<<endl;
+			}
+			TH1F* hout = new TH1F("hout","",centerbin-!odd, newedges);
+			hout->SetBinContent(1,0);
+			for (int ibin = 0; ibin < centerbin-!odd; ibin++){
+				hout->SetBinContent(ibin+1,hin->Integral(centerbin - ibin,centerbin + ibin)/integ);
+			}			return hout;
+		}
+		case 3: //scan higgs window width
+		{
+			int centerbin = hin->GetXaxis()->FindBin(125.5);//mHiggs);
+			int nbinsOut = centerbin < nbinsx/2?centerbin:nbinsx+1-centerbin;
+			TH1F* hout = new TH1F("hout",";efficiency;signal window width (GeV)", nbinsOut ,hin->GetBinWidth(centerbin), ((float)2*nbinsOut+1)*hin->GetBinWidth(centerbin));
+			if(centerbin == 0 || centerbin == nbinsx+1){
+				cout<<"Error! Attempting to build higgs efficiency plots on a non-sensical distribution!"<<endl;
+				return hout;
+			}
+			for (int ibin = 0; ibin<nbinsOut; ++ibin) {
+				hout->SetBinContent(ibin+1,hin->Integral(centerbin-ibin,centerbin+ibin)/integ);
+			}
+			return hout;
+		}
+		default:
+		{
+			TH1F* hout = new TH1F("hout","", 1,0,1);
+			cout<<"Error! Nonsense mode received!"<<endl;
+			return hout;
+		}
+	}//end switch
+}//end CutEff
+
+TH1F* CutEffComp(TH1F* sig, TH1F* bkg, cutmode approach){
+		//Make efficiency scans on the signal and background
+		//Return a hist of cut_efficiency(signal) / sqrt[ cut_efficiency(bkg)]
+		//as a function of cut value
+		//modes:
+		//   "left": scan cut starting at left end
+		//   "right": scan cut starting at left end
+		//   "doublesided": scan cut at edges symmetrically, use for eta cut scan
+		//   "higgs": scan higgs mass window
+	TH1F* signal_eff = MakeCutEffScan(sig,approach);
+	signal_eff->SetName("signal_eff_ratio");
+	TH1F* background_eff = MakeCutEffScan(bkg,approach);
+	background_eff->SetName("background_eff");
+	Sqrt(background_eff);
+	signal_eff->Divide(background_eff);
+	return signal_eff;
+}//end CutEff
 

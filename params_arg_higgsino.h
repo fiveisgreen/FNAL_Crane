@@ -34,6 +34,7 @@ bool useMETFilter_mc = false;
 bool makeEventsList = false;
 bool makeTMVAlist = false;
 bool showTag = true; //this blinds out the tag region when false;
+bool preliminary = false;
 bool useElectroHiggs = true; //if false, throw out all the MC events without a stop in them. 
 
 int type_to_run = 10;

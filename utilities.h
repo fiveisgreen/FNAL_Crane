@@ -12,6 +12,7 @@
 #include "TStopwatch.h"
 #include "TLorentzVector.h"
 #include <sys/stat.h>  //needed for fileExists
+#include "TGraph.h"
 using namespace std;
 
 bool aeq(float A, float B, int scale=5);
@@ -26,12 +27,17 @@ float phi_0_2pi(float phi);
 float phi_negpi_pi(float phi);
 float dR(TLorentzVector A, TLorentzVector B);
 float Mt(TLorentzVector x);
+float ThetaStar(TLorentzVector & a,TLorentzVector & b);
+//float slowThetaStar(TLorentzVector a,TLorentzVector b);
 void fixNAN(TH1F* h,float nonsenceval=-1.0, float nonsenceerr = 0);
 void AddOverflow(TH1F* h);
 bool histisempty(TH1F* h);
 void printHist(TH1F* h);
 bool fileExists(std::string fname);
 void m(int i);
+TGraph* makeband(TGraph* A, TGraph* B, int color);
+TGraph* makeband_0guard(TGraph* A, TGraph* B, int color);
+void Sqrt(TH1F* hin);
 
 	// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -115,6 +121,48 @@ float phi_negpi_pi(float phi){ //forces phi to be on 0..2pi
 
 float Mt(TLorentzVector x){return sqrt(x.E()*x.E() - x.Perp2());}
 	//sqrt(E^2 - Pt^2)
+
+float ThetaStar(TLorentzVector & a,TLorentzVector & b){
+                        //calculate cos(theta*), the angle between the two vectors  in their center of mass frame.
+
+                TLorentzVector A(a); //copy A so we dont' spoil the origional
+                TLorentzVector sum = a + b;
+		TVector3 xhat(1,0,0);//x_hat unit vector
+                TVector3 axis = (sum.Vect().Cross(xhat)).Unit(); //get rot axis by which to rotate sum to x-axis
+                A.Rotate(sum.Angle(xhat),axis); //Rotate the sum to lie along the x-axis
+                A.Boost(-sum.Beta(),0,0); //boost along the x-axis to move to CM frame
+                return fabs(A.Vect() * xhat)/A.Vect().Mag(); //get cos(theta) w.r.t. x-axis/boost direction.
+}//end 
+
+/*float slowThetaStar(TLorentzVector a,TLorentzVector b){
+                        //calculate cos(theta*), the angle between the two vectors  in their center of mass frame.
+			//I keep this comment because the derrivaiton is a little clearer
+                TLorentzVector A(a);
+                TLorentzVector B(b);
+                TLorentzVector sum = a + b;
+
+                TVector3 v3sum = sum.Vect();//get the spacial vector.                
+		TVector3 xhat(1,0,0);//x_hat unit vector
+                TVector3 axis = (v3sum.Cross(xhat)).Unit();
+                double theta = sum.Angle(xhat);
+                printf("sum before: E %.1f P %.1f Px %.1f Py %.1f Pz %.1f\n",sum.E(),sum.P(),sum.Px(),sum.Py(),sum.Pz());
+                printf("axis: x %.2f y %.2f z %.2f theta %.2f \n",axis.Px(),axis.Py(),axis.Pz(),theta);
+                sum.Rotate(theta,axis); //rotate so that sum is parallel with the x-axis. This makes the boost 1D
+                A.Rotate(theta,axis);
+                B.Rotate(theta,axis);
+		printf("sum afterR: E %.1f P %.1f Px %.1f Py %.1f Pz %.1f\n",sum.E(),sum.P(),sum.Px(),sum.Py(),sum.Pz());
+                double beta = sum.Beta();
+                sum.Boost(-beta,0,0);
+                A.Boost(-beta,0,0);
+                B.Boost(-beta,0,0);
+                //these are now in the center of mass frame. and the boost is along xhat
+                //A and B are identically back to back. So it doesn't matter which one we choose. 
+//              printf("sum afterB: E %.1f P %.1f Px %.1f Py %.1f Pz %.1f\n",sum.E(),sum.P(),sum.Px(),sum.Py(),sum.Pz());
+                TVector3 Aprime = A.Vect().Unit();
+                //TVector3 p1prime = B.Vect().Unit();
+                //printf("p0prime: x %.2f y %.2f z %.2f \n",p0prime.Px(),p0prime.Py(),p0prime.Pz());
+                return fabs(Aprime * xhat/Aprime.Mag());
+}//end */
 
 void fixNAN(TH1F* h,float nonsenceval, float nonsenceerr){
 	for(int i=0;i<= h->GetNbinsX(); i++){
@@ -216,5 +264,86 @@ bool fileExists(std::string filename){
 		//requires 17.4 microseconds for a 500MB file */
 }
 
-#endif
+TGraph* makeband(TGraph* A, TGraph* B, int color){
+		//Takes two TGraphs, presumably parallel..
+		//makes a third TGraph that is a loop connecting the end of one to the start of the other
+		//it closes the loop so you can plot it as a band. 
+	int nA = A->GetN();
+	int nB = B->GetN();
+	int npoints = nA + nB + 1;
+	Double_t x[npoints];
+	Double_t y[npoints];
+	for (int i = 0; i<nA; i++) {
+		Double_t tmpx, tmpy;
+		A->GetPoint(i,tmpx,tmpy);
+		x[i]=tmpx;
+		y[i]=tmpy;
+		cout<<"A: x="<<tmpx<<" y="<<tmpy<<endl;
+	}
+	for (int i = 0; i<nB; i++) {
+		Double_t tmpx, tmpy;
+		B->GetPoint(nB-1-i,tmpx,tmpy);
+		x[i+nA]=tmpx;
+		y[i+nA]=tmpy;
+		cout<<"B: x="<<tmpx<<" y="<<tmpy<<endl;
+	}
+	
+	cout<<"EndPoint: x="<<x[0]<<" y="<<y[0]<<endl;
+	x[npoints-1]=x[0];
+	y[npoints-1]=y[0];
+	TGraph* out = new TGraph(npoints,x,y);
+	out->SetFillColor(color);
+	return out;
+}//end makeband
+TGraph* makeband_0guard(TGraph* A, TGraph* B, int color){
+		//Takes two TGraphs, presumably parallel..
+		//makes a third TGraph that is a loop connecting the end of one to the start of the other
+		//it closes the loop so you can plot it as a band. 
+	int nA = 0;
+	int nB = 0;
+	for (int i = 0; i<A->GetN(); i++) {
+		Double_t tmpx, tmpy;
+		A->GetPoint(i,tmpx,tmpy);
+		if(tmpx!=0 && tmpy!=0) nA++;
+	}
+	for (int i = 0; i<B->GetN(); i++) {
+		Double_t tmpx, tmpy;
+		B->GetPoint(i,tmpx,tmpy);
+		if(tmpx!=0 && tmpy!=0) nB++;
+	}
+	int npoints = nA + nB + 1;
+	Double_t x[npoints];
+	Double_t y[npoints];
+	for (int i = 0; i<nA; i++) {
+		Double_t tmpx, tmpy;
+		A->GetPoint(i,tmpx,tmpy);
+		x[i]=tmpx;
+		y[i]=tmpy;
+		cout<<"i="<<i<<" A: x="<<tmpx<<" y="<<tmpy<<endl;
+	}
+	for (int i = 0; i<nB; i++) {
+		Double_t tmpx, tmpy;
+		B->GetPoint(nB-1-i,tmpx,tmpy);
+		x[i+nA]=tmpx;
+		y[i+nA]=tmpy;
+		cout<<"i="<<i+nA<<" B: x="<<tmpx<<" y="<<tmpy<<endl;
+	}
+	
+	cout<<"i="<<npoints-1<<" EndPoint: x="<<x[0]<<" y="<<y[0]<<endl;
+	x[npoints-1]=x[0];
+	y[npoints-1]=y[0];
+	TGraph* out = new TGraph(npoints,x,y);
+	out->SetFillColor(color);
+	return out;
+}//end makeband
 
+void Sqrt(TH1F* hin){
+	//hin = sqrt(hin)
+	for (int ibin=0; ibin<= hin->GetXaxis()->GetNbins(); ++ibin) {
+		float rootbin = sqrt(hin->GetBinContent(ibin));
+		hin->SetBinContent(ibin,rootbin);
+		hin->SetBinError(ibin,0.5f*hin->GetBinError(ibin)/rootbin);
+	}
+}//end Sqrt
+
+#endif

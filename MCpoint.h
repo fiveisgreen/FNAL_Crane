@@ -50,7 +50,7 @@ public:
 	string s_DataAndMcFiles; //"mst_350_M3_5025_mu_225"
 	string s_DataAndMcFiles_v2; //"MC_mst_350_M3_5025_mu_225"...}
 	string s_DataAndMcFiles_v3; //"MC" (or "Data")
-	string s_DataAndMcFiles_v4; //"M_{sTop}=650, M_{Higgsino}=275"
+	string s_DataAndMcFiles_v4; //"M_{Stop}=650, M_{Higgsino}=275"
 
 	float lumiscalefactor(float lumi_in_fb);
 	float cs_fb();
@@ -98,7 +98,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("ho_%i",Mhiggsino);
 		s_DataAndMcFiles_v2 = Form("MC_ho_%i",Mhiggsino);
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i",Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M(#tilde{#chi}^{0})=%i GeV",Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i GeV",Mhiggsino);
 	}
 	else if(type == -1){
 			//     ___       __
@@ -120,8 +121,12 @@ void MCpoint::setType(int type_){
 		string plotsroot_mc_copy(plotsroot_mc);
 		size_t pos1 = plotsroot_mc_copy.find(".root");
 		logplotsroot_mc = plotsroot_mc_copy.replace(pos1,std::string(".root").length(),".log");
-		plotsAndBackground_mc = plotsAndBackground_data_lim;
-		logplotsAndBackground_mc = logplotsAndBackground_data_lim;
+		//plotsAndBackground_mc = plotsAndBackground_data_lim;
+		//logplotsAndBackground_mc = logplotsAndBackground_data_lim;
+		plotsAndBackground_mc = plotsAndBackground_data;
+		logplotsAndBackground_mc = logplotsAndBackground_data;
+
+
 		//string plotsAndBackground_data_copy(plotsAndBackground_data_lim);
 		//size_t pos2 = plotsAndBackground_data_copy.find(".root");
 		//logplotsAndBackground_mc = plotsAndBackground_data_copy.replace(pos2,std::string(".root").length(),".log");
@@ -156,7 +161,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{Stop}=%i GeV, M_{Higgsino}=%i GeV",Mstop,Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M(#tilde{t}_{R})=%i GeV, M(#tilde{#chi}^{0})=%i GeV",Mstop,Mhiggsino);
 	}
 	else if(type == 3){ //sunil's stuff
 			//    ____  __   __  ____          _ __  _____
@@ -179,7 +185,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles = pointName.data();
 		s_DataAndMcFiles_v2 = Form("MC_%s",pointName.data());
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i",Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M(#tilde{#chi}^{0})=%i GeV",Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i GeV",Mhiggsino);
 	}
 	else if(type == 4){ //Higgs to GG fullsim MC
 			//     ______  ___   __ ___
@@ -246,7 +253,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("mst_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{Stop}=%i GeV, M_{Higgsino}=%i GeV",Mstop,Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M(#tilde{t}_{R})=%i GeV, M(#tilde{#chi}^{0})=%i GeV",Mstop,Mhiggsino);
 	}
 	
 	else if(type >= 20 && type < 30){ //new strong production
@@ -292,7 +300,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles = pointName.data();
 		s_DataAndMcFiles_v2 = Form("MC_%s",pointName.data());
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i",Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M(#tilde{#chi}^{0})=%i GeV",Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{Higgsino}=%i GeV",Mhiggsino);
 	}
 	else{ //assume type 0	Stop-higgsion type
 			//     ___      ___          ____
@@ -316,7 +325,8 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
+		//s_DataAndMcFiles_v4 = Form("M_{Stop}=%i GeV, M_{Higgsino}=%i GeV",Mstop,Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M(#tilde{t}_{R})=%i GeV, M(#tilde{#chi}^{0})=%i GeV",Mstop,Mhiggsino);
 	}
 }//end setType
 
@@ -1017,6 +1027,7 @@ std::vector<MCpoint*> setupMCpoints(){
 		//  /___/_/\__/\__/\__/_/  \___/_//_/_/\_, /\_, /___/
 		//
 		//These use Higgsino-like chargino. Cross sections are Prospino NLO
+		// Keywords: Electrohiggs, electrohiggs, higgsino, Higgsino
 
 		//see https://twiki.cern.ch/twiki/bin/view/CMS/NaturalSUSYHiggsinoNLSP for electrohiggs branching ratios and cs
 		//and see https://twiki.cern.ch/twiki/bin/viewauth/CMS/Electrohiggs for numbers of generated events.

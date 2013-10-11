@@ -16,6 +16,9 @@ string plotsroot_data= "raw_plots_data_GLL12ABC.root"; // raw plots from ana.C
 string logplotsroot_data= "raw_plots_data_GLL12ABC.log"; // raw plots from ana.C
 string plotsAndBackground_data = "plotsWithBackground_dataGLL12.root";
 string logplotsAndBackground_data = "plotsWithBackground_dataGLL12.log";
+string plotsAndBackground_data_lim = "plotsWithBackground_data_lim.root";
+string logplotsAndBackground_data_lim = "plotsWithBackground_data_lim.log";
+string integSyst_data_lim = "integral_systematics_data_lim.txt";
 string formatedplotsroot_data= "formatted_plots_dataGLL12.root";
 bool useMETFilter_data = true;
 bool useMVAphoP = true;
@@ -34,6 +37,7 @@ bool useMETFilter_mc = false;
 bool makeEventsList = false;
 bool makeTMVAlist = false;
 bool showTag = true; //this blinds out the tag region when false;
+bool preliminary = false;
 bool useElectroHiggs = true; //if false, throw out all the MC events without a stop in them. 
 
 int type_to_run = 10;
@@ -68,7 +72,7 @@ string plotsdir = "plots_bbin/";
 	///LISTS FOR INDEXING
 const int nPhoMassAndBkgDists = 9;
 string s_MassBkgDists[nPhoMassAndBkgDists] = {"lowSB","tag","upperSB","bkg","tag_subbkg","lowSB_scaled","upperSB_scaled","lsb_over_usb","tag_over_bkg"};
-const int nEventTopologies = 40; // the number of types of cuts selected, like 1JB...
+const int nEventTopologies = 42; // the number of types of cuts selected, like 1JB...
 string s_EventTopology[nEventTopologies] = { 
 	"NULL","gbar2","1lepgbar2","1!lepgbar2","1Elegbar2","1Mugbar2",
 	"2lepgbar2","2!lepZgbar2","3lepgbar2", //9
@@ -86,7 +90,8 @@ string s_EventTopology[nEventTopologies] = {
 //	"0lep25Jb01MewkMllgbar2", "1!lep23Jb01MewkMllgbar2","1!lep!23JMllEWKgbar2",  //for ZZbins //3
 	"2JbM2lepgbar2", "2JbML!1lepgbar2", "2JbML!gbar2bestOn0lep",
 	"4JbML!gbar2ewkMllbestOff0lep", "2JbML!gbar2bothOff0lep",
-	"01J0lep0Bgbar2"}; //5
+	"01J0lep0Bgbar2",
+	"4phogbar2","m30"}; //5
 
 		//higgs + met only: 0lep, 0B's at most one other jet,
 
@@ -264,6 +269,16 @@ const float Integrated_Luminosity_Data = 19.499;//18.304;// 1/fb
 int PhoMassNBins = 130;
 float PhoMassMin = 50.0f;
 float PhoMassMax = 180.0f;
+
+float BR_haa = 0.00229;
+float BR_hbb = 0.561;
+float BR_hzz = 0.0289;
+float BR_hww = 0.231;
+float BR_htt = 0.0615;
+float BR_bbaa = 2*0.561*0.00229;
+float BR_wwaa = 2*0.231*0.00229;
+float BR_zzaa = 2*0.0289*0.00229; 
+float BR_ttaa = 2*0.0615*0.00229;
 
 } //end namespace params
 #endif

@@ -195,6 +195,7 @@ bool is_superskimmer_pho(float pt,
 
 float max(float a, double b);
 float MCsmear(float eta, float r9,TRandom* r);
+float MCsmear_fullsim(float eta, float r9,TRandom* r);
 
 // end prototyping
 
@@ -818,35 +819,65 @@ float MCsmear(float eta, float r9,TRandom* r){
 	//setup with TRandom *r = new TRandom();
 	float sigma;
 	eta = fabs(eta);
-////////////////////////this block is generated automatically by combineSmearing.C
+	////////////////////////this block is generated automatically by combineSmearing.C
 
-       if(is_bar(eta)){
-                if(eta < 1){
-                        if(r9>0.94) sigma = 0.009213;
-                        else sigma = 0.010046;
-                }
-                else{
-                        if(r9>0.94) sigma = 0.016318;
-                        else sigma = 0.017477;
-                }
-        }
-        else{ //ec
-                if(eta < 2){
-                        if(r9>0.94) sigma = 0.029787;
-                        else sigma = 0.029989;
-                }
-                else{
-                        if(r9>0.94) sigma = 0.034883;
-                        else sigma = 0.024528;
-                }
-        }
-
-
+	if(is_bar(eta)){
+		if(eta < 1){
+			if(r9>0.94) sigma = 0.009213;
+			else sigma = 0.010046;
+		}
+		else{
+			if(r9>0.94) sigma = 0.016318;
+			else sigma = 0.017477;
+		}
+	}
+	else{ //ec
+		if(eta < 2){
+			if(r9>0.94) sigma = 0.029787;
+			else sigma = 0.029989;
+		}
+		else{
+			if(r9>0.94) sigma = 0.034883;
+			else sigma = 0.024528;
+		}
+	}
 
 //////////////////////
 	//TRandom r;
 	return r->Gaus(1,sigma);
 }
+float MCsmear_fullsim(float eta, float r9,TRandom* r){
+
+	//returns a random value for the MCsmearing scale factor. 
+	//These are the smearing factors from the higgs analysis and are to be used only on Fullsim
+	//you need to give it a TRandom* so that you don't generate the same seed every time it's called 
+	//setup with TRandom *r = new TRandom();
+	float sigma;
+	eta = fabs(eta);
+
+	if(is_bar(eta)){
+		if(eta < 1){
+			if(r9>0.94) sigma = 0.0113;
+			else sigma = 0.0109;
+		}
+		else{
+			if(r9>0.94) sigma = 0.0171;
+			else sigma = 0.0203;
+		}
+	}
+	else{ //ec
+		if(eta < 2){
+			if(r9>0.94) sigma = 0.0309;
+			else sigma = 0.0278;
+		}
+		else{
+			if(r9>0.94) sigma = 0.0372;
+			else sigma = 0.0375;
+		}
+	}
+
+	return r->Gaus(1,sigma);
+}//end MCsmear_fullsim
 
 float higgsness(float PtGG, float phoDphi, float phoMinR9, float phoEtaMax){
 	float sb_phi = 0.25;

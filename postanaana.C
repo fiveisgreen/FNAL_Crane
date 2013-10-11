@@ -37,12 +37,13 @@ void LoadHistSet(TH1F** h, TFile* fin, string prefix);
 void FixLastBin(TH1F** h);
 
 void postanaana(){
-        int nKinemVars = nKinemVars_all;
-        string *s_KinemVars = s_KinemVars_all;
 
 	int debug = 0;
 	if(debug>0) cout<<"postanaana is alive!"<<endl;
 	CMSStyle();
+
+	int nKinemVars = nKinemVars_all;
+	string *s_KinemVars = s_KinemVars_all;
 
 	if(showTag) cout<<endl<<"WARNING!! showTag IS ON!"<<endl<<endl;
 	else  cout<<endl<<"showTag IS OFF!"<<endl<<endl;
@@ -57,38 +58,43 @@ void postanaana(){
 	//make some nice titles
 
 	string s_EventTopology_v4[nEventTopologies]={
-		"with no extra cuts",
-		"with both pho in the barrel",
-		"with four pho and hgg in the barrel",
-		"with MET > 30",
-		"with at least 1 lep and both pho in the barrel",
+		"with no extra cuts",//NULL
+		"with both pho in the barrel",//gbar2
+	//	"with MET > 30",
+		"with at least 1 lep and both pho in the barrel",//1lepgbar2
 		"with exactly 1 lep and both pho in the barrel",//"1!lepgbar2",
 		"with at least one electron and both pho in the barrel",//"1Elegbar2",
 		"with at least one Muon and both pho in the barrel",//"1Mugbar2",
 		"with at least two leptons and both pho in the barrel",//"2lepgbar2",
 		"with exactly two same-flavor leptons that make a Z, and barrel photons",//"2!lepZgbar2",
 		"with at least 3 leptons, and both pho in the barrel",//"3lepgbar2",
-		"with 2 or 3 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"23JbML!gbar2Mbb0lep",
-		"with at least 2 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"2JbML!gbar2Mbb0lep", //2
-		"with 2 or 3 jets, B-tags 2!L with M, <2 leptons, barrel photons, and 95<Mbb<155", //"23JbML!gbar2Mbb0lep",
+		"with 2 or 3 jets, exactly 2 M B-tags, no leptons, barrel photons, and 95<Mbb<155", //"23JbMM!gbar2Mbb0lep",
+		"with at least 2 jets, exactly 2 M B-tags, no leptons, barrel photons, and 95<Mbb<155", //"2JbMM!gbar2Mbb0lep", //2
+		"with 2 or 3 jets, exactly 2 M B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"23JbMM!gbar2Mbb0lep",
 		"with at least 2 jets, B-tags 2!L with M, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbML!gbar2Mbb0lep", //2
+		"with at least 2 jets, exactly 2 M B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbMM!gbar2Mbb01lep
+		"with at least 2 jets, B-tags 2!L with T, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbTL!gbar2Mbb01lep
+		"with at least 2 jets, B-tags 2!M with T, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbTM!gbar2Mbb01lep
 		"with at least 2 light flavor jets, and both pho in the barrel", //2lJgbar2",
 		"with at least 2 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"2lJewkMllgbar2",
-		"with at 2 or 3 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"23lJewkMllgbar2", //"2lJMWgbar2", "2lJMZgbar2", //4
+		"with at 2 or 3 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"23lJewkMllgbar2", "2lJMWgbar2" "2lJMZgbar2" //4
+		"with 2 Jets, B-tags:MM", //"2JbML"
 		"with 2 Jets, B-tags:ML", //"2JbML"
 		"with 2 Jets, B-tags:ML, and both pho in the barrel", //"2JbMLgbar2",
 		"with 2 Jets, B-tags:MM, and both pho in the barrel", //"2JbMMgbar2",
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 95<Mbb<155", //"2JbML!Gbar2Mbb"
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !95<Mbb<155", //2JbML!Gbar2Mbb!
 		"with 3 Jets, B-tags 3+L with M, both pho in the barrel", //3JbMLLGbar2
-		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 95<Mbb<155", //"2JbMM!Gbar2Mbb
+		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 95<Mbb<155", //"2JbMM!Gbar2Mbb 
 		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !95<Mbb<155", //2JbMM!Gbar2Mbb!
 		"with 3 Jets, B-tags 3+L with 2M, both pho in the barrel", //3JbMMLGbar2
-		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 110<bestMjj<140", //"2JbML!gbar2bestOn",
-		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !110<bestMjj<140", //"2JbML!gbar2bestOff",
-		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 110<bestMjj<140", //"2JbMM!gbar2bestOn",
-		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !110<bestMjj<140", //"2JbMM!gbar2bestOff", //4
-		"with 2 Jets, B-tag T, with pho in the barrel, and 110<M(Tight B +1Jet)<140",
+		//"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 110<bestMjj<140", //"2JbML!gbar2bestOn",
+		//"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !110<bestMjj<140", //"2JbML!gbar2bestOff",
+		//"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 110<bestMjj<140", //"2JbMM!gbar2bestOn",
+		//"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !110<bestMjj<140", //"2JbMM!gbar2bestOff", //4
+		"with 2 Jets, B-tag T, with pho in the barrel, and 110<M(Tight B +1Jet)<140",//2JbT!gbar2ProbeMJJ
+		"with at least 2 jets, exactly 2 L and <= 1 M B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbMLextgbar2Mbb01lep"
+		"with at least 2 jets, exactly 1 M and 1 L  B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbMLmaxgbar2Mbb01lep"
 		"with 2 or 3 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"23Jb01MewkMll0lepgbar2", //for WH
 		"with 2-5 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"0lep25Jb01MewkMllgbar2",
 		"with 2-3 jets, light flavor jets with 70<Mljlj<110, exaclty 1 lepton, and barrel pho",//1!lep23Jb01MewkMllgbar2,
@@ -96,10 +102,11 @@ void postanaana(){
 		"with 2 Jets, B-tags:M, 2 leptons, and both pho in the barrel",//"2JbM2lepgbar2",
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and exactly one lepton", //"2JbML!1lepgbar2",
 
-		"with 2 Jets, B-tags 2!L with M, barrel phos, no lep, and 110<bestMjj<140",//"2JbML!gbar2bestOn0lep"
-		"with 4 Jets, B-tags 2!L with M, barrel phos, no lep, EWK Mljlj, and !110<bestMjj<140", //"4JbML!gbar2 MllEWK bestOff 0lep",
-		"with 2 Jets, B-tags 2!L with M, barrel phos, no lep, no Mjj on EWK, and !110<bestMjj<140",//"2JbML!gbar2bothOff0lep"
-		"with just barrel photons: no leptons or b-jets, and at most 1 light jet"};//"01J0lep0Bgbar2"
+		"with 2 Jets, exactly 2 M B-tags, barrel phos, no lep, and 110<bestMjj<140",//"2JbMM!gbar2bestOn0lep"
+		"with 4 Jets, exactly 2 M B-tags, barrel phos, no lep, EWK Mljlj, and !110<bestMjj<140", //"4JbMM!gbar2 MllEWK bestOff 0lep",
+		"with 2 Jets, exactly 2 M B-tags, barrel phos, no lep, no Mjj on EWK, and !110<bestMjj<140",//"2JbMM!gbar2bothOff0lep"
+		"with just barrel photons: no leptons or b-jets, and at most 1 light jet",//"01J0lep0Bgbar2"
+		"with four pho and hgg in the barrel"};//4phogbar2
 
 
 
@@ -231,7 +238,7 @@ void postanaana(){
 	if(debug>8) cout<<"Write bsZ unsliced"<<endl;
 	h_bsZ->Write();
 
-		//	hdiPhoMass->Write();
+
 	for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {
 		if(debug>3) cout<<"Topo = "<<s_EventTopology[iTopo]<<endl;
 
@@ -285,7 +292,7 @@ void postanaana(){
 		}
 	}
 	if(debug>1) printf("finished find_bkg_with_fit for all groups\n");
-//hereherehere
+
 	
 	fout->cd();
 	if(debug>3) printf("Wrote the set of mgg fit curves\n");

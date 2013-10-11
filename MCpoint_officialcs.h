@@ -50,7 +50,7 @@ public:
 	string s_DataAndMcFiles; //"mst_350_M3_5025_mu_225"
 	string s_DataAndMcFiles_v2; //"MC_mst_350_M3_5025_mu_225"...}
 	string s_DataAndMcFiles_v3; //"MC" (or "Data")
-	string s_DataAndMcFiles_v4; //"M_{sTop}=650, M_{Higgsino}=275"
+	string s_DataAndMcFiles_v4; //"M_{Stop}=650, M_{Higgsino}=275"
 
 	float lumiscalefactor(float lumi_in_fb);
 	float cs_fb();
@@ -155,7 +155,7 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M_{Stop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
 	}
 	else if(type == 3){ //sunil's stuff
 			//    ____  __   __  ____          _ __  _____
@@ -245,7 +245,7 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("mst_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_mu_%i_%s",Mstop,Mhiggsino,typelable.data());
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M_{Stop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
 	}
 	
 	else if(type >= 20 && type < 30){ //new strong production
@@ -315,7 +315,7 @@ void MCpoint::setType(int type_){
 		s_DataAndMcFiles =Form("mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v2 = Form("MC_mst_%i_M3_%i_mu_%i",Mstop,Mgluino,Mhiggsino);
 		s_DataAndMcFiles_v3 = "MC";
-		s_DataAndMcFiles_v4 = Form("M_{sTop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
+		s_DataAndMcFiles_v4 = Form("M_{Stop}=%i, M_{Higgsino}=%i",Mstop,Mhiggsino);
 	}
 }//end setType
 

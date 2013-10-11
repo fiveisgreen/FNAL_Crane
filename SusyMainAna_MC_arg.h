@@ -168,7 +168,7 @@ void SusyMainAna_MC_arg::Initialize() {
 	printInterval = 10000;
 	processNEvents = -1;
 	useTrigger = true;
-	enableFilter = false;
+	enableFilter = true;
 	//filtered_file_name = "filtered_MC.root";
 	
 }

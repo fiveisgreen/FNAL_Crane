@@ -323,7 +323,7 @@ float phoEff_UC(float pt){
 	else return sqrt(pow(0.010/0.94,2)+c)*phoEff(pt);
 }
 
-/*      TLatex * TEX_CMSPrelim = new TLatex(1.177136,0.953368,"CMS Preliminary 2013");
+/*      TLatex * TEX_CMSPrelim = new TLatex(1.177136,0.953368,"CMS Preliminary");
  PrettyLatex(TEX_CMSPrelim,0.03);
  TEX_CMSPrelim->Draw("same");
 
@@ -331,7 +331,7 @@ float phoEff_UC(float pt){
  PrettyLatex(TEX_E_TeV,0.03);
  TEX_E_TeV->Draw("same");
 
- TLatex * TEX_lumi_fb = new TLatex(0.621859,0.953368,Form("#intL dt = %.0f fb^{-1}",Integrated_Luminosity_Data));
+ TLatex * TEX_lumi_fb = new TLatex(0.621859,0.953368,Form("#intL dt = %.1f fb^{-1}",Integrated_Luminosity_Data));
  PrettyLatex(TEX_lumi_fb,0.03);
  TEX_lumi_fb->Draw("same");*/
 

@@ -726,14 +726,14 @@ void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float
 		else h[6]->SetBinContent(ibin,0.);
 		
 			//SetErrors
-		float USB_minus_N = (float) usb_int - h[0]->GetBinContent(ibin);
-		float LSB_minus_N = (float) lsb_int - h[2]->GetBinContent(ibin);
+		float LSB_minus_N = (float) lsb_int - h[0]->GetBinContent(ibin);
+		float USB_minus_N = (float) usb_int - h[2]->GetBinContent(ibin);
 		if(h[0]->GetBinContent(ibin) > 0 && lsb_int >0 && B_integral>0 ){
 			//h[5]->SetBinError(ibin, h[5]->GetBinContent(ibin)*sqrt(pow((h[0]->GetBinError(ibin)/h[0]->GetBinContent(ibin)),2) +
 												  //(1./lsb_int)+pow(B_integral_error/B_integral,2)));
 			h[5]->SetBinError(ibin, h[5]->GetBinContent(ibin)*sqrt(
-						pow((LSB_minus_N*h[0]->GetBinError(ibin)/(lsb_int*h[0]->GetBinContent(ibin))),2) +
-						(LSB_minus_N/(lsb_int*lsb_int)) +
+						pow((LSB_minus_N*h[0]->GetBinError(ibin)/(((float)lsb_int)*h[0]->GetBinContent(ibin))),2) +
+						(LSB_minus_N/((float)(lsb_int*lsb_int))) +
 						pow(B_integral_error/B_integral,2)));
 			//may want to multiply pow(B_integral_error/B_integral,2) by 2 so after the average 
 			//we don't count the fit as two seperate measurements, artifically shrinking the uncertianty.

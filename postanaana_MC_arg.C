@@ -65,38 +65,43 @@ void postanaana_MC_arg(string which_MC_to_use){
 	//make some nice titles
 	if(debug > 9) cout<<"attempting to make toplogy title list"<<endl;
 	string s_EventTopology_v4[nEventTopologies]={
-		"with no extra cuts",
-		"with both pho in the barrel",
-		"with four pho and hgg in the barrel",
-                "with MET > 30",
-		"with at least 1 lep and both pho in the barrel",
+		"with no extra cuts",//NULL
+		"with both pho in the barrel",//gbar2
+	//	"with MET > 30",
+		"with at least 1 lep and both pho in the barrel",//1lepgbar2
 		"with exactly 1 lep and both pho in the barrel",//"1!lepgbar2",
 		"with at least one electron and both pho in the barrel",//"1Elegbar2",
 		"with at least one Muon and both pho in the barrel",//"1Mugbar2",
 		"with at least two leptons and both pho in the barrel",//"2lepgbar2",
 		"with exactly two same-flavor leptons that make a Z, and barrel photons",//"2!lepZgbar2",
 		"with at least 3 leptons, and both pho in the barrel",//"3lepgbar2",
-		"with 2 or 3 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"23JbML!gbar2Mbb0lep",
-		"with at least 2 jets, B-tags 2!L with M, no leptons, barrel photons, and 95<Mbb<155", //"2JbML!gbar2Mbb0lep", //2
-		"with 2 or 3 jets, B-tags 2!L with M, <2 leptons, barrel photons, and 95<Mbb<155", //"23JbML!gbar2Mbb0lep",
+		"with 2 or 3 jets, exactly 2 M B-tags, no leptons, barrel photons, and 95<Mbb<155", //"23JbMM!gbar2Mbb0lep",
+		"with at least 2 jets, exactly 2 M B-tags, no leptons, barrel photons, and 95<Mbb<155", //"2JbMM!gbar2Mbb0lep", //2
+		"with 2 or 3 jets, exactly 2 M B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"23JbMM!gbar2Mbb0lep",
 		"with at least 2 jets, B-tags 2!L with M, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbML!gbar2Mbb0lep", //2
+		"with at least 2 jets, exactly 2 M B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbMM!gbar2Mbb01lep
+		"with at least 2 jets, B-tags 2!L with T, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbTL!gbar2Mbb01lep
+		"with at least 2 jets, B-tags 2!M with T, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbTM!gbar2Mbb01lep
 		"with at least 2 light flavor jets, and both pho in the barrel", //2lJgbar2",
 		"with at least 2 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"2lJewkMllgbar2",
-		"with at 2 or 3 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"23lJewkMllgbar2", //"2lJMWgbar2", "2lJMZgbar2", //4
+		"with at 2 or 3 light flavor jets with 70<Mljlj<110, and both pho in the barrel",//"23lJewkMllgbar2", "2lJMWgbar2" "2lJMZgbar2" //4
+		"with 2 Jets, B-tags:MM", //"2JbML"
 		"with 2 Jets, B-tags:ML", //"2JbML"
 		"with 2 Jets, B-tags:ML, and both pho in the barrel", //"2JbMLgbar2",
 		"with 2 Jets, B-tags:MM, and both pho in the barrel", //"2JbMMgbar2",
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 95<Mbb<155", //"2JbML!Gbar2Mbb"
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !95<Mbb<155", //2JbML!Gbar2Mbb!
 		"with 3 Jets, B-tags 3+L with M, both pho in the barrel", //3JbMLLGbar2
-		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 95<Mbb<155", //"2JbMM!Gbar2Mbb
+		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 95<Mbb<155", //"2JbMM!Gbar2Mbb 
 		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !95<Mbb<155", //2JbMM!Gbar2Mbb!
 		"with 3 Jets, B-tags 3+L with 2M, both pho in the barrel", //3JbMMLGbar2
-		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 110<bestMjj<140", //"2JbML!gbar2bestOn",
-		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !110<bestMjj<140", //"2JbML!gbar2bestOff",
-		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 110<bestMjj<140", //"2JbMM!gbar2bestOn",
-		"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !110<bestMjj<140", //"2JbMM!gbar2bestOff", //4
-		"with 2 Jets, B-tag T, with pho in the barrel, and 110<M(Tight B +1Jet)<140",
+		//"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and 110<bestMjj<140", //"2JbML!gbar2bestOn",
+		//"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and !110<bestMjj<140", //"2JbML!gbar2bestOff",
+		//"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and 110<bestMjj<140", //"2JbMM!gbar2bestOn",
+		//"with 2 Jets, B-tags 2!L with 2M, both pho in the barrel, and !110<bestMjj<140", //"2JbMM!gbar2bestOff", //4
+		"with 2 Jets, B-tag T, with pho in the barrel, and 110<M(Tight B +1Jet)<140",//2JbT!gbar2ProbeMJJ
+		"with at least 2 jets, exactly 2 L and <= 1 M B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbMLextgbar2Mbb01lep"
+		"with at least 2 jets, exactly 1 M and 1 L  B-tags, <2 leptons, barrel photons, and 95<Mbb<155", //"2JbMLmaxgbar2Mbb01lep"
 		"with 2 or 3 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"23Jb01MewkMll0lepgbar2", //for WH
 		"with 2-5 jets, light flavor jets with 70<Mljlj<110, no leptons, and barrel photons",//"0lep25Jb01MewkMllgbar2",
 		"with 2-3 jets, light flavor jets with 70<Mljlj<110, exaclty 1 lepton, and barrel pho",//1!lep23Jb01MewkMllgbar2,
@@ -104,10 +109,11 @@ void postanaana_MC_arg(string which_MC_to_use){
 		"with 2 Jets, B-tags:M, 2 leptons, and both pho in the barrel",//"2JbM2lepgbar2",
 		"with 2 Jets, B-tags 2!L with M, both pho in the barrel, and exactly one lepton", //"2JbML!1lepgbar2",
 
-		"with 2 Jets, B-tags 2!L with M, barrel phos, no lep, and 110<bestMjj<140",//"2JbML!gbar2bestOn0lep"
-		"with 4 Jets, B-tags 2!L with M, barrel phos, no lep, EWK Mljlj, and !110<bestMjj<140", //"4JbML!gbar2 MllEWK bestOff 0lep",
-		"with 2 Jets, B-tags 2!L with M, barrel phos, no lep, no Mjj on EWK, and !110<bestMjj<140",//"2JbML!gbar2bothOff0lep"
-		"with just barrel photons: no leptons or b-jets, and at most 1 light jet"//"01J0lep0Bgbar2"
+		"with 2 Jets, exactly 2 M B-tags, barrel phos, no lep, and 110<bestMjj<140",//"2JbMM!gbar2bestOn0lep"
+		"with 4 Jets, exactly 2 M B-tags, barrel phos, no lep, EWK Mljlj, and !110<bestMjj<140", //"4JbMM!gbar2 MllEWK bestOff 0lep",
+		"with 2 Jets, exactly 2 M B-tags, barrel phos, no lep, no Mjj on EWK, and !110<bestMjj<140",//"2JbMM!gbar2bothOff0lep"
+		"with just barrel photons: no leptons or b-jets, and at most 1 light jet",//"01J0lep0Bgbar2"
+		"with four pho and hgg in the barrel"};//4phogbar2
 
 
 
@@ -173,7 +179,7 @@ void postanaana_MC_arg(string which_MC_to_use){
 		"with 2 Jets, B-tags 2L with M, both pho in the barrel, and !110<bestMjj<140",
 		"with 2 Jets, B-tags 2L with T, both pho in the barrel, and 110<bestMjj<140",
 		"with 2 Jets, B-tags 2L with T, both pho in the barrel, and !110<bestMjj<140"*/
-	};
+	
         if(debug > 9) cout<<"success in making toplogy title list"<<endl;
 
         MCpoint* thisMCpoint = setupMCpoint(which_MC_to_use);
@@ -193,10 +199,10 @@ void postanaana_MC_arg(string which_MC_to_use){
 	Label2Hist lh_unsliced;
 	Label2HistArr lha2;
 
-	if(debug>2) cout<<"am5"<<endl;
+	if(debug>2) cout<<"loading histograms for all topologies"<<endl;
 		//load your histograms for all topologies. 
 	for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {
-		if(debug>2) cout<<"topo "<<iTopo<<endl;
+		if(debug>2) cout<<"topo "<<s_EventTopology[iTopo]<<endl;
 		lh_mGG_unsliced[s_EventTopology[iTopo]] = (TH1F*)fin.Get((char*)(string("h_mGG")+s_EventTopology[iTopo]+"_unsliced").c_str());
 
 		LabelHist tmpMapKinVar;
@@ -205,12 +211,18 @@ void postanaana_MC_arg(string which_MC_to_use){
 		}//end for every kinematic varriable.
 		lh_unsliced[s_EventTopology[iTopo]] = tmpMapKinVar;
 	}
+	if(debug>2) cout<<"am6"<<endl;
 	for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {
 		LabelHistArr tmpMapKinVar;
+		if(debug>3) cout<<"topo "<<s_EventTopology[iTopo]<<endl;
 		for (int kKinVar = 0; kKinVar<nKinemVars; kKinVar++) {
+			if(debug>4) cout<<"kinvar"<<s_KinemVars[kKinVar]<<endl;
 			TH1F ** temp = new TH1F*[nPhoMassAndBkgDists];
-			LoadHistSet(temp, &fin, s_KinemVars[kKinVar]+s_EventTopology[iTopo]); // fails the first time.
+			if(debug>5) cout<<"try and load"<<endl;
+			LoadHistSet(temp, &fin, s_KinemVars[kKinVar]+s_EventTopology[iTopo]);
+			if(debug>5) cout<<"supposedly loaded, try and touch it"<<endl;
 			FixLastBin(temp);
+			if(debug>5) cout<<"worked"<<endl;
 			tmpMapKinVar[s_KinemVars[kKinVar]] = temp;
 		}
 		lha2[s_EventTopology[iTopo]] = tmpMapKinVar;
@@ -325,7 +337,7 @@ void postanaana_MC_arg(string which_MC_to_use){
 		ha_diPhotonMass[iTopo]->SetTitle((char*)mggTitle.c_str());
 		ha_diPhotonMass[iTopo]->Draw("EP");
 		mgg_fit_curve[iTopo]->SetLineColor(kRed);
-		mgg_fit_curve[iTopo]->SetLineWidth(2);
+		mgg_fit_curve[iTopo]->SetLineWidth(5);
 		mgg_fit_curve[iTopo]->Draw("same");
 		mggCanv->Write();
 

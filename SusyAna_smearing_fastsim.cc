@@ -446,6 +446,8 @@ void SusyAna_smearing_fastsim::Loop() {
 	TH1F* smearing_eta1_hir9 = new TH1F("smearing_eta1_hir9","",nbinsSmearing,Smearingxlow,Smearingxhi);
 	TH1F* smearing_eta2_hir9 = new TH1F("smearing_eta2_hir9","",nbinsSmearing,Smearingxlow,Smearingxhi);
 	TH1F* smearing_eta3_hir9 = new TH1F("smearing_eta3_hir9","",nbinsSmearing,Smearingxlow,Smearingxhi);
+	TH1F* smeared_mgg = new TH1F( "h_mGG_smeared","Smeared Di Photon Mass M_{#gamma #gamma} (GeV)",PhoMassNBins,PhoMassMin,PhoMassMax);
+	TRandom *rand_smearing = new TRandom();
 
 		//PHOTONS
 	TH1F* pho_Et_0 = new TH1F("pho_Et_0","Leading Photon Pt;E_{t}^{#gamma}",200,0.,200.);
@@ -625,7 +627,7 @@ void SusyAna_smearing_fastsim::Loop() {
 		if(!useElectroHiggs){
 			bool has_stop = false;
 			for(std::vector<susy::Particle>::iterator it = event->genParticles.begin(); !has_stop && it != event->genParticles.end(); it++) {
-				has_stop |= (abs(it->pdgId) == 1000006 || abs(it->pdgId) == 2000006); //ask if sTop
+				has_stop |= (abs(it->pdgId) == 1000006 || abs(it->pdgId) == 2000006); //ask if Stop
 			}
 			if(!has_stop){
 				nNotStop++;
@@ -997,6 +999,15 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		float mgg = gg.M();//mass is fine
 		float ptgg = gg.Pt();//pt is fine
 		float mtgg = sqrt(gg.E()*gg.E() - gg.Perp2());
+
+		
+		TLorentzVector p0_smeared;
+		TLorentzVector p1_smeared;
+	        p0_smeared = ((*p_photonVector)[0]->MVAregEnergyAndErr.first * MCsmear((*p_photonVector)[0]->caloPosition.Eta(), (*p_photonVector)[0]->r9 , rand_smearing ) / (*p_photonVector)[0]->momentum.E()) *(*p_photonVector)[0]->momentum;
+                p1_smeared = ((*p_photonVector)[1]->MVAregEnergyAndErr.first * MCsmear((*p_photonVector)[0]->caloPosition.Eta(), (*p_photonVector)[0]->r9 , rand_smearing ) / (*p_photonVector)[1]->momentum.E()) *(*p_photonVector)[1]->momentum;
+		float mgg_smeared = (p0_smeared+p1_smeared).M();
+		if(is_bar(p0_smeared.Eta()) && is_bar(p1_smeared.Eta() )) smeared_mgg->Fill(0.99608* mgg_smeared);
+	
 
 //		int ipho = 0;//loop over the first four photons.
 //		for(std::vector<susy::Photon*>::iterator it = loose_photons.begin();it != loose_photons.end() && ipho<2; it++) {
@@ -1618,9 +1629,9 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		Counters["ready for physics"]++; 
 
 
-                //topoCut["2JbMLgbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && twoPhoBar;
-		//m_BTagWeight["2JbMLgbar2"] = new BTagWeight(3,2,bTagRequirement_ML);
-	        topoCut["NULL"] =           true;
+                topoCut["2JbMLgbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && twoPhoBar;
+		m_BTagWeight["2JbMLgbar2"] = new BTagWeight(3,2,bTagRequirement_ML);
+                topoCut["NULL"] =           true;
                 m_BTagWeight["NULL"] = new BTagWeight(3,0,bTagRequirement_NULL);
 		topoCut["2JbML"] =    nJ >=2 && nbL >=2 && nbM >=1;
                 m_BTagWeight["2JbML"] = new BTagWeight(3,2,bTagRequirement_ML);
@@ -1679,13 +1690,13 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 
 	float fnStop = (float)nStop;
 	float fnNotStop = (float)nNotStop;
-	printf("That had %i sTop events (%.2f%%) and %i non-sTop events (%.2f%%)\n",nStop,100.0*fnStop/(fnStop+fnNotStop),nNotStop,100.0*fnNotStop/(fnStop+fnNotStop));
+	printf("That had %i Stop events (%.2f%%) and %i non-Stop events (%.2f%%)\n",nStop,100.0*fnStop/(fnStop+fnNotStop),nNotStop,100.0*fnNotStop/(fnStop+fnNotStop));
 
 	fout->cd();
 		
 		//////Write SelVars/////
 
-
+	smeared_mgg->Write();
 	smearing_eta0_lowr9->Write();
 	smearing_eta1_lowr9->Write();
 	smearing_eta2_lowr9->Write();

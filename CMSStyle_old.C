@@ -27,7 +27,7 @@ void PrettyText(TPaveText* text, float fontSize = 0.05);
 void PrettyLatex(TLatex* text, float fontSize = 0.03814);
 void PrettyHist(TH1F* h, int color = 1, int width = 3, int linestyle = 0);
 void PrettyHist(TH2F* h, int color = 1, int width = 3, int linestyle = 0);
-void PrettyGraph(TGraph* h, int color, int width, int linestyle=1);
+void PrettyGraph(TGraph* h, int color, int width, int linestyle );
 
 void PrettyMarker(TH1F* h, int color = 1, int markerstyle = 20, float markersize = 1.2f);
 void PrettyMarker(TH2F* h, int color = 1, int markerstyle = 20, float markersize = 1.2f);
@@ -159,8 +159,8 @@ void PrettyHist(TH1F* h, int color, int width, int linestyle ){
 	h->SetLineStyle(linestyle);
 	h->SetStats(0);
 	PrettyFonts(h);
-	h->GetXaxis()->SetLabelSize(0.05);
-	h->GetYaxis()->SetLabelSize(0.05);
+	h->GetXaxis()->SetLabelSize(0.043);
+	h->GetYaxis()->SetLabelSize(0.043);
 }
 void PrettyHist(TH2F* h, int color, int width, int linestyle ){
 		//defaults: PrettyHist(TH1F* h, int color = 1, int width = 3, int linestyle = 0){
@@ -169,9 +169,9 @@ void PrettyHist(TH2F* h, int color, int width, int linestyle ){
 	h->SetLineStyle(linestyle);
 	h->SetStats(0);
 	PrettyFonts(h);
-	h->GetXaxis()->SetLabelSize(0.05);
-	h->GetYaxis()->SetLabelSize(0.05);
-	h->GetZaxis()->SetLabelSize(0.05);
+	h->GetXaxis()->SetLabelSize(0.043);
+	h->GetYaxis()->SetLabelSize(0.043);
+	h->GetZaxis()->SetLabelSize(0.043);
 }
 void PrettyGraph(TGraph* h, int color, int width, int linestyle ){
                 //defaults: PrettyHist(TH1F* h, int color = 1, int width = 3, int linestyle = 0){
@@ -196,10 +196,10 @@ void PrettyFonts(TH1F* h){
 	TAxis * y = h->GetYaxis();
 	x->SetTitleFont(132);
 	y->SetTitleFont(132);
-	x->SetTitleSize(0.08);
-	x->SetTitleOffset(0.80); //make the Title a little further from the axis
-	y->SetTitleOffset(0.80);
-	y->SetTitleSize(0.08);
+	x->SetTitleSize(0.06);
+	x->SetTitleOffset(1.05); //make the Title a little further from the axis
+	y->SetTitleOffset(1.05);
+	y->SetTitleSize(0.06);
 	x->SetLabelFont(132);
 	y->SetLabelFont(132);
 	x->SetLabelSize(0.06);
@@ -210,10 +210,10 @@ void PrettyFonts(TH1D* h){
 	TAxis * y = h->GetYaxis();
 	x->SetTitleFont(132);
 	y->SetTitleFont(132);
-	x->SetTitleSize(0.08);
-	x->SetTitleOffset(0.80); //make the Title a little further from the axis
-	y->SetTitleOffset(0.80);
-	y->SetTitleSize(0.08);
+	x->SetTitleSize(0.06);
+	x->SetTitleOffset(1.05); //make the Title a little further from the axis
+	y->SetTitleOffset(1.05);
+	y->SetTitleSize(0.06);
 	x->SetLabelFont(132);
 	y->SetLabelFont(132);
 	x->SetLabelSize(0.06);
@@ -226,18 +226,16 @@ void PrettyFonts(TH2F* h){
 	x->SetTitleFont(132);
 	y->SetTitleFont(132);
 	z->SetTitleFont(132);
-	x->SetTitleSize(0.08);
-	x->SetTitleOffset(0.80); //make the Title a little further from the axis
-	y->SetTitleOffset(0.80);
-	y->SetTitleSize(0.08);
-	z->SetTitleSize(0.08);
+	x->SetTitleSize(0.06);
+	x->SetTitleOffset(1.05); //make the Title a little further from the axis
+	y->SetTitleOffset(1.05);
+	y->SetTitleSize(0.06);
 	x->SetLabelFont(132);
 	y->SetLabelFont(132);
 	z->SetLabelFont(132);
 	x->SetLabelSize(0.06);
 	y->SetLabelSize(0.06);
 	z->SetLabelSize(0.06);
-	z->SetTitleOffset(0.80);
 }
 void PrettyFonts(TH2D* h){
 	TAxis * x = h->GetXaxis();

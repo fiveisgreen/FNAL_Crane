@@ -77,7 +77,7 @@ string plotsdir = "plots_bbin/";
 	///LISTS FOR INDEXING
 const int nPhoMassAndBkgDists = 9;
 string s_MassBkgDists[nPhoMassAndBkgDists] = {"lowSB","tag","upperSB","bkg","tag_subbkg","lowSB_scaled","upperSB_scaled","lsb_over_usb","tag_over_bkg"};
-const int nEventTopologies = 41; // the number of types of cuts selected, like 1JB...
+const int nEventTopologies = 45; // the number of types of cuts selected, like 1JB...
 string s_EventTopology[nEventTopologies] = { 
 	"NULL","gbar2","1lepgbar2","1!lepgbar2","1Elegbar2","1Mugbar2",//6
 	"2lepgbar2","2!lepZgbar2","3lepgbar2", //3
@@ -85,7 +85,7 @@ string s_EventTopology[nEventTopologies] = {
 	"23JbMM!gbar2Mbb01lep", "2JbML!gbar2Mbb01lep",//2
 	"2JbMM!gbar2Mbb01lep","2JbTL!gbar2Mbb01lep","2JbTM!gbar2Mbb01lep",//3 //new
 	"2lJgbar2", "2lJewkMllgbar2", "23lJewkMllgbar2", //"2lJMWgbar2", "2lJMZgbar2", //3
-	"2JbMM", "2JbMMgbar2", //2 
+	"2JbMM", "2JbML","2JbMLgbar2", "2JbMMgbar2", //4 
 	"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2",//3 //legacy
 	"2JbMM!Gbar2Mbb", "2JbMM!Gbar2Mbb!","3JbMMLGbar2",//3 //legacy
 	"2JbT!gbar2ProbeMJJ", "2JbMLextgbar2Mbb01lep","2JbMLmaxgbar2Mbb01lep", //3
@@ -96,7 +96,7 @@ string s_EventTopology[nEventTopologies] = {
 	"2JbM2lepgbar2", "2JbMM!1lepgbar2", "2JbMM!gbar2bestOn0lep", //3
 	"4JbMM!gbar2ewkMllbestOff0lep", "2JbMM!gbar2bothOff0lep", //2
 	"01J0lep0Bgbar2", //1
-	"4phogbar2"}; //1
+	"4phogbar2","2JbMMgbar2bbar2","2JbMLgbar2bbar2"}; //1
 
 		//higgs + met only: 0lep, 0B's at most one other jet,
 

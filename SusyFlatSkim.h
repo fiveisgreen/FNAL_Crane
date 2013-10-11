@@ -1,7 +1,7 @@
 	// -*- C++ -*-
 	//
 	// Package:    SusyNtuplizer
-	// Class:      SusyMainAna.h
+	// Class:      SusyFlatSkim.h
 	// 
 /*
  
@@ -12,11 +12,11 @@
  */
 	//
 	// Original Author:  Dongwook Jang
-	// $Id: SusyMainAna.h,v 1.4 2011/06/08 16:28:40 dmason Exp $
+	// $Id: SusyFlatSkim.h,v 1.4 2011/06/08 16:28:40 dmason Exp $
 	//
 
-#ifndef SusyMainAna_h
-#define SusyMainAna_h
+#ifndef SusyFlatSkim_h
+#define SusyFlatSkim_h
 
 #include <TROOT.h>
 #include <TChain.h>
@@ -30,7 +30,7 @@
 #include "../src/SusyEvent.h"
 
 
-class SusyMainAna {
+class SusyFlatSkim {
 	public :
 	TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 	Int_t           fCurrent; //!current Tree number in a TChain
@@ -41,8 +41,8 @@ class SusyMainAna {
 		// List of branches
 	TBranch        *b_Event;
 	
-	SusyMainAna(TTree *tree=0);
-	virtual ~SusyMainAna();
+	SusyFlatSkim(TTree *tree=0);
+	virtual ~SusyFlatSkim();
 	virtual Int_t    GetEntry(Long64_t entry);
 	virtual Long64_t LoadTree(Long64_t entry);
 	virtual void     Init(TTree *tree);
@@ -113,8 +113,8 @@ private:
 
 #endif
 
-#ifdef SusyMainAna_cxx
-SusyMainAna::SusyMainAna(TTree *tree)
+#ifdef SusyFlatSkim_cxx
+SusyFlatSkim::SusyFlatSkim(TTree *tree)
 {
 	if (tree == 0) {
 		std::cout << "Error!!! There is no file containing a tree." << std::endl;
@@ -123,19 +123,19 @@ SusyMainAna::SusyMainAna(TTree *tree)
 	Initialize();
 }
 
-SusyMainAna::~SusyMainAna()
+SusyFlatSkim::~SusyFlatSkim()
 {
 	if (!fChain) return;
 	delete fChain->GetCurrentFile();
 }
 
-Int_t SusyMainAna::GetEntry(Long64_t entry)
+Int_t SusyFlatSkim::GetEntry(Long64_t entry)
 {
 		// Read contents of entry.
 	if (!fChain) return 0;
 	return fChain->GetEntry(entry);
 }
-Long64_t SusyMainAna::LoadTree(Long64_t entry)
+Long64_t SusyFlatSkim::LoadTree(Long64_t entry)
 {
 		// Set the environment to read one entry
 	if (!fChain) return -5;
@@ -149,7 +149,7 @@ Long64_t SusyMainAna::LoadTree(Long64_t entry)
 	return centry;
 }
 
-void SusyMainAna::Init(TTree *tree)
+void SusyFlatSkim::Init(TTree *tree)
 {
 	if (!tree) return;
 	fChain = tree;
@@ -161,7 +161,7 @@ void SusyMainAna::Init(TTree *tree)
 	fChain->SetBranchAddress("susyEvent", &event, &b_Event);
 }
 
-void SusyMainAna::Initialize() {
+void SusyFlatSkim::Initialize() {
 	
 	ds = "test";
 	printLevel = 0;
@@ -169,12 +169,12 @@ void SusyMainAna::Initialize() {
 	printInterval = 100;
 	processNEvents = -1;
 	useTrigger = true;
-	enableFilter = true;
+	enableFilter = false;
 	//filtered_file_name = "filtered_data.root";
 	
 }
 
-void SusyMainAna::IncludeAJson(std::string jsonfile) {
+void SusyFlatSkim::IncludeAJson(std::string jsonfile) {
 	
 	
 		// Fairly primitive brute force json parser -- opens the json file named in the argument
@@ -249,7 +249,7 @@ void SusyMainAna::IncludeAJson(std::string jsonfile) {
 }
 
 
-bool SusyMainAna::isInJson(Int_t run,Int_t lumi) {
+bool SusyFlatSkim::isInJson(Int_t run,Int_t lumi) {
 	
 		//#ifdef MC
 		//  return 1;
@@ -263,4 +263,4 @@ bool SusyMainAna::isInJson(Int_t run,Int_t lumi) {
 
 
 
-#endif // #ifdef SusyMainAna_cxx
+#endif // #ifdef SusyFlatSkim_cxx

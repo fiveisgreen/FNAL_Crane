@@ -625,7 +625,7 @@ void SusyAna_smearing::Loop() {
 		if(!useElectroHiggs){
 			bool has_stop = false;
 			for(std::vector<susy::Particle>::iterator it = event->genParticles.begin(); !has_stop && it != event->genParticles.end(); it++) {
-				has_stop |= (abs(it->pdgId) == 1000006 || abs(it->pdgId) == 2000006); //ask if sTop
+				has_stop |= (abs(it->pdgId) == 1000006 || abs(it->pdgId) == 2000006); //ask if Stop
 			}
 			if(!has_stop){
 				nNotStop++;
@@ -1675,7 +1675,7 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 
 	float fnStop = (float)nStop;
 	float fnNotStop = (float)nNotStop;
-	printf("That had %i sTop events (%.2f%%) and %i non-sTop events (%.2f%%)\n",nStop,100.0*fnStop/(fnStop+fnNotStop),nNotStop,100.0*fnNotStop/(fnStop+fnNotStop));
+	printf("That had %i Stop events (%.2f%%) and %i non-Stop events (%.2f%%)\n",nStop,100.0*fnStop/(fnStop+fnNotStop),nNotStop,100.0*fnNotStop/(fnStop+fnNotStop));
 
 	fout->cd();
 		

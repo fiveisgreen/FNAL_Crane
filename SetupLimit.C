@@ -5,8 +5,11 @@
 //#include <TH2.h>
 #include <TStyle.h>
 //#include <TCanvas.h>
+#include "TChain.h"
 #include "TFile.h"
-//#include "TTree.h"
+#include "TTree.h"
+#include "TKey.h"
+#include "Riostream.h"
 //#include "TVirtualFitter.h"
 //#include "TLegend.h"
 #include <iostream>
@@ -25,6 +28,9 @@
 #include<string.h>
 #include<map>
 #include "MCpoint.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include "RetrieveLimit.C"
 
 using namespace std;
 using namespace params;
@@ -48,12 +54,14 @@ void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint, Labeledfloat & integ_syst
 void SetupLimitsForOnePlot_bbin(TFile * files[],MCpoint* thisMCpoint, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName,float f_integ_systs[]);//takes
 
 	//new guys
-void SetupSummedLimitsForStrongGrid(); //do Everything, originator
+void SetupSummedLimitsForStrongGrid(); //do Everything, originator, higgino'd
 void SetupSummedLimitsForWeakGrid();  //do Everything, originator
-void SetupSummedLimitsForStrongGrid(TString topo); //originator
+void SetupSummedLimitsForStrongGrid(TString topo); //originator //slow as mollasis in january
 void SetupSummedLimitsForWeakGrid(TString topo); //originator
 void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo, Labeledfloat & integ_systs); //takes
 void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints, Labeledfloat & integ_systs); //This is Much faster!!, takes
+
+void SetupSummedLimitsOnePlot(TString mcpoint_pefix, TString topo, TString kinvar);//
 void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar, Labeledfloat & integ_systs);//takes
 void SetupSummedLimitsOnePlot_bbin(TFile* files[][6],MCpoint* points[], int nMCpoints, TString channels[],short nchannels, TString kinvar, TString CombinedTopoName,float f_integ_systs[]);//takes
 
@@ -90,6 +98,14 @@ TString TackBeforeRoot(TString main, TString tack);
 
 void suckinIntegralSystematics( Labeledfloat & integ_systs);
 
+//New machiens for running full toys
+void SetupAllToys(string topo, string kinvar, int n_r_guesses=30, int ntoys = 3000, int fork = 8);
+
+int SetupToys(float r_low, float r_high, int n_r_guesses, string cardfile, string bashfilename, string collection_file, int seed_start = 1, int ntoys = 3000, int fork = 8);
+void DoHadd(string collection_file, string ouptutfilename, int n_r_guesses_expected = 30);
+void DoHaddGlom(string collection_file, string ouptutfilename, int n_r_guesses_expected = 30);
+void DoHadd_file(string collection_file, string ouptutfilename, int n_r_guesses_expected = 30);
+void RunOnToys(string toysrootfilename, string cardfilename, string runfilename, string resultsfile);
 	////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////
 
@@ -427,6 +443,17 @@ void SetupLimitsForOneMassPoint(MCpoint * thisMCpoint, Labeledfloat & integ_syst
 		}
 		{
 			TString channels[3];
+			channels[0] = "2JbML!gbar2Mbb01lep";
+			channels[1] = "2JbT!gbar2ProbeMJJ";
+			channels[2] = "0lep25Jb01MewkMllgbar2";
+			float f_integ_systs[3];
+			f_integ_systs[0]=integ_systs["2JbML!gbar2Mbb01lep"];
+			f_integ_systs[1]=integ_systs["2JbT!gbar2ProbeMJJ"];
+			f_integ_systs[2]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			SetupLimitsForOnePlot_bbin(files,thisMCpoint,channels,3,kinvar,"EHbin3",f_integ_systs);
+		}
+		{
+			TString channels[3];
 			channels[0] = "2JbML!gbar2bestOn";
 			channels[1] = "2JbML!gbar2bestOff";
 			channels[2] = "3JbMLLGbar2";
@@ -724,29 +751,6 @@ bool loadhistSafely(TH1F** histout, TFile* PostAnaAnaFile, string basename,strin
 	return true;
 }//end loadhist  //Done writing? Yes. Debugged? No
 
-	//obsolete
-/*void makeLimitSettingMachinery(TH1F* data, TH1F* bkg, TH1F* MC, TString MCpointname, TString topo, TString kinvar, float lumiscale){
-		//obsolete 
-	data->SetName("data_obs");
-	bkg->SetName("ddBkg");
-	MC->SetName("MCsig");
-
-	TString rootfilename = makeRootLimitPackageName(MCpointname,topo,kinvar);
-	repackage(data, bkg, MC, rootfilename);
-
-	TString cardfilename = makeLimitCardName(MCpointname,topo,kinvar);
-	makeCard(data, bkg, MC, MCpointname, topo, kinvar);
-
-
-	TString limitresult = makeLimitResultName(MCpointname,topo,kinvar);
-
-		//probably write a command that will do it too
-	cout<<"combine -M Asymptotic "<<cardfilename<<" "<<rootfilename<<" >> "<<limitresult<<endl;
-
-		//you'll probably want something that can also make condor jobs, but get this down first.
-}//end makeLimitSettingMachinery //obsolete
- */
-
 //void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, TString kinvar, bool appendCombineCommand){
 void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TString basename, TString topo, float f_integ_systs, TString kinvar, bool appendCombineCommand){
 		///This Sets up all hte machinery needed to run the point:
@@ -754,11 +758,11 @@ void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TStrin
 
 
 		//package the MC hist and the MC systematic hists into one root file
-	repackage_Systematics(CardHistSet, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
+	if(remake_Limit_packages) repackage_Systematics(CardHistSet, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
 
 		//make the card file. 
 	TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-	makeCard_Systematics( CardHistSet , thisMCpoint, basename, topo, kinvar,f_integ_systs);//done
+	if(remake_Limit_cards) makeCard_Systematics( CardHistSet , thisMCpoint, basename, topo, kinvar,f_integ_systs);//done
 
 		//make an entry in the batch file that does the combined limits.
 	if (appendCombineCommand) {
@@ -768,14 +772,16 @@ void makeLimitSettingMachinery(TH1F** CardHistSet, MCpoint * thisMCpoint, TStrin
 		TString toposhash = topo;
 		toposhash = toposhash.ReplaceAll('!',"\\!");
 		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
-		CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
+                if(useHybridNew) CombineBatchFile<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8 >& temp"<<endl;
+		else CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
 		CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"rm temp"<<endl;
 		CombineBatchFile.close();
 	}
 	else{
 		cout<<"Hey, code monkey: Run This!"<<endl;
-		cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+                if(useHybridNew) cout<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8  >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+		else cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
 	}
 
 }//end new makeLimitSettingMachinery  //Done writing? Yes. Debugged? No
@@ -787,11 +793,11 @@ void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, T
                 ///it makes the card file, a root file bundeling the MC points, and an entry in the bash script. 
 
                 //package the MC hist and the MC systematic hists into one root file
-        repackage_Systematics_bbin4(CardHistSet1, CardHistSet2, CardHistSet3, CardHistSet4, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
+        if(remake_Limit_packages) repackage_Systematics_bbin4(CardHistSet1, CardHistSet2, CardHistSet3, CardHistSet4, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
 
                 //make the card file. 
         TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-        makeCard_Systematics_bbin4( CardHistSet1, CardHistSet2, CardHistSet3, CardHistSet4, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
+        if(remake_Limit_cards) makeCard_Systematics_bbin4( CardHistSet1, CardHistSet2, CardHistSet3, CardHistSet4, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
 
                 //make an entry in the batch file that does the combined limits.
         if (appendCombineCommand) {
@@ -801,14 +807,16 @@ void makeLimitSettingMachinery_bbin4(TH1F** CardHistSet1, TH1F** CardHistSet2, T
 			TString toposhash = topo;
 			toposhash = toposhash.ReplaceAll('!',"\\!");
                 CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
-                CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
+                if(useHybridNew) CombineBatchFile<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8 >& temp"<<endl;
+		else CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
                 CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
                 CombineBatchFile<<"rm temp"<<endl;
                 CombineBatchFile.close();
         }
         else{
                 cout<<"Hey, code monkey: Run This!"<<endl;
-                cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+                if(useHybridNew) cout<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8  >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+		else cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
         }
 
 }//end makeLimitSettingMachinery_bbin4
@@ -820,11 +828,11 @@ void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, T
                 ///it makes the card file, a root file bundeling the MC points, and an entry in the bash script. 
 
                 //package the MC hist and the MC systematic hists into one root file
-        repackage_Systematics_bbin3(CardHistSet1, CardHistSet2, CardHistSet3, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
+        if(remake_Limit_packages) repackage_Systematics_bbin3(CardHistSet1, CardHistSet2, CardHistSet3, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
 
                 //make the card file. 
         TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-        makeCard_Systematics_bbin3( CardHistSet1, CardHistSet2, CardHistSet3, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
+        if(remake_Limit_cards) makeCard_Systematics_bbin3( CardHistSet1, CardHistSet2, CardHistSet3, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
 
                 //make an entry in the batch file that does the combined limits.
         if (appendCombineCommand) {
@@ -834,14 +842,16 @@ void makeLimitSettingMachinery_bbin3(TH1F** CardHistSet1, TH1F** CardHistSet2, T
 			TString toposhash = topo;
 			toposhash = toposhash.ReplaceAll('!',"\\!");
                 CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
-                CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
+                if(useHybridNew) CombineBatchFile<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8 >& temp"<<endl;
+		else CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
                 CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
                 CombineBatchFile<<"rm temp"<<endl;
                 CombineBatchFile.close();
         }
         else{
                 cout<<"Hey, code monkey: Run This!"<<endl;
-                cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+                if(useHybridNew) cout<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8  >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+		else cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
         }
 
 }//end makeLimitSettingMachinery_bbin3
@@ -853,11 +863,11 @@ void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, M
 		///it makes the card file, a root file bundeling the MC points, and an entry in the bash script.
 
 		//package the MC hist and the MC systematic hists into one root file
-	repackage_Systematics_bbin2(CardHistSet1, CardHistSet2, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
+	if(remake_Limit_packages) repackage_Systematics_bbin2(CardHistSet1, CardHistSet2, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );//done
 
 		//make the card file.
 	TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-	makeCard_Systematics_bbin2( CardHistSet1, CardHistSet2, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
+	if(remake_Limit_cards) makeCard_Systematics_bbin2( CardHistSet1, CardHistSet2, thisMCpoint, channels, topo, kinvar,f_integ_systs);//done
 
 		//make an entry in the batch file that does the combined limits.
 	if (appendCombineCommand) {
@@ -867,14 +877,16 @@ void makeLimitSettingMachinery_bbin2(TH1F** CardHistSet1, TH1F** CardHistSet2, M
 		TString toposhash = topo;
 		toposhash = toposhash.ReplaceAll('!',"\\!");
 		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
-		CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
+                if(useHybridNew) CombineBatchFile<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8 >& temp"<<endl;
+		else CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
 		CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"rm temp"<<endl;
 		CombineBatchFile.close();
 	}
 	else{
 		cout<<"Hey, code monkey: Run This!"<<endl;
-		cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+                if(useHybridNew) cout<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8  >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+		else cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
 	}
 
 }//end makeLimitSettingMachinery_bbin2
@@ -887,11 +899,11 @@ void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MC
 		///it makes the card file, a root file bundeling the MC points, and an entry in the bash script.
 
 		//package the MC hist and the MC systematic hists into one root file
-	repackage_Systematics_bbinN(nchannels, CardHistSet, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );
+	if(remake_Limit_packages) repackage_Systematics_bbinN(nchannels, CardHistSet, thisMCpoint->makeRootLimitPackageName(topo,kinvar) );
 
 		//make the card file.
 	TString cardfilename = thisMCpoint->makeLimitCardName(topo,kinvar);
-	makeCard_Systematics_bbinN(nchannels, CardHistSet, thisMCpoint, channels, topo, kinvar,f_integ_systs);
+	if(remake_Limit_cards) makeCard_Systematics_bbinN(nchannels, CardHistSet, thisMCpoint, channels, topo, kinvar,f_integ_systs);
 
 		//make an entry in the batch file that does the combined limits.
 	if (appendCombineCommand) {
@@ -901,14 +913,16 @@ void makeLimitSettingMachinery_bbinN(short nchannels, TH1F* CardHistSet[][7], MC
 		TString toposhash = topo;
 		toposhash = toposhash.ReplaceAll('!',"\\!");
 		CombineBatchFile<<"echo \"************* DO COMBINE FOR "<<toposhash<<" "<<kinvar<<" **************\"  >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
-		CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
+                if(useHybridNew) CombineBatchFile<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8 >& temp"<<endl;
+		else CombineBatchFile<<"combine -M Asymptotic "<<cardfilename<<" >& temp"<<endl;
 		CombineBatchFile<<"cat temp >> "<<thisMCpoint->makeLimitResultBundleName()<<endl;
 		CombineBatchFile<<"rm temp"<<endl;
 		CombineBatchFile.close();
 	}
 	else{
 		cout<<"Hey, code monkey: Run This!"<<endl;
-		cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+                if(useHybridNew) cout<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfilename<<" -H ProfileLikelihood --fork 8  >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
+		else cout<<"combine -M Asymptotic "<<cardfilename<<" >> "<<thisMCpoint->makeLimitResultName(topo, kinvar)<<endl;
 	}
 
 }//end makeLimitSettingMachinery_bbinN
@@ -1409,17 +1423,25 @@ void SetupSummedLimitsForStrongGrid(){
 	std::vector<MCpoint*> wwaa;
 	std::vector<MCpoint*> zzaa;
 	std::vector<MCpoint*> ttaa;
+	std::vector<MCpoint*> bbaa_mu;
+	std::vector<MCpoint*> wwaa_mu;
+	std::vector<MCpoint*> zzaa_mu;
+	std::vector<MCpoint*> ttaa_mu;
 	for(std::vector<MCpoint*>::iterator it = Points.begin();it != Points.end();it++){
 		if((*it)->type < 10 || (*it)->type >= 20) continue;
 		else if((*it)->type == 10) bbaa.push_back(*it);
 		else if((*it)->type == 11) wwaa.push_back(*it);
 		else if((*it)->type == 12) zzaa.push_back(*it);
 		else if((*it)->type == 13) ttaa.push_back(*it);
+		else if((*it)->type == 20) bbaa_mu.push_back(*it);
+		else if((*it)->type == 21) wwaa_mu.push_back(*it);
+		else if((*it)->type == 22) zzaa_mu.push_back(*it);
+		else if((*it)->type == 23) ttaa_mu.push_back(*it);
 	}
         Labledfloat integ_systs;
         suckinIntegralSystematics(integ_systs);
 	for(std::vector<MCpoint*>::iterator it = bbaa.begin();it != bbaa.end();it++){
-		MCpoint* points[4];
+		MCpoint* points[8];
 		points[0] = *it;
 		int found_them_all = 1;
 		bool gotit = false;
@@ -1449,13 +1471,46 @@ void SetupSummedLimitsForStrongGrid(){
 				break;
 			}
 		}
-		if (found_them_all != 4) { //make sure you found them all.
+
+                for(std::vector<MCpoint*>::iterator it2 = bbaa_mu.begin();it2 != bbaa_mu.end();it2++){ //find the matching point in bbaa_mu
+                        if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+                                points[4] = *it2;
+                                found_them_all++;
+                                break;
+                        }
+                }
+                for(std::vector<MCpoint*>::iterator it2 = wwaa_mu.begin();it2 != wwaa_mu.end();it2++){ //find the matching point in wwaa_mu
+                        if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+                                points[5] = *it2;
+                                found_them_all++;
+                                break;
+                        }
+                }
+                for(std::vector<MCpoint*>::iterator it2 = zzaa_mu.begin();it2 != zzaa_mu.end();it2++){ //find the matching point in zzaa_mu
+                        if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+                                points[6] = *it2;
+                                found_them_all++;
+                                break;
+                        }
+                }
+                for(std::vector<MCpoint*>::iterator it2 = ttaa_mu.begin();it2 != ttaa_mu.end();it2++){ //find the matching point in ttaa_mu
+                        if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+                                points[7] = *it2;
+                                found_them_all++;
+                                break;
+                        }
+                }
+
+
+
+
+		if (found_them_all != 8) { //make sure you found them all.
 			printf("Error! Can't find all the categories for Mst = %i Mh = %i\n",(*it)->Mstop,(*it)->Mhiggsino);
 			printf("Not Generating the card files for this point!!\n");
 			continue;
 		}
 		printf("Setup for st_%i_mu_%i\n",(*it)->Mstop,(*it)->Mhiggsino);
-		SetupSummedLimitsOneMassPoint(points, 4 , integ_systs);
+		SetupSummedLimitsOneMassPoint(points, 8 , integ_systs);
 	}//end for all MC points
 }//SetupSummedLimitsForStrongGrid
 
@@ -1529,17 +1584,25 @@ void SetupSummedLimitsForStrongGrid(TString topo){
 	std::vector<MCpoint*> wwaa;
 	std::vector<MCpoint*> zzaa;
 	std::vector<MCpoint*> ttaa;
+	std::vector<MCpoint*> bbaa_mu;
+	std::vector<MCpoint*> wwaa_mu;
+	std::vector<MCpoint*> zzaa_mu;
+	std::vector<MCpoint*> ttaa_mu;
 	for(std::vector<MCpoint*>::iterator it = Points.begin();it != Points.end();it++){
-		if((*it)->type < 10 || (*it)->type >= 20) continue;
+		if((*it)->type < 10 ) continue;
 		if((*it)->type == 10) bbaa.push_back(*it);
 		if((*it)->type == 11) wwaa.push_back(*it);
 		if((*it)->type == 12) zzaa.push_back(*it);
 		if((*it)->type == 13) ttaa.push_back(*it);
+		if((*it)->type == 20) bbaa_mu.push_back(*it);
+		if((*it)->type == 21) wwaa_mu.push_back(*it);
+		if((*it)->type == 22) zzaa_mu.push_back(*it);
+		if((*it)->type == 23) ttaa_mu.push_back(*it);
 	}
         Labledfloat integ_systs;
         suckinIntegralSystematics(integ_systs);
 	for(std::vector<MCpoint*>::iterator it = bbaa.begin();it != bbaa.end();it++){
-		MCpoint* points[4];
+		MCpoint* points[8];
 		points[0] = *it;
 		int found_them_all = 1;
 		for(std::vector<MCpoint*>::iterator it2 = wwaa.begin();it2 != wwaa.end();it2++){ //find the matching point in wwaa
@@ -1563,13 +1626,58 @@ void SetupSummedLimitsForStrongGrid(TString topo){
 				break;
 			}
 		}
-		if (found_them_all != 4) { //make sure you found them all. 
+
+
+		bool foundit = false;
+		for(std::vector<MCpoint*>::iterator it2 = bbaa_mu.begin();it2 != bbaa_mu.end();it2++){ //find the matching point in bbaa_mu
+			if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[4] = *it2;
+				found_them_all++;
+				foundit = true;
+				break;
+			}
+		}
+		if(!foundit) printf("can't find higgsino point for bbaa\n");
+		foundit = false;
+		for(std::vector<MCpoint*>::iterator it2 = wwaa_mu.begin();it2 != wwaa_mu.end();it2++){ //find the matching point in wwaa_mu
+			if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[5] = *it2;
+				found_them_all++;
+				foundit = true;
+				break;
+			}
+		}
+		if(!foundit) printf("can't find higgsino point for wwaa\n");
+		foundit = false;
+		for(std::vector<MCpoint*>::iterator it2 = zzaa_mu.begin();it2 != zzaa_mu.end();it2++){ //find the matching point in zzaa_mu
+			if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[6] = *it2;
+				found_them_all++;
+				foundit = true;
+				break;
+			}
+		}
+		if(!foundit) printf("can't find higgsino point for zzaa\n");
+		foundit = false;
+		for(std::vector<MCpoint*>::iterator it2 = ttaa_mu.begin();it2 != ttaa_mu.end();it2++){ //find the matching point in ttaa_mu
+			if ((*it2)->Mhiggsino == (*it)->Mhiggsino ) {
+				points[7] = *it2;
+				found_them_all++;
+				foundit = true;
+				break;
+			}
+		}
+		if(!foundit) printf("can't find higgsino point for ttaa\n");
+		foundit = false;
+
+
+		if (found_them_all != 8) { //make sure you found them all. 
 			printf("Error! Can't find all the categories for Mst = %i Mh = %i\n",(*it)->Mstop,(*it)->Mhiggsino);
 			printf("Not Generating the card files for this point!!\n");
 			continue;
 		}
 		printf("Setup %s for st_%i_mu_%i\n",topo.Data(),(*it)->Mstop,(*it)->Mhiggsino);
-		SetupSummedLimitsOneMassPoint(points, 4 ,topo,integ_systs);
+		SetupSummedLimitsOneMassPoint(points, 8 ,topo,integ_systs);
 	}//end for all MC points
 }//SetupSummedLimitsForStrongGrid
 
@@ -1684,6 +1792,22 @@ void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints,TString topo
 			TString kinvar = s_KinemVars_limit[kKinVar];
 			if(metonly && kinvar.CompareTo("MET") != 0) continue;
 			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MM",f_integ_systs);
+		}
+	}
+	else if(topo.CompareTo("EHbin3")==0){
+		TString channels[3];
+		channels[0] = "2JbML!gbar2Mbb01lep";
+		channels[1] = "2JbT!gbar2ProbeMJJ";
+		channels[2] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!gbar2Mbb01lep"];
+                        f_integ_systs[1]=integ_systs["2JbT!gbar2ProbeMJJ"];
+                        f_integ_systs[2]=integ_systs["0lep25Jb01MewkMllgbar2"];
+
+		for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+			TString kinvar = s_KinemVars_limit[kKinVar];
+			if(metonly && kinvar.CompareTo("MET") != 0) continue;
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"EHbin3",f_integ_systs);
 		}
 	}
 	else if(topo.CompareTo("bbin3MLbest")==0){
@@ -1885,6 +2009,20 @@ void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints, Labeledfloa
 				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"bbin3MM",f_integ_systs);
 			}
 		}
+		else if(topo.CompareTo("EHbin3")==0){
+			TString channels[3];
+			channels[0] = "2JbML!gbar2Mbb01lep";
+			channels[1] = "2JbT!gbar2ProbeMJJ";
+			channels[2] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!gbar2Mbb01lep"];
+                        f_integ_systs[1]=integ_systs["2JbT!gbar2ProbeMJJ"];
+                        f_integ_systs[2]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			for (int kKinVar = 0; kKinVar<nKinemVars_limit; kKinVar++) {
+				if(metonly && kKinVar !=0 ) continue; //just do MET
+				SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, s_KinemVars_limit[kKinVar],"EHbin3",f_integ_systs);
+			}
+		}
 		else if(topo.CompareTo("bbin3MLbest")==0){
 			TString channels[3];
 			channels[0] = "2JbML!gbar2bestOn";
@@ -2009,6 +2147,210 @@ void SetupSummedLimitsOneMassPoint(MCpoint* points[], int nMCpoints, Labeledfloa
 	printf("fin closing\n");
 }//SetupSummedLimitsOneMassPoint
 
+
+
+void SetupSummedLimitsOnePlot(TString mcpoint_pefix, TString topo, TString kinvar){
+	//usage:  SetupSummedLimitsOnePlot("st_300_mu_290","bbin3","MET")
+
+	std::vector<MCpoint*> Points = setupMCpoints();
+
+	string data = "Data";
+        MCpoint * datapoint = setupMCpoint(data, "");//this is efficient.
+
+	const int nMCpoints = 8;
+	MCpoint* points[nMCpoints];
+        points[0] = setupMCpoint((mcpoint_pefix+"_bbaa").Data(), "");
+        points[1] = setupMCpoint((mcpoint_pefix+"_wwaa").Data(), "");
+        points[2] = setupMCpoint((mcpoint_pefix+"_zzaa").Data(), "");
+        points[3] = setupMCpoint((mcpoint_pefix+"_ttaa").Data(), "");
+
+	int found_them_all = 0;
+	for(std::vector<MCpoint*>::iterator it2 = Points.begin(); it2 != Points.end();it2++){ //find the matching point in wwaa
+		if ((*it2)->type == points[0]->type + 10 && (*it2)->Mhiggsino == (points[0])->Mhiggsino ) {
+			//if type is the same and Mhiggsino is hte same, 
+			points[4] = *it2;
+			found_them_all++;
+		}
+		if ((*it2)->type == points[1]->type + 10 && (*it2)->Mhiggsino == (points[1])->Mhiggsino ) {
+			//if type is the same and Mhiggsino is hte same, 
+			points[5] = *it2;
+			found_them_all++;
+		}
+		if ((*it2)->type == points[2]->type + 10 && (*it2)->Mhiggsino == (points[2])->Mhiggsino ) {
+			//if type is the same and Mhiggsino is hte same, 
+			points[6] = *it2;
+			found_them_all++;
+		}
+		if ((*it2)->type == points[3]->type + 10 && (*it2)->Mhiggsino == (points[3])->Mhiggsino ) {
+			//if type is the same and Mhiggsino is hte same, 
+			points[7] = *it2;
+			found_them_all++;
+		}
+	}//look for the compliments
+	if(found_them_all != 4){
+		printf("ERROR! I didn't find all the higgsino MC points!!\n");
+		return;
+	}
+
+	//setup and load in the integral syst's
+        Labledfloat integ_systs;
+        suckinIntegralSystematics(integ_systs);
+
+
+	TFile* files[nMCpoints][6];
+	for (int i =0; i<nMCpoints; i++) {
+		files[i][0] = new TFile(datapoint->plotsAndBackground_mc.c_str());
+		files[i][1] = new TFile(points[i]->plotsAndBackground_mc.c_str());
+		files[i][2] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data());
+		files[i][3] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data());
+		files[i][4] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data());
+		files[i][5] = new TFile(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data());
+
+		if( !( fileExists(datapoint->plotsAndBackground_mc.c_str()) &&
+					fileExists(points[i]->plotsAndBackground_mc.c_str()) &&
+					fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data()) &&
+					fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data()) &&
+					fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data()) &&
+					fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data()) )){
+			printf("ERROR!! Some of the input files are missing completely!\n");
+			if (!fileExists(datapoint->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",datapoint->plotsAndBackground_mc.c_str() );
+			if (!fileExists(points[i]->plotsAndBackground_mc.c_str()) ) printf("%s is missing.\n",points[i]->plotsAndBackground_mc.c_str());
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECUp").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"JECDown").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffUp").Data() );
+			if (!fileExists(TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data()) ) printf("%s is missing.\n",TackBeforeRoot(points[i]->plotsAndBackground_mc,"BtagEffDown").Data() );
+			printf("Exiting SetupLimits!! (From SetupSummedLimitsOneMassPoint) \n");
+			//return;
+		}
+	}//for every MC point
+
+	//things I need here: 
+	//files, points, nMCpoints, 
+
+                if(topo.CompareTo("bbin3")==0){
+                        TString channels[3] = {"2JbML!Gbar2Mbb", "2JbML!Gbar2Mbb!","3JbMLLGbar2"};
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!Gbar2Mbb"];
+                        f_integ_systs[1]=integ_systs["2JbML!Gbar2Mbb!"];
+                        f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, kinvar,"bbin3",f_integ_systs);
+                }
+                else if(topo.CompareTo("bbin3MM")==0){
+                        TString channels[3];
+                        channels[0] = "2JbMM!Gbar2Mbb";
+                        channels[1] = "2JbMM!Gbar2Mbb!";
+                        channels[2] = "3JbMMLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbMM!Gbar2Mbb"];
+                        f_integ_systs[1]=integ_systs["2JbMM!Gbar2Mbb!"];
+                        f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+                                
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, kinvar,"bbin3MM",f_integ_systs);
+                }
+                else if(topo.CompareTo("EHbin3")==0){
+                        TString channels[3];
+                        channels[0] = "2JbML!gbar2Mbb01lep";
+                        channels[1] = "2JbT!gbar2ProbeMJJ";
+                        channels[2] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!gbar2Mbb01lep"];
+                        f_integ_systs[1]=integ_systs["2JbT!gbar2ProbeMJJ"];
+                        f_integ_systs[2]=integ_systs["0lep25Jb01MewkMllgbar2"];
+                                
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, kinvar,"EHbin3",f_integ_systs);
+                }
+                else if(topo.CompareTo("bbin3MLbest")==0){
+                        TString channels[3];
+                        channels[0] = "2JbML!gbar2bestOn";
+                        channels[1] = "2JbML!gbar2bestOff";
+                        channels[2] = "3JbMLLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbML!gbar2bestOn"];
+                        f_integ_systs[1]=integ_systs["2JbML!gbar2bestOff"];
+                        f_integ_systs[2]=integ_systs["3JbMLLGbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, kinvar ,"bbin3MLbest",f_integ_systs);
+                }
+                else if(topo.CompareTo("bbin3MMbest")==0){
+                        TString channels[3];
+                        channels[0] = "2JbMM!gbar2bestOn";
+                        channels[1] = "2JbMM!gbar2bestOff";
+                        channels[2] = "3JbMMLGbar2";
+                        float f_integ_systs[3];
+                        f_integ_systs[0]=integ_systs["2JbMM!gbar2bestOn"];
+                        f_integ_systs[1]=integ_systs["2JbMM!gbar2bestOff"];
+                        f_integ_systs[2]=integ_systs["3JbMMLGbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,3, kinvar,"bbin3MMbest",f_integ_systs);
+                }
+                else if(topo.CompareTo("WHbins")==0){
+                        TString channels[2];
+                        channels[0] = "1!lepgbar2";
+                        channels[1] = "23Jb01MewkMll0lepgbar2";
+                        float f_integ_systs[2];
+                        f_integ_systs[0]=integ_systs["1!lepgbar2"];
+                        f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,2, kinvar ,"WHbins",f_integ_systs);
+                }
+                else if(topo.CompareTo("ZHbins")==0){
+                        TString channels[2];
+                        channels[0] = "2!lepZgbar2";
+                        channels[1] = "23Jb01MewkMll0lepgbar2";
+                        float f_integ_systs[2];
+                        f_integ_systs[0]=integ_systs["2!lepZgbar2"];
+                        f_integ_systs[1]=integ_systs["23Jb01MewkMll0lepgbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,2, kinvar ,"ZHbins",f_integ_systs);
+                }
+                else if(topo.CompareTo("WWbins")==0){
+                        TString channels[4];
+                        channels[0] = "2lepgbar2";
+                        channels[1] = "1!lep23Jb01M!ewkMllgbar2";
+                        channels[2] = "1!lep23Jb01MewkMllgbar2";
+                        channels[3] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[4];
+                        f_integ_systs[0]=integ_systs["2lepgbar2"];
+                        f_integ_systs[1]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+                        f_integ_systs[2]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+                        f_integ_systs[3]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,4, kinvar,"WWbins",f_integ_systs);
+                }
+                else if(topo.CompareTo("ZZbins")==0){
+                        TString channels[5];
+                        channels[0] = "3lepgbar2";
+                        channels[1] = "2!lepZgbar2";
+                        channels[2] = "1!lep23Jb01M!ewkMllgbar2";
+                        channels[3] = "1!lep23Jb01MewkMllgbar2";
+                        channels[4] = "0lep25Jb01MewkMllgbar2";
+                        float f_integ_systs[5];
+                        f_integ_systs[0]=integ_systs["3lepgbar2"];
+                        f_integ_systs[1]=integ_systs["2!lepZgbar2"];
+                        f_integ_systs[2]=integ_systs["1!lep23Jb01M!ewkMllgbar2"];
+                        f_integ_systs[3]=integ_systs["1!lep23Jb01MewkMllgbar2"];
+                        f_integ_systs[4]=integ_systs["0lep25Jb01MewkMllgbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,5, kinvar,"ZZbins",f_integ_systs);
+                }
+                else if(topo.CompareTo("SHbins")==0){
+                        TString channels[6];
+                        channels[0] = "2JbM2lepgbar2";
+                        channels[1] = "2JbML!1lepgbar2";
+                        channels[2] = "2JbML!gbar2bestOn0lep";
+                        channels[3] = "4JbML!gbar2ewkMllbestOff0lep";
+                        channels[4] = "2JbML!gbar2bothOff0lep";
+                        channels[5] = "3JbMLLGbar2";
+                        float f_integ_systs[6];
+                        f_integ_systs[0]=integ_systs["2JbM2lepgbar2"];
+                        f_integ_systs[1]=integ_systs["2JbML!1lepgbar2"];
+                        f_integ_systs[2]=integ_systs["2JbML!gbar2bestOn0lep"];
+                        f_integ_systs[3]=integ_systs["4JbML!gbar2ewkMllbestOff0lep"];
+                        f_integ_systs[4]=integ_systs["2JbML!gbar2bothOff0lep"];
+                        f_integ_systs[5]=integ_systs["3JbMLLGbar2"];
+			SetupSummedLimitsOnePlot_bbin(files, points, nMCpoints,channels,6, kinvar,"SHbins",f_integ_systs);
+                }
+                else{
+			SetupSummedLimitsOnePlot(files, points, nMCpoints,topo, kinvar,integ_systs);
+                }
+}//end SetupSummedLimitsOnePlot
+
+
 //void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar){
 void SetupSummedLimitsOnePlot(TFile* files[][6],MCpoint* points[], int nMCpoints,TString topo, TString kinvar, Labeledfloat & integ_systs){
 	string data = "Data";
@@ -2110,3 +2452,411 @@ void suckinIntegralSystematics( Labeledfloat & integ_systs){
 	printf("found integ syst for 2JbMLgbar2: %f\n",integ_systs["2JbMLgbar2"]);
 	printf("found integ syst for 2JbML!Gbar2Mbb: %f\n",integ_systs["2JbML!Gbar2Mbb"]);
 } // end suckinIntegralSystematics
+
+void SetupAllToys(string topo, string kinvar, int n_r_guesses, int ntoys, int fork){
+//void SetupAllToys(string topo, string kinvar, int n_r_guesses=30, int ntoys = 3000, int fork = 8){
+                //Fetch all Asymptotic data:
+
+	//of course, this assumes that the Asymptotici structure has already made the limit packages 
+	//and combined them into something called bbaa that is really the four stop channels plus the four electrohiggs channels. 
+	cout<<"star setup toys"<<endl;
+	Label3Lim* allLims = new Label3Lim();
+        suckinallfiles(10, allLims); //this segfaults. 
+
+	int seed = 1;
+        std::vector<MCpoint*> points = setupMCpoints();
+        for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
+                if((*it)->gettype() != 10) continue;
+//              if ((*it)->Mstop > 510) continue;
+                if (!checkin(allLims,(*it)->pointName, topo, kinvar)) continue;
+                limit *thislim = (*allLims)[(*it)->pointName][kinvar.data()][topo.data()];
+
+		//you then calculate a search region. 
+		float r_min = thislim->Expected2_5;
+		float r_max = thislim->Expected97_5; //check that you got the order right. 
+		float diff = r_max - r_min;
+		//make sure the observed isn't close to the boundary
+		if(thislim->Observed < r_min + 0.2*diff) r_min = thislim->Observed - 0.2*diff;
+		if(thislim->Observed > r_max - 0.2*diff) r_max = thislim->Observed + 0.2*diff;
+		
+	
+		//construct names for the bashfilename and collection_file
+		string bashfilename = Form("doToys_%s_%s_%s.sh",(*it)->pointName.data(),topo.data(),kinvar.data());
+		string collection_file = Form("toyslog_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+		//setup the toys
+		seed = SetupToys(r_min, r_max, n_r_guesses, 
+				(*it)->makeLimitCardName(topo,kinvar).Data(),
+				bashfilename, collection_file, seed, ntoys, fork);
+	
+	}//end for every MC point
+}//end SetupAllToys
+
+int SetupToys(float r_low, float r_high, int n_r_guesses, string cardfile, string bashfilename, string collection_file, int seed_start, int ntoys, int fork){
+//int SetupToys(float r_low, float r_high, int n_r_guesses, string cardfile, string bashfilename, string collection_file, int seed_start = 1, int ntoys = 3000, int fork = 8){
+
+	//You take a range r_low to r_high of r-value guesses that you'll get from Asymptotic and split it into n_r_guesses within that range
+	//n_r_guesses is typically 30-100. I like 30.
+	//You then make one command that throws toys for every n_r_guesses. 
+	//You put each of those commands into a bash script "bashfile" that will run the set. 
+	//each command dumps it's output into a text file collection_file 
+
+	//you can set the random seed to seed_start, which is the first random seed you use. SetupToys then increments this for every guess. 
+	//SetupToys returns seed_start + n_r_guesses, which you can use as the start seed the next time you run SetupToys. 
+	//So the first time you run this, use seed_start = 1, then take the retval
+	//from SetupToys as your next seed. This way you continuiously increment the seed.
+
+	//You can set the number of toys. The rutgers group is using a bunch, like 3k. 
+	//The speed of the combine command is a very slowly growing function of the nubmer of toys. 
+	//100 -> 3k toys only increaces the run time from 6 sec to 7 sec. 
+
+	//fork determins how many processors you run over. I like 8 on 3day storage, but probably use 1 if you're on in a crab env. 
+	if(r_high <= r_low){ 
+		cout<<"Error! SetupToys recieves r_high <= r_low. r_low = "<<r_low<<" r_high = "<<r_high<<". Exiting!!"<<endl;
+		return seed_start + n_r_guesses;
+	}
+	if(ntoys <= 0){
+		cout<<"Error! SetupToys recieves ntoys <= 0! ntoys = "<<ntoys<<". Exiting!!"<<endl;
+		return seed_start + n_r_guesses;
+	}
+	cout<<"Making stuff to run toys for card file "<<cardfile<<endl;
+	float increment = (r_high - r_low)/((float) n_r_guesses);
+	
+	ofstream bashfile;
+	bashfile.open(bashfilename.data(),ios_base::out);//open for writing
+	bashfile<<"echo \"************* THROW TOYS FOR "<<cardfile<<" ************\""<<endl;
+	for(int i = 0; i<n_r_guesses; i++){
+		float r_guess = r_low + increment *((float)i);
+
+		bashfile<<"echo \"************* THROW TOYS FOR r="<<r_guess<<" ************\""<<endl;
+                
+//                bashfile<<"combine -M HybridNew --frequentist --testStat LHC "<<cardfile<<" -H ProfileLikelihood --fork 8 >& temp"<<endl;
+ 		if(fork >1) bashfile<<"combine "<<cardfile<<" -M HybridNew --freq --clsAcc 0 -T "<<ntoys<<" -s "<< seed_start+i << " --singlePoint "<< r_guess <<" --saveToys --saveHybridResult --fork "<< fork <<" >& temp2"<<endl;
+ 		else        bashfile<<"combine "<<cardfile<<" -M HybridNew --freq --clsAcc 0 -T "<<ntoys<<" -s "<< seed_start+i << " --singlePoint "<< r_guess <<" --saveToys --saveHybridResult >& temp2"<<endl;
+                bashfile<<"cat temp2 >> "<< collection_file <<endl;
+                bashfile<<"rm temp2"<<endl;
+	
+	}
+	bashfile.close();
+	return seed_start + n_r_guesses;
+}//end SetupToys
+
+void HaddAndRunAll_file(string topo, string kinvar, int n_r_guesses_expected = 30){
+       std::vector<MCpoint*> points = setupMCpoints();
+       for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
+	       if((*it)->gettype() != 10) continue;
+
+	       string ouptutfilename  = Form("ToysCombined_%s_%s_%s.root",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string collection_file = Form("toyslog_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+                //setup the toys
+                //seed = SetupToys(r_min, r_max, n_r_guesses,
+                                //(*it)->makeLimitCardName(topo,kinvar).Data(),
+                                //bashfilename, collection_file, seed, ntoys, fork);
+		
+	       printf("\n\nDo Hadd for %s %s %s,   Searching through %s\n",(*it)->pointName.data(),topo.data(),kinvar.data(),collection_file.data());
+	       DoHadd_file(collection_file, ouptutfilename, n_r_guesses_expected);
+       }//end for every MC point.
+
+       for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
+	       if((*it)->gettype() != 10) continue;
+
+	       string ouptutfilename  = Form("ToysCombined_%s_%s_%s.root",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string collection_file = Form("toyslog_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string runfilename = Form("doLimits_freq_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string resultsfile = Form("LimitResult_freq_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+		
+                //setup the toys
+                //seed = SetupToys(r_min, r_max, n_r_guesses,
+                                //(*it)->makeLimitCardName(topo,kinvar).Data(),
+                                //bashfilename, collection_file, seed, ntoys, fork);
+		
+	       printf("Make Run Scripts for %s %s %s\n",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       RunOnToys(ouptutfilename, (*it)->makeLimitCardName(topo,kinvar).Data(),
+			       runfilename, resultsfile);
+       }//end for every MC point.
+}//HaddAndRunAll
+
+void HaddAndRunAll(string topo, string kinvar, int n_r_guesses_expected = 30){
+       std::vector<MCpoint*> points = setupMCpoints();
+       for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
+	       if((*it)->gettype() != 10) continue;
+
+	       string ouptutfilename  = Form("ToysCombined_%s_%s_%s.root",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string collection_file = Form("toyslog_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+                //setup the toys
+                //seed = SetupToys(r_min, r_max, n_r_guesses,
+                                //(*it)->makeLimitCardName(topo,kinvar).Data(),
+                                //bashfilename, collection_file, seed, ntoys, fork);
+		
+	       printf("\n\nDo Hadd for %s %s %s,   Searching through %s\n",(*it)->pointName.data(),topo.data(),kinvar.data(),collection_file.data());
+	       DoHadd(collection_file, ouptutfilename, n_r_guesses_expected);
+       }//end for every MC point.
+
+       for(std::vector<MCpoint*>::iterator it = points.begin();it != points.end();it++){
+	       if((*it)->gettype() != 10) continue;
+
+	       string ouptutfilename  = Form("ToysCombined_%s_%s_%s.root",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string collection_file = Form("toyslog_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string runfilename = Form("doLimits_freq_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       string resultsfile = Form("LimitResult_freq_%s_%s_%s.txt",(*it)->pointName.data(),topo.data(),kinvar.data());
+		
+                //setup the toys
+                //seed = SetupToys(r_min, r_max, n_r_guesses,
+                                //(*it)->makeLimitCardName(topo,kinvar).Data(),
+                                //bashfilename, collection_file, seed, ntoys, fork);
+		
+	       printf("Make Run Scripts for %s %s %s\n",(*it)->pointName.data(),topo.data(),kinvar.data());
+	       RunOnToys(ouptutfilename, (*it)->makeLimitCardName(topo,kinvar).Data(),
+			       runfilename, resultsfile);
+       }//end for every MC point.
+}//HaddAndRunAll
+
+void DoHadd(string collection_file, string ouptutfilename, int n_r_guesses_expected){
+	//Take in the results of toy throwing (the collection file made in SetupToys)
+	//identify what the output files were
+	//hadd them together and put the result in outputfilename
+	//check that you got them all by specifying in n_r_guesses_expected the number you were expectind 
+
+	TString haddcommand = "hadd -f -k "+ouptutfilename;
+	//-f option forces it, makes the output file
+	//-k makes it skip files with errors.
+	
+	//go along through collection_file
+	ifstream infile;
+        infile.open(collection_file.data(),ifstream::in);
+        if(!infile.is_open()){
+                printf("ERROR!: FILE NOT FOUND %s \t\t(seen by suckinfile)\n",collection_file.data());
+                return; 
+        }
+	std::string line;
+	int n_found = 0;
+	while (std::getline(infile, line) && n_found < n_r_guesses_expected){
+		//line format: 
+		//Hybrid result saved as HypoTestResult_mh120_r0.2788_630311758 in higgsCombineTest.HybridNew.mH120.1.root
+		std::istringstream iss(line);
+                std::size_t found = line.find("higgsCombineTest");
+                //std::size_t found2 = line.find("root");
+		if (found!=std::string::npos){
+			string crap1;
+                        string crap2;
+                        string crap3;
+                        string crap4;
+                        string crap5;
+                        string crap6;
+                        string thefilename;
+                        if (!(iss >> crap1 >> crap2 >> crap3 >> crap4 >> crap5 >> crap6 >> thefilename ) ) { break; }
+
+			//for debugging
+			//cout<<crap1<<" "<<crap2<<" "<<crap3<<" "<<crap4<<" "<<crap5<<" "<<crap6<<" "<<thefilename<<endl;
+			cout<<"adding "<<thefilename<<endl;
+
+			haddcommand += " "+thefilename;
+
+			n_found++;
+		}//end if
+	}//end while
+	if(n_found != n_r_guesses_expected && n_r_guesses_expected >0) cout<<"Warning! I only found "<<n_found<<" files!, expected "<<n_r_guesses_expected<<endl;
+
+	//when you're done
+	cout<<"do hadd command now:"<<endl;
+	system( haddcommand.Data());
+}//end DoHadd
+void DoHaddGlom(string collection_file, string ouptutfilename, int n_r_guesses_expected){
+	//Take in the results of toy throwing (the collection file made in SetupToys)
+	//identify what the output files were
+	//hadd them together and put the result in outputfilename
+	//check that you got them all by specifying in n_r_guesses_expected the number you were expectind 
+	ofstream runfile;
+	runfile.open(Form("doHaddFor_%s",ouptutfilename.data()) ,ios_base::out);
+
+	TString haddprefix = "hadd -f -k ";
+	//-f option forces it, makes the output file
+	//-k makes it skip files with errors.
+	TString tempfile = "tempball.root";
+	
+	runfile<<"rm "<<ouptutfilename<<endl;
+	runfile<<"rm "<<tempfile<<endl;
+	//go along through collection_file
+	ifstream infile;
+        infile.open(collection_file.data(),ifstream::in);
+        if(!infile.is_open()){
+                printf("ERROR!: FILE NOT FOUND %s \t\t(seen by suckinfile)\n",collection_file.data());
+                return; 
+        }
+	bool first = true;
+	bool second = false;
+	std::string line;
+	int n_found = 0;
+	TString firstline;
+		
+	while (std::getline(infile, line) && n_found < n_r_guesses_expected){
+		//line format: 
+		//Hybrid result saved as HypoTestResult_mh120_r0.2788_630311758 in higgsCombineTest.HybridNew.mH120.1.root
+		std::istringstream iss(line);
+                std::size_t found = line.find("higgsCombineTest");
+                //std::size_t found2 = line.find("root");
+		if (found!=std::string::npos){
+			string crap1;
+                        string crap2;
+                        string crap3;
+                        string crap4;
+                        string crap5;
+                        string crap6;
+                        string thefilename;
+                        if (!(iss >> crap1 >> crap2 >> crap3 >> crap4 >> crap5 >> crap6 >> thefilename ) ) { break; }
+
+			//for debugging
+			//cout<<crap1<<" "<<crap2<<" "<<crap3<<" "<<crap4<<" "<<crap5<<" "<<crap6<<" "<<thefilename<<endl;
+			cout<<"adding "<<thefilename<<endl;
+
+			if(first){
+				firstline = haddprefix + ouptutfilename + " "+thefilename;
+				first = false;
+				second = true;
+			}
+			else if(second){
+				firstline += " "+thefilename;
+				second = false;
+				runfile<<firstline<<endl;
+			}
+			else{
+				runfile<<haddprefix+tempfile+" "+ouptutfilename+" "+thefilename<<endl;
+				runfile<<"mv "+tempfile+" "+ouptutfilename<<endl;
+			}
+
+			n_found++;
+		}//end if
+	}//end while
+	if(n_found != n_r_guesses_expected && n_r_guesses_expected >0) cout<<"Warning! I only found "<<n_found<<" files!, expected "<<n_r_guesses_expected<<endl;
+
+	runfile.close(); 
+	printf("produced doHaddFor_%s\n",ouptutfilename.data());
+
+}//end DoHaddGlom
+
+void DoHadd_file(string collection_file, string ouptutfilename, int n_r_guesses_expected){
+	//Take in the results of toy throwing (the collection file made in SetupToys)
+	//identify what the output files were
+	//hadd them together and put the result in outputfilename
+	//check that you got them all by specifying in n_r_guesses_expected the number you were expectind 
+
+	TString haddcommand = "hadd -f -k "+ouptutfilename;
+	//-f option forces it, makes the output file
+	//-k makes it skip files with errors.
+	
+	//go along through collection_file
+	ifstream infile;
+        infile.open(collection_file.data(),ifstream::in);
+        if(!infile.is_open()){
+                printf("ERROR!: FILE NOT FOUND %s \t\t(seen by suckinfile)\n",collection_file.data());
+                return; 
+        }
+	std::string line;
+	int n_found = 0;
+	while (std::getline(infile, line) && n_found < n_r_guesses_expected){
+		//line format: 
+		//Hybrid result saved as HypoTestResult_mh120_r0.2788_630311758 in higgsCombineTest.HybridNew.mH120.1.root
+		std::istringstream iss(line);
+                std::size_t found = line.find("higgsCombineTest");
+                //std::size_t found2 = line.find("root");
+		if (found!=std::string::npos){
+			string crap1;
+                        string crap2;
+                        string crap3;
+                        string crap4;
+                        string crap5;
+                        string crap6;
+                        string thefilename;
+                        if (!(iss >> crap1 >> crap2 >> crap3 >> crap4 >> crap5 >> crap6 >> thefilename ) ) { break; }
+
+			//for debugging
+			//cout<<crap1<<" "<<crap2<<" "<<crap3<<" "<<crap4<<" "<<crap5<<" "<<crap6<<" "<<thefilename<<endl;
+			cout<<"adding "<<thefilename<<endl;
+
+			haddcommand += " "+thefilename;
+
+			n_found++;
+		}//end if
+	}//end while
+	if(n_found != n_r_guesses_expected && n_r_guesses_expected >0) cout<<"Warning! I only found "<<n_found<<" files!, expected "<<n_r_guesses_expected<<endl;
+
+	if(n_found > 0) system(Form("echo \"%s\" >> haddall.sh",haddcommand.Data()));
+}//end DoHadd
+
+void RunOnToys(string toysrootfilename, string cardfilename, string runfilename, string resultsfile){
+		//ideally here you'd 
+	//here you're not going to be that ambitionus. You'll form the commands, make a .sh script runfilename to run them, 
+	//and collect the output in resultsfile
+
+	//consider makeing a version of this that popens them and parses the files immediately and just gives you back numbers. 
+	
+		TString obs_cmd = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename;
+		TString exp_vlow_cmd = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.025";
+		TString exp_low_cmd = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.16";
+		TString exp_avg_cmd = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.50";
+		TString exp_hi_cmd  = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.84";
+		TString exp_vhi_cmd  = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.975";
+
+		ofstream runfile;
+		runfile.open(runfilename.data() ,ios_base::out);//open for writing
+
+                runfile<<"rm temp3"<<endl;
+
+		runfile<<obs_cmd<<" >& temp3"<<endl;
+                runfile<<"cat temp3 > "<< resultsfile <<endl;
+                runfile<<"rm temp3"<<endl;
+
+		runfile<<exp_vlow_cmd<<" >& temp3"<<endl;
+                runfile<<"cat temp3 >> "<< resultsfile <<endl;
+                runfile<<"rm temp3"<<endl;
+
+		runfile<<exp_low_cmd<<" >& temp3"<<endl;
+                runfile<<"cat temp3 >> "<< resultsfile <<endl;
+                runfile<<"rm temp3"<<endl;
+
+		runfile<<exp_avg_cmd<<" >& temp3"<<endl;
+                runfile<<"cat temp3 >> "<< resultsfile <<endl;
+                runfile<<"rm temp3"<<endl;
+
+		runfile<<exp_hi_cmd<<" >& temp3"<<endl;
+                runfile<<"cat temp3 >> "<< resultsfile <<endl;
+                runfile<<"rm temp3"<<endl;
+
+		runfile<<exp_vhi_cmd<<" >& temp3"<<endl;
+                runfile<<"cat temp3 >> "<< resultsfile <<endl;
+                runfile<<"rm temp3"<<endl;
+
+		runfile.close();
+}//end RunOnToys
+
+/*void RunOnToysNow(string toysrootfilename, string cardfilename, string runfilename, string resultsfile){
+		//ideally here you'd 
+	//here you're not going to be that ambitionus. You'll form the commands, make a .sh script runfilename to run them, 
+	//and collect the output in resultsfile
+
+	//consider makeing a version of this that popens them and parses the files immediately and just gives you back numbers. 
+	
+		TString obs_cmd = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename;
+		TString exp_low_cmd = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.16";
+		TString exp_avg_cmd = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.50";
+		TString exp_hi_cmd  = "combine "+cardfilename+" -M HybridNew --freq --grid="+toysrootfilename+" --expectedFromGrid 0.84";
+
+		FILE* obsfile; 
+		int status;
+		char path[PATH_MAX];
+		obsfile = popen(obs_cmd.Data(), "r");
+		if (obsfile == NULL){
+			cout<<"There was a problem with popen on obs_cmd"<<endl;
+			return;
+		}
+		while (fgets(path, PATH_MAX, obsfile) != NULL)
+			printf("%s", path);
+			//here, figure out all the things. 
+
+		status = pclose(obsfile);
+		if (status == -1) {
+			cout<<"popen status repports failure on obs_cmd"<<endl;
+			return;
+		}
+		//handle error
+
+}//end RunOnToysNow*/

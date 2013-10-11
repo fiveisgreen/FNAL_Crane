@@ -267,6 +267,16 @@ int PhoMassNBins = 130;
 float PhoMassMin = 50.0f;
 float PhoMassMax = 180.0f;
 
+float BR_haa = 0.00229;
+float BR_hbb = 0.561;
+float BR_hzz = 0.0289;
+float BR_hww = 0.231;
+float BR_htt = 0.0615;
+float BR_bbaa = 2*0.561*0.00229;
+float BR_wwaa = 2*0.231*0.00229;
+float BR_zzaa = 2*0.0289*0.00229; 
+float BR_ttaa = 2*0.0615*0.00229;
+
 } //end namespace params
 #endif
 

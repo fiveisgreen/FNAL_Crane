@@ -619,7 +619,7 @@ void SusyMainAna_MC::Loop() {
 		if(!useElectroHiggs){
 			bool has_stop = false;
 			for(std::vector<susy::Particle>::iterator it = event->genParticles.begin(); !has_stop && it != event->genParticles.end(); it++) {
-				has_stop |= (abs(it->pdgId) == 1000006 || abs(it->pdgId) == 2000006); //ask if sTop
+				has_stop |= (abs(it->pdgId) == 1000006 || abs(it->pdgId) == 2000006); //ask if Stop
 			}
 			if(!has_stop){
 				nNotStop++;
@@ -1821,8 +1821,10 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 		//topoCut["3J"] =     (int(ra3_pfjets.size()) >= 3);
 		//topoCut["2J"] =     (int(ra3_pfjets.size()) >= 2);
 //	topoCut["metCut"] = (corrmet > 20.0);
-                topoCut["m30"] = (corrmet > 30.0);
-		m_BTagWeight["m30"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["m30ptgg80"] = (corrmet > 30.0 && ptgg > 80.0);
+		m_BTagWeight["m30ptgg80"] = new BTagWeight(3,0,bTagRequirement_NULL);
+		topoCut["ptgg80"] = (ptgg > 80.0);
+		m_BTagWeight["ptgg80"] = new BTagWeight(3,0,bTagRequirement_NULL);
 		/*topoCut["1Jb"] =    (int(ra3_pfjets.size()) >= 1) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["2Jb"] =    (int(ra3_pfjets.size()) >= 2) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["3Jb"] =    (int(ra3_pfjets.size()) >= 3) && (int(pfBJetsMedium.size()) >= 1);
@@ -2581,7 +2583,7 @@ THE FASTSIM MAY DO A PERFECTLY HORRIBLE JOB OF EMULATING THE TRIGGER.
 
 	float fnStop = (float)nStop;
 	float fnNotStop = (float)nNotStop;
-	printf("That had %i sTop events (%.2f%%) and %i non-sTop events (%.2f%%)\n",nStop,100.0*fnStop/(fnStop+fnNotStop),nNotStop,100.0*fnNotStop/(fnStop+fnNotStop));
+	printf("That had %i Stop events (%.2f%%) and %i non-Stop events (%.2f%%)\n",nStop,100.0*fnStop/(fnStop+fnNotStop),nNotStop,100.0*fnNotStop/(fnStop+fnNotStop));
 
 	fout->cd();
 	lsb_int->Write();

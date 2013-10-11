@@ -27,7 +27,7 @@ void PrettyText(TPaveText* text, float fontSize = 0.05);
 void PrettyLatex(TLatex* text, float fontSize = 0.03814);
 void PrettyHist(TH1F* h, int color = 1, int width = 3, int linestyle = 0);
 void PrettyHist(TH2F* h, int color = 1, int width = 3, int linestyle = 0);
-void PrettyGraph(TGraph* h, int color, int width, int linestyle=1);
+void PrettyGraph(TGraph* h, int color, int width, int linestyle );
 
 void PrettyMarker(TH1F* h, int color = 1, int markerstyle = 20, float markersize = 1.2f);
 void PrettyMarker(TH2F* h, int color = 1, int markerstyle = 20, float markersize = 1.2f);
@@ -77,46 +77,127 @@ void CMSStyle(){
 	cmsStyle->SetCanvasBorderMode(0);
 	cmsStyle->SetPadBorderMode(0);
 	cmsStyle->SetPadColor(0);
-	cmsStyle->SetCanvasColor(0);
+	cmsStyle->SetCanvasColor(kWhite);
 	cmsStyle->SetTitleColor(1);
-	cmsStyle->SetStatColor(0);
+//	cmsStyle->SetStatColor(0);
+	cmsStyle->SetStatColor(kWhite);
 	cmsStyle->SetFrameFillColor(0);
+	cmsStyle->SetCanvasDefH(600); //Height of canvas
+	cmsStyle->SetCanvasDefW(600); //Width of canvas
+	cmsStyle->SetCanvasDefX(0);   //POsition on screen
+	cmsStyle->SetCanvasDefY(0);
+
+	cmsStyle->SetFrameBorderSize(1);
+	cmsStyle->SetFrameFillStyle(0);
+	cmsStyle->SetFrameLineColor(1);
+	cmsStyle->SetFrameLineStyle(1);
+	cmsStyle->SetFrameLineWidth(1);
+
 
 		// set the paper & margin sizes
-	cmsStyle->SetPaperSize(20,26);
+//	cmsStyle->SetPaperSize(20,26);
+	cmsStyle->SetPaperSize(20.,20.);
+//	cmsStyle->SetPadTopMargin(0.05);
+//	cmsStyle->SetPadRightMargin(0.05);
+//	cmsStyle->SetPadBottomMargin(0.17);
+//	cmsStyle->SetPadLeftMargin(0.17);
+
 	cmsStyle->SetPadTopMargin(0.05);
-	cmsStyle->SetPadRightMargin(0.05);
-	cmsStyle->SetPadBottomMargin(0.17);
-	cmsStyle->SetPadLeftMargin(0.17);
+	cmsStyle->SetPadBottomMargin(0.13);
+	cmsStyle->SetPadLeftMargin(0.16);
+	cmsStyle->SetPadRightMargin(0.02);
+
+	cmsStyle->SetPadBorderMode(0);
+	cmsStyle->SetPadColor(kWhite);
+	cmsStyle->SetPadGridX(false);
+	cmsStyle->SetPadGridY(false);
+	cmsStyle->SetGridColor(0);
+	cmsStyle->SetGridStyle(3);
+	cmsStyle->SetGridWidth(1);
+
 
 		// use large Times-Roman fonts
-	cmsStyle->SetTextFont(132);
+	cmsStyle->SetTextFont(42); //was 132
 	cmsStyle->SetTextSize(0.08);
-	cmsStyle->SetLabelFont(132,"x");
-	cmsStyle->SetLabelFont(132,"y");
-	cmsStyle->SetLabelFont(132,"z");
+	cmsStyle->SetLabelFont(42,"x"); //was 132
+	cmsStyle->SetLabelFont(42,"y"); //was 132
+	cmsStyle->SetLabelFont(42,"z"); //was 132
 	cmsStyle->SetLabelSize(0.05,"x");
-	cmsStyle->SetTitleSize(0.06,"x");
+	cmsStyle->SetTitleSize(0.05,"x"); //was 0.06
 	cmsStyle->SetLabelSize(0.05,"y");
-	cmsStyle->SetTitleSize(0.06,"y");
+	cmsStyle->SetTitleSize(0.05,"y"); //was 0.06
 	cmsStyle->SetLabelSize(0.05,"z");
-	cmsStyle->SetTitleSize(0.06,"z");
+	cmsStyle->SetTitleSize(0.05,"z"); //was 0.06
 
 		// use bold lines and markers
-	cmsStyle->SetMarkerStyle(8);
-	cmsStyle->SetHistLineWidth(1.85);
+//	cmsStyle->SetMarkerStyle(8);
+	cmsStyle->SetMarkerStyle(20);
+	cmsStyle->SetErrorX(0.);
+	cmsStyle->SetEndErrorSize(2);
+
+//	cmsStyle->SetHistLineWidth(1.85);
+	cmsStyle->SetHistLineWidth(1);
 	cmsStyle->SetLineStyleString(2,"[12 12]"); // postscript dashes
 
 		// do not display any of the standard histogram decorations
-	cmsStyle->SetOptTitle(1);
-	cmsStyle->SetOptStat(1);
+//	cmsStyle->SetOptTitle(1);
+//	cmsStyle->SetOptStat(1);
 	cmsStyle->SetOptFit(1);
 	cmsStyle->SetOptTitle(0);
 	cmsStyle->SetOptStat(0);
 
+		//For the fit/function:
+//	cmsStyle->SetOptFit(1);
+	cmsStyle->SetFitFormat("5.4g");
+	cmsStyle->SetFuncColor(2);
+	cmsStyle->SetFuncStyle(1);
+	cmsStyle->SetFuncWidth(1);
+
+		//For the date:
+	cmsStyle->SetOptDate(0);
+
+		// For the statistics box:
+	cmsStyle->SetOptFile(0);
+	cmsStyle->SetOptStat(0);
+	cmsStyle->SetStatFont(42);
+	cmsStyle->SetStatFontSize(0.025);
+	cmsStyle->SetStatTextColor(1);
+	cmsStyle->SetStatFormat("6.4g");
+	cmsStyle->SetStatBorderSize(1);
+	cmsStyle->SetStatH(0.1);
+	cmsStyle->SetStatW(0.15);
+
+
+
 		// put tick marks on top and RHS of plots
 	cmsStyle->SetPadTickX(1);
 	cmsStyle->SetPadTickY(1);
+	cmsStyle->SetAxisColor(1, "XYZ");
+	cmsStyle->SetStripDecimals(kTRUE);
+	cmsStyle->SetTickLength(0.03, "XYZ");
+	cmsStyle->SetNdivisions(510, "XYZ");
+
+		// For the Global title:
+	cmsStyle->SetOptTitle(0);
+	cmsStyle->SetTitleFont(42);
+	cmsStyle->SetTitleTextColor(1);
+	cmsStyle->SetTitleFillColor(10);
+	cmsStyle->SetTitleFontSize(0.05);
+
+		// For the axis titles:
+	cmsStyle->SetTitleColor(1, "XYZ");
+	cmsStyle->SetTitleFont(42, "XYZ");
+	cmsStyle->SetTitleSize(0.06, "XYZ");
+	cmsStyle->SetTitleXOffset(0.9);
+	cmsStyle->SetTitleYOffset(1.25);
+
+		// For the axis labels:
+	cmsStyle->SetLabelColor(1, "XYZ");
+	cmsStyle->SetLabelFont(42, "XYZ");
+	cmsStyle->SetLabelOffset(0.007, "XYZ");
+	cmsStyle->SetLabelSize(0.05, "XYZ");
+
+
 
 		//  cout << endl << "    For approved plots use: gROOT->SetStyle(\"CMS\");"
 		//       << endl << "  To add a CMS label use: CMSLabel();"
@@ -130,7 +211,7 @@ void CMSStyle(){
 
 void PrettyLegend(TLegend* leg, float fontSize){
 		//default fontSize = 0.05;
-	leg->SetTextFont(132);
+	leg->SetTextFont(42); //was 132
 	leg->SetFillColor(0);
 	leg->SetBorderSize(0);
 	leg->SetTextSize(fontSize);
@@ -139,7 +220,7 @@ void PrettyLegend(TLegend* leg, float fontSize){
 void PrettyText(TPaveText* text, float fontSize){
 		//default fontSize = 0.05;
 		//	text->SetNDC();
-	text->SetTextFont(132);
+	text->SetTextFont(42); //was 132
 	text->SetFillColor(0);
 	text->SetBorderSize(0);
 	text->SetTextSize(fontSize);
@@ -147,7 +228,7 @@ void PrettyText(TPaveText* text, float fontSize){
 }
 void PrettyLatex(TLatex* text, float fontSize){
 	text->SetNDC();
-	text->SetTextFont(132);
+	text->SetTextFont(42); //was 132
 	text->SetTextSize(fontSize);
 	text->SetLineWidth(2);
 }
@@ -159,8 +240,8 @@ void PrettyHist(TH1F* h, int color, int width, int linestyle ){
 	h->SetLineStyle(linestyle);
 	h->SetStats(0);
 	PrettyFonts(h);
-	h->GetXaxis()->SetLabelSize(0.05);
-	h->GetYaxis()->SetLabelSize(0.05);
+	h->GetXaxis()->SetLabelSize(0.05); //was 0.043
+	h->GetYaxis()->SetLabelSize(0.05); //was 0.043
 }
 void PrettyHist(TH2F* h, int color, int width, int linestyle ){
 		//defaults: PrettyHist(TH1F* h, int color = 1, int width = 3, int linestyle = 0){
@@ -169,9 +250,9 @@ void PrettyHist(TH2F* h, int color, int width, int linestyle ){
 	h->SetLineStyle(linestyle);
 	h->SetStats(0);
 	PrettyFonts(h);
-	h->GetXaxis()->SetLabelSize(0.05);
-	h->GetYaxis()->SetLabelSize(0.05);
-	h->GetZaxis()->SetLabelSize(0.05);
+	h->GetXaxis()->SetLabelSize(0.05); //was 0.043
+	h->GetYaxis()->SetLabelSize(0.05); //was 0.043
+	h->GetZaxis()->SetLabelSize(0.05); //was 0.043
 }
 void PrettyGraph(TGraph* h, int color, int width, int linestyle ){
                 //defaults: PrettyHist(TH1F* h, int color = 1, int width = 3, int linestyle = 0){
@@ -194,68 +275,66 @@ static const int bigdotDash = 10;
 void PrettyFonts(TH1F* h){
 	TAxis * x = h->GetXaxis();
 	TAxis * y = h->GetYaxis();
-	x->SetTitleFont(132);
-	y->SetTitleFont(132);
-	x->SetTitleSize(0.08);
-	x->SetTitleOffset(0.80); //make the Title a little further from the axis
-	y->SetTitleOffset(0.80);
-	y->SetTitleSize(0.08);
-	x->SetLabelFont(132);
-	y->SetLabelFont(132);
-	x->SetLabelSize(0.06);
-	y->SetLabelSize(0.06);
+	x->SetTitleFont(42); //was 132
+	y->SetTitleFont(42); //was 132
+	x->SetTitleSize(0.06);
+	x->SetTitleOffset(1.05); //make the Title a little further from the axis
+	y->SetTitleOffset(1.05);
+	y->SetTitleSize(0.06);
+	x->SetLabelFont(42); //was 132
+	y->SetLabelFont(42); //was 132
+	x->SetLabelSize(0.05); //was 0.06
+	y->SetLabelSize(0.05); //was 0.06
 }
 void PrettyFonts(TH1D* h){
 	TAxis * x = h->GetXaxis();
 	TAxis * y = h->GetYaxis();
-	x->SetTitleFont(132);
-	y->SetTitleFont(132);
-	x->SetTitleSize(0.08);
-	x->SetTitleOffset(0.80); //make the Title a little further from the axis
-	y->SetTitleOffset(0.80);
-	y->SetTitleSize(0.08);
-	x->SetLabelFont(132);
-	y->SetLabelFont(132);
-	x->SetLabelSize(0.06);
-	y->SetLabelSize(0.06);
+	x->SetTitleFont(42); //was 132
+	y->SetTitleFont(42); //was 132
+	x->SetTitleSize(0.06);
+	x->SetTitleOffset(1.05); //make the Title a little further from the axis
+	y->SetTitleOffset(1.05);
+	y->SetTitleSize(0.06);
+	x->SetLabelFont(42); //was 132
+	y->SetLabelFont(42); //was 132
+	x->SetLabelSize(0.05); //was 0.06
+	y->SetLabelSize(0.05); //was 0.06
 }
 void PrettyFonts(TH2F* h){
 	TAxis * x = h->GetXaxis();
 	TAxis * y = h->GetYaxis();
 	TAxis * z = h->GetZaxis();
-	x->SetTitleFont(132);
-	y->SetTitleFont(132);
-	z->SetTitleFont(132);
-	x->SetTitleSize(0.08);
-	x->SetTitleOffset(0.80); //make the Title a little further from the axis
-	y->SetTitleOffset(0.80);
-	y->SetTitleSize(0.08);
-	z->SetTitleSize(0.08);
-	x->SetLabelFont(132);
-	y->SetLabelFont(132);
-	z->SetLabelFont(132);
-	x->SetLabelSize(0.06);
-	y->SetLabelSize(0.06);
-	z->SetLabelSize(0.06);
-	z->SetTitleOffset(0.80);
+	x->SetTitleFont(42); //was 132
+	y->SetTitleFont(42); //was 132
+	z->SetTitleFont(42); //was 132
+	x->SetTitleSize(0.06);
+	x->SetTitleOffset(1.05); //make the Title a little further from the axis
+	y->SetTitleOffset(1.05);
+	y->SetTitleSize(0.06);
+	x->SetLabelFont(42); //was 132
+	y->SetLabelFont(42); //was 132
+	z->SetLabelFont(42); //was 132
+	x->SetLabelSize(0.05); //was 0.06
+	y->SetLabelSize(0.05); //was 0.06
+	z->SetLabelSize(0.05); //was 0.06
 }
 void PrettyFonts(TH2D* h){
 	TAxis * x = h->GetXaxis();
 	TAxis * y = h->GetYaxis();
 	TAxis * z = h->GetZaxis();
-	x->SetTitleFont(132);
-	y->SetTitleFont(132);
-	z->SetTitleFont(132);
+	x->SetTitleFont(42); //was 132
+	y->SetTitleFont(42); //was 132
+	z->SetTitleFont(42); //was 132
 	x->SetTitleSize(0.06);
 	x->SetTitleOffset(1.05); //make the Title a little further from the axis
 	y->SetTitleOffset(1.05);
 	y->SetTitleSize(0.06);
-	x->SetLabelFont(132);
-	y->SetLabelFont(132);
-	z->SetLabelFont(132);
-	x->SetLabelSize(0.06);
-	y->SetLabelSize(0.06);
-	z->SetLabelSize(0.06);
+	x->SetLabelFont(42); //was 132
+	y->SetLabelFont(42); //was 132
+	z->SetLabelFont(42); //was 132
+	x->SetLabelSize(0.05); //was 0.06
+	y->SetLabelSize(0.05); //was 0.06
+	z->SetLabelSize(0.05); //was 0.06
 }
 
 void PrettyFillColor(TH1F* h, int color){

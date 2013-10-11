@@ -60,6 +60,8 @@ Double_t fcon(Double_t *x, Double_t *par);
 Double_t fexp(Double_t *x, Double_t *par);
 Double_t fpol3(Double_t *x, Double_t *par);
 Double_t fpol2(Double_t *x, Double_t *par);
+
+enum cutmode {LEFT=0, RIGHT=1, DOUBLESIDED=2, HIGGS=3};
 		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
 		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
 		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@	
@@ -191,6 +193,9 @@ void fitmgg_simpler(TH1F* hmgg, Double_t lb, Double_t ub, TF1** fitcurve, float&
 		reject = false;
 		B_integral = (*fitcurve)->Integral(tag_lb,tag_ub);
 		B_integral_error = (*fitcurve)->IntegralError(tag_lb,tag_ub,fitresult->GetParams(), cov.GetMatrixArray() );
+	cout<<"################################################################################"<<endl;
+	cout<<"### Upon generation in fitmgg_simpler, B_integral = "<<B_integral<<", B_integral_error = "<<B_integral_error<<" ###"<<endl;
+	cout<<"################################################################################"<<endl;
 		if(B_integral <0.0){ B_integral = 0; B_integral_error = 0;}
 		reject = true;
 		cout<<"integral: "<<B_integral<<" +- "<<B_integral_error<<endl;
@@ -204,6 +209,9 @@ void fitmgg_simpler(TH1F* hmgg, Double_t lb, Double_t ub, TF1** fitcurve, float&
 		(*fitcurve)->SetParameter(0,0.0);
 		(*fitcurve)->SetParameter(1,0.0);
 	}
+	cout<<"################################################################################"<<endl;
+	cout<<"### Coming out of fitmgg_simpler, B_integral = "<<B_integral<<", B_integral_error = "<<B_integral_error<<" ###"<<endl;
+	cout<<"################################################################################"<<endl;
 }//end fitmgg_simpler
 
 
@@ -839,7 +847,7 @@ void find_bkg_with_fit(TH1F** h, float B_integral, float B_integral_error, float
 				sqrt(sU2), sqrt(checkU),100*(sqrt(sU2)-sqrt(checkU))/sqrt(checkU) );
 			printf("L bin %i, LSB=%.1f LSB/ =%.1f bin=%.1f +-%f(sqrt(bin)=%f L=%f +- %f by old, %f by check, diff %f \%\n",
 				ibin, lsb_int, LSB_minus_N, h[2]->GetBinContent(ibin), h[2]->GetBinError(ibin),sqrt(h[2]->GetBinContent(ibin)), L, 
-				sqrt(sL2), sqrt(checkL),100*(sqrt(sL2)-sqrt(checkL))/sqrt(checkL) );
+				sqrt(sL2), sqrt(checkL), 100.0*(sqrt(sL2)-sqrt(checkL))/sqrt(checkL) );
 			printf("resultant uncert in the avg %f\n\n\n",h[3]->GetBinError(ibin));
 		}
 
@@ -898,6 +906,10 @@ class KinematicVar{
 	//KinematicVar(string _tag):tag(_tag){}
 	KinematicVar(string _tag, string _titles, string _xlabels,bool _useCustomBinning, int _nbins, float min = 0, float max = -1):tag(_tag),titles(_titles),xlabels(_xlabels),useCustomBinning(_useCustomBinning),nbins(_nbins),hmin(min),hmax(max){ 
 		CustomBinning = new float[nbins+1];
+		//by default, the rebinning shall be the same as the old binning
+		CustomReBinning = CustomBinning;
+		nbins_rebin = nbins;
+		mode = LEFT;
 	} 
 	~KinematicVar(){}
 
@@ -908,12 +920,22 @@ class KinematicVar{
 	int nbins;
 	float hmin;
 	float hmax;
-	float *CustomBinning; //this explodes. 
+	float *CustomBinning; 
 	void usearray(float* f);
 	//void printarray();
+
+	int nbins_rebin;
+	float *CustomReBinning; 
+	void SetRebinning(int nbins,float* f);
+	enum cutmode mode; //if you were to cut on it, from which direction would you cut?
 };
 void KinematicVar::usearray(float* f){
 	for(int i = 0;i<=nbins;i++) CustomBinning[i] = f[i];
+}
+void KinematicVar::SetRebinning(int _nbins,float* f){
+	nbins_rebin = _nbins;
+	CustomReBinning = new float[_nbins+1];
+	for(int i = 0;i<=_nbins;i++) CustomReBinning[i] = f[i];
 }
 /*void KinematicVar::printarray(){
 	printf("{");
@@ -926,6 +948,9 @@ typedef std::map<string,KinematicVar*> LabelKinVars;
 LabelKinVars setupKinematicVar(){
 //will consider the list of kinematic variables in params_arg and 
 //make a map from kinvars to *KinematicVar
+//call syntax: 
+//LabelKinVars KinVars = setupKinematicVar();
+
 	LabelKinVars allKinVars;
 	//first compose an object for everything we've ever defined. 
 
@@ -933,62 +958,88 @@ LabelKinVars setupKinematicVar(){
 	//KinematicVar* temp = new KinematicVar("MET","Missing Transverse Energy","#slash{E}_{T} (GeV)",false,6,0,150);
 	float a[] = {0,20,30,40,60,140};
 	temp->usearray(a);
+	temp->mode = LEFT;
 	allKinVars["MET"] = temp; }
 
-	{ KinematicVar* temp = new KinematicVar("ST","Scalar Sum of all Calorimeter Energy","#SigmaE_{E}_{T} (GeV)",true,4);
-	// KinematicVar* temp = new KinematicVar("ST","Scalar Sum of all Calorimeter Energy","#SigmaE_{E}_{T} (GeV)",false,30,0,1500);
-	float a[] = {0,250,350,550,1000};
+	{ KinematicVar* temp = new KinematicVar("ST","Scalar Sum of all Calorimeter Energy","#SigmaE_{E}_{T} (GeV)",true,7);
+	 //{KinematicVar* temp = new KinematicVar("ST","Scalar Sum of all Calorimeter Energy","#SigmaE_{E}_{T} (GeV)",false,20,0,1000);
+	//float a[] = {0,250,350,550,775,1000};
+	float a[] = {0,100,200,300,400,600,800,1000};
 	temp->usearray(a);
+	temp->mode = LEFT;
 	allKinVars["ST"] = temp; }
 
-	{ KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",true,5);
-	 //KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
-	float a[] = {0,150,250,350,500,1000};
+	{ KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",true,7);
+	 //{KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
+	float a[] = {0,100,200,300,400,600,800,1000};
+	//float a[] = {0,150,250,350,500,750,1000};
 	temp->usearray(a);
+	temp->mode = LEFT;
 	allKinVars["HT"] = temp; }
 
-	allKinVars["LHT"] = new KinematicVar("LHT","Scalar Sum of Light Hadronic Transverse Energy", "#SigmaH_{T} (GeV)", false, 3.f, 0.f, 300.f);
+	allKinVars["LHT"] = new KinematicVar("LHT","Scalar Sum of Light Hadronic Transverse Energy", "#SigmaH_{T} (GeV)", false, 9, 0.f, 300.f);
 
-	{ KinematicVar* temp = new KinematicVar("Bt",  "Scalar Sum of all B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 10);
-        //allKinVars["Bt"] = new KinematicVar("Bt",  "Scalar Sum of all B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 20, 0.f, 800.f);
-	float a[] = {0,40,80,120,160,200,240,280,320,480,800};
+	{ KinematicVar* temp = new KinematicVar("Bt",  "Scalar Sum of all B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 6);
+	//allKinVars["Bt"] = new KinematicVar("Bt",  "Scalar Sum of all B-jet Transverse Energy", "#SigmaB_{T} (GeV)",false, 20, 0.f, 800.f);
+	float a[] = {0,80,160,240,320,480,640};
+	//float a[] = {0,40,80,120,160,200,240,280,320,480,640,800};
 	temp->usearray(a);
+	temp->mode = LEFT;
 	allKinVars["Bt"] = temp; }
     
         { KinematicVar* temp = new KinematicVar("BTL",  "Scalar Sum of Exclusively Loose B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 3);
         //allKinVars["BTL"] = new KinematicVar("BTL",  "Scalar Sum of Exclusively Loose B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 20.f, 0.f, 800.f); 
 	float a[] = {0,100,200,300};//, 6 bins
 	temp->usearray(a);
+	temp->mode = LEFT;
         allKinVars["BTL"] = temp;}
 
 	{ KinematicVar* temp = new KinematicVar("BTM",  "Scalar Sum of Exclusively Medium B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 3);
         //allKinVars["BTM"] = new KinematicVar("BTM",  "Scalar Sum of Exclusively Medium B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 20.f, 0.f, 800.f);
 	float a[] = {0,100,200,300};// 6 bins
 	temp->usearray(a);
+	temp->mode = LEFT;
         allKinVars["BTM"] = temp;}
 
 	{ KinematicVar* temp = new KinematicVar("BTT",  "Scalar Sum of B-jeusively Tight Transverse Energy", "#SigmaB_{T} (GeV)",true, 3);
         //allKinVars["BTT"] = new KinematicVar("BTT",  "Scalar Sum of B-jeusively Tight Transverse Energy", "#SigmaB_{T} (GeV)",true, 20.f, 0.f, 800.f);
 	float a[] = {0,100,200,300};// 3 bins
 	temp->usearray(a);
+	temp->mode = LEFT;
         allKinVars["BTT"] = temp;}
 
-	{ KinematicVar* temp = new KinematicVar("MHT",  "Missing Transverse Hadronic Energy", "#slashH_{T} (GeV)",true, 5);
-        //allKinVars["MHT"] = new KinematicVar("MHT",  "Missing Transverse Hadronic Energy", "#slashH_{T} (GeV)",true, 20.f, 0.f, 250.f);
-	float a[] = {0,40,80,120,160,260};//  
+	{ KinematicVar* temp = new KinematicVar("MHT",  "Missing Transverse Hadronic Energy", "#slashH_{T} (GeV)",true, 7);
+        //allKinVars["MHT"] = new KinematicVar("MHT",  "Missing Transverse Hadronic Energy", "#slashH_{T} (GeV)",false, 12, 0.f, 360.f);
+	float a[] = {0,40,80,120,160,200,240,280};//  
+	//float a[] = {0,40,80,120,160,210,260};//  
 	temp->usearray(a);
+	temp->mode = LEFT;
         allKinVars["MHT"] = temp;}
 
-	{ KinematicVar* temp = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 4);
-        //allKinVars["PtGG"] = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 25., 0.f, 250.f);
-//	float a[] = {0,10,20,30,40,50,60,70,80,90,120,150,180,210,240};// 14 bins
-		float a[] = {0,30,60,90,120};
-		temp->usearray(a);
+	{ KinematicVar* temp = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 5);
+        //allKinVars["PtGG"] = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",false, 12, 0.f, 240.f);
+	float a[] = {0,30,60,90,120,150};
+	temp->usearray(a);
+	temp->mode = LEFT;
         allKinVars["PtGG"] = temp;}
 
-	allKinVars["LepT"] = new KinematicVar("LepT","Leptonic Transverse Energy", "Lep #sigmaE_{T} (GeV)", false, 20.f, 0.f, 150.f),
+	{ KinematicVar* temp = new KinematicVar("PtBB",  "Di-BJet Pt Sectrum", "P_{t}^{b b} (GeV)",true, 5);
+        //allKinVars["PtBB"] = new KinematicVar("PtBB",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",false, 12, 0.f, 240.f);
+	float a[] = {0,30,60,90,120,150};
+	temp->usearray(a);
+	temp->mode = LEFT;
+        allKinVars["PtBB"] = temp;}
 
-	allKinVars["LepPt"] = new KinematicVar("LepT","Lepton Transverse Energy", "Lepton E_{T} (GeV)", false, 20.f, 0.f, 150.f),
+	{ KinematicVar* temp = new KinematicVar("PtGGPtBB",  "Di-Photon Pt Plus Di-Bjet Pt", "P_{t}^{#gamma #gamma} + P_{t}^{b b} (GeV)",true, 5);
+        //allKinVars["PtGGPtBB"] = new KinematicVar("PtGGPtBB",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",false, 12, 0.f, 240.f);
+	float a[] = {0,60,120,180,240,300};
+	temp->usearray(a);
+	temp->mode = LEFT;
+        allKinVars["PtGGPtBB"] = temp;}
+
+	allKinVars["LepT"] = new KinematicVar("LepT","Leptonic Transverse Energy", "Lep #sigmaE_{T} (GeV)", false, 20.f, 0.f, 150.f);
+
+	allKinVars["LepPt"] = new KinematicVar("LepT","Lepton Transverse Energy", "Lepton E_{T} (GeV)", false, 20.f, 0.f, 150.f);
 
         allKinVars["phoPt0"] = new KinematicVar("phoPt0",  "", "P_{t}^{#gamma0} (GeV)",false, 4, 0.f, 144);
 
@@ -1000,33 +1051,50 @@ LabelKinVars setupKinematicVar(){
 
         allKinVars["phoPhi1"] = new KinematicVar("phoPhi1",  "", "#phi^{#gamma1}",false, 18, 0.f, 6.2832);
 
+        allKinVars["phoDR"] = new KinematicVar("phoDR",  "", "dR^{#gamma #gamma}",false, 25, 0.f, 5.0);
+	allKinVars["phoDR"]->mode = RIGHT;
+
         allKinVars["EtaGG"] = new KinematicVar("EtaGG",  "Eta of the di-photon system", "#eta^{#gamma #gamma}",false, 26, -2.6, 2.6);
+	allKinVars["EtaGG"]->mode = DOUBLESIDED;
 
         allKinVars["phoEta"] = new KinematicVar("phoEta",  "", "#eta^{#gamma0}",false, 26, -2.6, 2.6);
+	allKinVars["phoEta"]->mode = DOUBLESIDED;
 
         allKinVars["phoEta1"] = new KinematicVar("phoEta1",  "", "#eta^{#gamma1}",false, 26, -2.6, 2.6);
+	allKinVars["phoEta1"]->mode = DOUBLESIDED;
 
         allKinVars["phoEtaMax"] = new KinematicVar("phoEtaMax",  "Max Eta of the Two Photons", "Max #eta^{#gamma}",false, 13, 0.0, 2.6);
+	allKinVars["phoEtaMax"]->mode = RIGHT;
 
         allKinVars["phoEtaMin"] = new KinematicVar("phoEtaMin",  "Min Eta of the Two Photons", "Min #eta^{#gamma}",false, 13, 0.0, 2.6);
+	allKinVars["phoEtaMin"]->mode = RIGHT;
 
         allKinVars["phoDEta"] = new KinematicVar("phoDEta",  "", "#Delta #eta^{#gamma #gamma}",false, 13, 0.0f, 2.6);
+	allKinVars["phoDEta"]->mode = RIGHT;
 
         allKinVars["phoMinR9"] = new KinematicVar("phoMinR9",  "Min R9 of the Two Photons", "Min R9",false, 30, 0.4, 1.0);
 
         allKinVars["nJets"] = new KinematicVar("nJets",  "", "Number of Jets",false, 8, 0.f, 8);
+	allKinVars["nJets"]->mode = RIGHT;
         
         allKinVars["nBjets"] = new KinematicVar("nBjets",  "", "Number of B-jets",false, 3, 0.f, 3);
 
         allKinVars["Bness1"] = new KinematicVar("Bness1",  "", "Sum(sqrt(jet CSV))",false, 8, 0.f, 4);
         
         allKinVars["bestMjj"] = new KinematicVar("bestMjj",  "", "Closet dijet mass to M_{H}",false, 30, 0.f, 225);
+	allKinVars["bestMjj"]->mode = HIGGS;
         
         allKinVars["bestMbb"] = new KinematicVar("bestMbb",  "", "Closet di-B-jet mass to M_{H}",false, 30, 0.f, 225);
+	allKinVars["bestMbb"]->mode = HIGGS;
         
         allKinVars["allMjj"] = new KinematicVar("allMjj",  "", "All combinations of dijet mass",false, 30, 0.f, 225);
+	allKinVars["allMjj"]->mode = HIGGS;
         
         allKinVars["allMbb"] = new KinematicVar("allMbb",  "", "All combinations of di-B-jet mass",false, 30, 0.f, 225);
+	allKinVars["allMbb"]->mode = HIGGS;
+
+        allKinVars["bjetDR"] = new KinematicVar("bjetDR",  "", "dR^{b b}",false, 25, 0.f, 5.0);
+	allKinVars["bjetDR"]->mode = RIGHT;
         
         allKinVars["nLep"] = new KinematicVar("nLep",  "", "Number of Leptons",false, 6, 0.f, 6);
         
@@ -1040,9 +1108,17 @@ LabelKinVars setupKinematicVar(){
 
         allKinVars["MTpho1MET"] = new KinematicVar("MTpho1MET",  "", "M_{t}^{#gamma1 MET} (GeV)",false, 30, 0.f, 300.0);
 
-        allKinVars["cosThetaStar"] = new KinematicVar("cosThetaStar",  "Cos of angle between the two Photons in their center of mass frame", "Cos(#theta*)",false, 10, 0.0f, 1.0);
+        allKinVars["PhocosThetaStar"] = new KinematicVar("PhocosThetaStar",  "Cos of angle between the two Photons in their center of mass frame", "Cos(#theta*)",false, 10, 0.0f, 1.0);
+	allKinVars["PhocosThetaStar"]->mode = RIGHT;
+
+        allKinVars["JetcosThetaStar"] = new KinematicVar("JetcosThetaStar",  "Cos of angle between the two Jets in their center of mass frame", "Cos(#theta*)",false, 10, 0.0f, 1.0);
+	allKinVars["JetcosThetaStar"]->mode = RIGHT;
+
+        allKinVars["HHcosThetaStar"] = new KinematicVar("HHcosThetaStar",  "Cos of angle between the two higgs candidates in their center of mass frame", "Cos(#theta*)",false, 10, 0.0f, 1.0);
+	allKinVars["HHcosThetaStar"]->mode = RIGHT;
 
         allKinVars["phoDPhi"] = new KinematicVar("phoDPhi",  "", "#Delta#phi(#gamma #gamma)",false, 12, 0.f, 3.1416);
+	allKinVars["phoDPhi"]->mode = RIGHT;
 
         allKinVars["dPhiPhoMet"] = new KinematicVar("dPhiPhoMet",  "", "#Delta#phi(#gamma0, #slash{E}_{T})",false, 12, 0.f, 3.1416);
 
@@ -1054,41 +1130,77 @@ LabelKinVars setupKinematicVar(){
         //allKinVars["jetPt"] = new KinematicVar("jetPt",  "", "Jet P_{t} (GeV)",true, 16, 0.f, 240.f);
 	float a[] = {0,30,45,60,75,90,120,150,195,240};// 9 bins //theres no need to rebin but this would be good. 
 	temp->usearray(a);
+	temp->mode = LEFT;
         allKinVars["jetPt"] = temp;}
         
         allKinVars["jetPhi"] = new KinematicVar("jetPhi",  "", "Jet #phi",false, 10, 0.f, 6.2832);
         
         allKinVars["jetEta"] = new KinematicVar("jetEta",  "", "Jet #eta",false, 26, -2.6, 2.6);
+	allKinVars["jetEta"]->mode = DOUBLESIDED;
+
         allKinVars["jetEtaMin"] = new KinematicVar("jetEtaMin",  "", "Min Jet #eta",false, 26, -2.6, 2.6);
+	allKinVars["jetEtaMin"]->mode = DOUBLESIDED;
+
+        allKinVars["bjetEtaMax"] = new KinematicVar("bjetEtaMax",  "", "Max B-Jet #eta",false, 26, 0, 2.6);
+	allKinVars["bjetEtaMax"]->mode = RIGHT;
         
         allKinVars["dPhiJetMet"] = new KinematicVar("dPhiJetMet",  "", "#Delta#phi(Jet #slash{E}_{t})",false, 12, 0.f, 3.1416);
+	allKinVars["dPhiJetMet"]->mode = RIGHT;
+
         allKinVars["dPhiJet0Met"] = new KinematicVar("dPhiJet0Met",  "", "#Delta#phi(Jet0 #slash{E}_{t})",false, 12, 0.f, 3.14159);
+	allKinVars["dPhiJet0Met"]->mode = RIGHT;
 
         allKinVars["dPhiJet1Met"] = new KinematicVar("dPhiJet1Met",  "", "#Delta#phi(Jet1 #slash{E}_{t})",false, 12, 0.f, 3.14159);
+	allKinVars["dPhiJet1Met"]->mode = RIGHT;
         
         allKinVars["dijetDEta01"] = new KinematicVar("dijetDEta01",  "", "#Delta#eta^{J J}",false, 14, 0.0, 3.5);
+	allKinVars["dijetDEta01"]->mode = RIGHT;
 
         allKinVars["dijetEta01"] = new KinematicVar("dijetEta01",  "", "#eta^{J J}",false, 28, -3.5, 3.5);
+	allKinVars["dijetDEta01"]->mode = DOUBLESIDED;
 
         allKinVars["dijetDPhi01"] = new KinematicVar("dijetDPhi01",  "", "#Delta#phi(J0 J1)",false, 12, 0.f, 3.1416);
+	allKinVars["dijetDPhi01"]->mode = RIGHT;
 
         allKinVars["dijetDR01"] = new KinematicVar("dijetDR01",  "", "dR^{J0 J1}",false, 25, 0.f, 5.0);
+	allKinVars["dijetDR01"]->mode = RIGHT;
 
         allKinVars["dijetPt01"] = new KinematicVar("dijetPt01",  "", "P_{t}^{J J} (GeV)",false, 15, 0.f, 300.f);
 
         allKinVars["dijetM01"] = new KinematicVar("dijetM01",  "Mass of the leading two dijets", "M^{J J} (GeV)",false, 20, 0.f, 400.f);
+	allKinVars["dijetM01"]->mode = HIGGS;
 
         allKinVars["Mbb01"] = new KinematicVar("Mbb01",  "Mass of the leading bb System", "M^{b0 b1} (GeV)",false, 15, 0.f, 300.f);
+	allKinVars["Mbb01"]->mode = HIGGS;
 
         allKinVars["Mbb01gg01"] = new KinematicVar("Mbb01gg01",  "Mass of the leading bb and h->gg System", "M^{b0 b1 #gamma0 #gamma1} (GeV)",false, 15, 0.f, 600.0);
+
+        allKinVars["MphobMin"] = new KinematicVar("MphobMin",  "Min mass of a b and a photon", "Min M^{#gamma b} (GeV)",false, 20, 0.f, 200.0);
+
+        allKinVars["phobDRMin"] = new KinematicVar("phobDRMin",  "", "Min dR^{#gamma b}",false, 25, 0.f, 5.0);
+	allKinVars["phobDRMin"]->mode = LEFT;
+
+        allKinVars["phobDR"] = new KinematicVar("phobDR","", "dR^{#gamma b}",false, 25, 0.f, 5.0);
+	allKinVars["phobDR"]->mode = RIGHT;
+
+        allKinVars["bjetDPhi"] = new KinematicVar("bjetDPhi",  "", "#Delta#phi(#gamma b)",false, 12, 0.f, 3.1416);
+	allKinVars["bjetDPhi"]->mode = RIGHT;
+
+        allKinVars["bjetmetDPhi"] = new KinematicVar("bjetmetDPhi",  "", "#Delta#phi(b Met)",false, 12, 0.f, 3.1416);
+
+        allKinVars["phometDPhi"] = new KinematicVar("phometDPhi",  "", "#Delta#phi(#gamma Met)",false, 12, 0.f, 3.1416);
+
+        allKinVars["phobDPhiMax"] = new KinematicVar("phobDPhiMax",  "", "Max #Delta#phi(#gamma b)",false, 12, 0.f, 3.1416);
 
         allKinVars["MJJ01gg01"] = new KinematicVar("MJJ01gg01",  "Mass of the leading two jets and h->gg System", "M^{J0 J1 #gamma0 #gamma1} (GeV)",false, 15, 0.f, 600.0);
 
         allKinVars["MZllHgg"] = new KinematicVar("MZllHgg",  "Mass of Z-like dilepton and H like diphoton", "M^{lep lep #gamma0 #gamma1} (GeV)",false, 30, 0.f, 990.f);
 
-        allKinVars["MTggMET"] = new KinematicVar("MTggMET",  "Transverse Mass di-photon system and MET", "M^{t}(#gamma0 #gamma1 + MET) (GeV)",false, 4, 0.f, 160.f);
+        allKinVars["MTggMET"] = new KinematicVar("MTggMET",  "Transverse Mass di-photon system and MET", "M^{t}(#gamma0 #gamma1 + MET) (GeV)",false, 20, 0.f, 160.f);
+        allKinVars["MTphoMet"] = new KinematicVar("MTphoMet",  "Transverse Mass between photonsand MET", "M^{t}(#gamma + MET) (GeV)",false, 20, 0.f, 160.f);
 
         allKinVars["MTlepMET"] = new KinematicVar("MTlepMET",  "Mass of the leading bb and h->gg System", "M^{t}(lep,MET) (GeV)",false, 30, 0.f, 300.f);
+        allKinVars["Mphoele"] = new KinematicVar("Mphoele",  "Mass of the lepton + photons System", "M^{t}(pho, lep) (GeV)",false, 30, 0.f, 120.f);
 
         allKinVars["HGt"] = new KinematicVar("HGt",  "Hadronic and Photon01 Transverse Energy", "HG_{t} (GeV)",false, 30, 0.f, 300.f);
 
@@ -1098,41 +1210,48 @@ LabelKinVars setupKinematicVar(){
 
         allKinVars["dPhiHG_prime"] = new KinematicVar("dPhiHG_prime",  "Mass of the leding bb and h->gg System, from lep+MET", "#Delta Phi(Jets,#gamma0 #gamma1) (GeV)",false, 12, 0.f, 3.1416f);
         allKinVars["HLMGt"] = new KinematicVar("HLMGt",  "Transverse Energy of all Objects and MET", "Pt(all particles and met) (GeV)",false, 30, 0.f, 300.f);
-
+        allKinVars["metfit"] = new KinematicVar("metfit",  "Et(diphotons_vec + bb_vec + MET_vec)", "Pt(all particles and met) (GeV)",false, 25, 0.f, 50.f);
+	allKinVars["metfit"]->mode = RIGHT;
 
 	{ KinematicVar* temp = new KinematicVar("BPtGG",  "Bness-weighted Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 4);
 			//allKinVars["PtGG"] = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 25., 0.f, 250.f);
 			//	float a[] = {0,10,20,30,40,50,60,70,80,90,120,150,180,210,240};// 14 bins
 		float a[] = {0,15,90,135,180};
 		temp->usearray(a);
+	temp->mode = LEFT;
         allKinVars["BPtGG"] = temp;}
 
 	{ KinematicVar* temp = new KinematicVar("BMET","Bness-weighted Missing Transverse Energy","#slash{E}_{T} (GeV)",true,5);
 			//KinematicVar* temp = new KinematicVar("MET","Missing Transverse Energy","#slash{E}_{T} (GeV)",false,6,0,150);
 		float a[] = {0,20,45,60,90,210};
 		temp->usearray(a);
+		temp->mode = LEFT;
 		allKinVars["BMET"] = temp; }
 
 	{ KinematicVar* temp = new KinematicVar("BnBjets",  "B weighted nBjets (Sum of B-ness)", "#Sigma B(csv)",true,5);
 			//KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
 		float a[] = {0,0.91,1.61,2.31,3,4}; //0, M, ML, MML, LLLL
 		temp->usearray(a);
+		temp->mode = LEFT;
 		allKinVars["BnBjets"] = temp; }
 
 	{ KinematicVar* temp = new KinematicVar("Bunjets",  "Bu weighted nJets (Sum of Beautifullness)", "#Sigma Bu(csv)",true,5);
 			//KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
 		float a[] = {0,0.96,1.62,2.29,3,4}; //0, M, ML, MML, LLLL
 		temp->usearray(a);
+		temp->mode = RIGHT;
 		allKinVars["Bunjets"] = temp; }
 
 
 	allKinVars["nLFjets"] = new KinematicVar("nLFjets",  "", "Number of light flavor Jets",false, 8, 0.f, 8);
+	allKinVars["nLFjets"]->mode = RIGHT;
 
 	{ KinematicVar* temp = new KinematicVar("phoHness",  "Weighted Di-Photon Pt Sectrum", "Photon Higgs-likeness (GeV)",true, 4);
 			//allKinVars["PtGG"] = new KinematicVar("PtGG",  "Di-Photon Pt Sectrum", "P_{t}^{#gamma #gamma} (GeV)",true, 25., 0.f, 250.f);
 			//	float a[] = {0,10,20,30,40,50,60,70,80,90,120,150,180,210,240};// 14 bins
 		float a[] = {0,30,60,90,120};
 		temp->usearray(a);
+	temp->mode = RIGHT;
         allKinVars["phoHness"] = temp;}
 
 
@@ -1140,6 +1259,7 @@ LabelKinVars setupKinematicVar(){
 			//KinematicVar* temp = new KinematicVar("HT","Scalar Sum of all Hadronic Transverse Energy","#SigmaH_{T} (GeV)",false,20,0,1000);
 		float a[] = {0,225,375,525,750,1500};
 		temp->usearray(a);
+		temp->mode = LEFT;
 		allKinVars["BuHT"] = temp; }
 
 
@@ -1147,11 +1267,13 @@ LabelKinVars setupKinematicVar(){
 			//allKinVars["Bt"] = new KinematicVar("Bt",  "Scalar Sum of all B-jet Transverse Energy", "#SigmaB_{T} (GeV)",true, 20, 0.f, 800.f);
 		float a[] = {0,40,80,120,160,200,240,280,320,480,800};
 		temp->usearray(a);
+		temp->mode = LEFT;
 		allKinVars["BBt"] = temp; }
 
 	{ KinematicVar* temp = new KinematicVar("BST","B-ness Weighted Scalar Sum of all Calorimeter Energy","#Sigma B(csv) * #Sigma E_{T} (GeV)",true,4);
 			// KinematicVar* temp = new KinematicVar("ST","Scalar Sum of all Calorimeter Energy","#SigmaE_{E}_{T} (GeV)",false,30,0,1500);
 		float a[] = {0,357,525,825,1500};
+		temp->mode = LEFT;
 		temp->usearray(a);
 		allKinVars["BST"] = temp; }
 

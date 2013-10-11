@@ -16,21 +16,27 @@
 //      `            `      
 // Written by Anthony Barker, 2013
 
+/*
+//common code segments
+//bjet loop     for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it != ra3_pfjets.end(); it++) {
+//jet loop       for(std::vector<susy::PFJet*>::iterator it = pfLFJetsLoose.begin();     it != pfLFJetsLoose.end(); it++) {
+//pho loop    for(std::vector<susy::Photon*>::iterator p_it = (*p_photonVector).begin(); p_it != (*p_photonVector).end(); p_it++) {
+//ele loop     for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
+//muon loop for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
+*/
+
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TH1F.h>
 #include "TProfile.h"
-
 #include <map>
 #include <set>
 #include <cmath>
 #include <algorithm>
 #include <utility>
-
 #include "SusyMainAna.h"
 #include "SusyEventPrinter.h"
-
 #include "../jec/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "../jec/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "TAxis.h"
@@ -76,11 +82,10 @@ void SusyMainAna::InitializePerEvent() {
 
 
 bool SusyMainAna::isSameObject(TLorentzVector& p1, TLorentzVector& p2) {
-	
 	float dEta = p1.Eta() - p2.Eta();
 	float dPhi = TVector2::Phi_mpi_pi(p1.Phi() - p2.Phi());
-	return std::sqrt(dEta*dEta + dPhi*dPhi) <= 0.6 || fabs(dPhi) <= 0.05; //dMorse as of April2013
-	//return std::sqrt(dEta*dEta + dPhi*dPhi) < 0.5;
+	return std::sqrt(dEta*dEta + dPhi*dPhi) <= 0.6;
+	//return std::sqrt(dEta*dEta + dPhi*dPhi) <= 0.6 || fabs(dPhi) <= 0.05; //dMorse as of April2013, Stop main cut.
 }//dR05 cut
 
 
@@ -128,7 +133,7 @@ void addCounter(nameint & C, vector<string> & V, string Label){
 	C[Label]=0;
 	V.push_back(Label);
 }
-	
+
 void remove_duplicate_photons(std::vector<susy::Photon*> & photons,bool keep_hardest_matched_photon=true){
 	/*
 	 This takes a pt-sorted vector of Photon*. It looks through all pairs of photons, for dR matches (dR<0.6 or dPhi < 0.05)
@@ -190,7 +195,7 @@ void SusyMainAna::Loop() {
 	firealarm << "SusyMainAna_MC_arg is on FIRE"<<endl;
 	firealarm.close();
 ///////////////////////////////////////////////////////
-	printLevel = 1;
+	printLevel = 3;
 	int nKinemVars = nKinemVars_all;
 	string *s_KinemVars = s_KinemVars_all;
 
@@ -248,11 +253,62 @@ void SusyMainAna::Loop() {
 	cout << "enableFilter is set to true"<<endl;
 		enableFilter = true;
 
+	TFile* filterFile;
 	if(enableFilter) {
 		cout <<endl<< "Making Filter File"<< outroot_data<<endl<<endl;
-		TFile* filterFile = new TFile(outroot_data.c_str(),"RECREATE");
+		filterFile = new TFile(outroot_data.c_str(),"RECREATE");
 		filterTree = (TTree*) fChain->GetTree()->CloneTree(0);
 		filterTree->SetAutoSave();
+	}
+	float b_pho0pt;
+	float b_pho0eta;
+	float b_pho0phi;
+	float b_pho0r9;
+	float b_pho1pt;
+	float b_pho1eta;
+	float b_pho1phi;
+	float b_pho1r9;
+	float b_jet0pt;
+	float b_jet0eta;
+	float b_jet0phi;
+	float b_jet0csv;
+	float b_jet1pt;
+	float b_jet1eta;
+	float b_jet1phi;
+	float b_jet1csv;
+	float b_Mbb;
+	float b_Mgg;
+	float b_phoDR;
+	float b_bjetDR;
+	float b_ptbb;
+	float b_ptgg;
+	//jet pt, eta, phi, csv
+	//pho pt, eta, phi, r9
+	if(enableFilter) {
+
+		filterTree->Branch("pho0pt",&b_pho0pt);//,"p0pt/F");
+		filterTree->Branch("pho1pt",&b_pho1pt);//,"p1pt/F");
+		filterTree->Branch("pho0eta",&b_pho0eta);//,"p0eta/F");
+		filterTree->Branch("pho1eta",&b_pho1eta);//,"p1eta/F");
+		filterTree->Branch("pho0phi",&b_pho0phi);//,"p0phi/F");
+		filterTree->Branch("pho1phi",&b_pho1phi);//,"p1phi/F");
+		filterTree->Branch("pho0r9",&b_pho0r9);//,"p0r9/F");
+		filterTree->Branch("pho1r9",&b_pho1r9);//,"p1r9/F");
+		filterTree->Branch("phoDR",&b_phoDR);
+		filterTree->Branch("ptgg",&b_ptgg);
+
+		filterTree->Branch("bjet0pt",&b_jet0pt);//,"b0pt/F");
+		filterTree->Branch("bjet1pt",&b_jet1pt);//,"b1pt/F");
+		filterTree->Branch("bjet0eta",&b_jet0eta);//,"b0eta/F");
+		filterTree->Branch("bjet1eta",&b_jet1eta);//,"b1eta/F");
+		filterTree->Branch("bjet0phi",&b_jet0phi);//,"b0phi/F");
+		filterTree->Branch("bjet1phi",&b_jet1phi);//,"b1phi/F");
+		filterTree->Branch("bjet0csv",&b_jet0csv);//,"b0csv/F");
+		filterTree->Branch("bjet1csv",&b_jet1csv);//,"b1csv/F");
+		filterTree->Branch("bjetDR",&b_bjetDR);
+		filterTree->Branch("ptbb",&b_ptbb);
+		filterTree->Branch("mbb",&b_Mbb);
+		filterTree->Branch("mgg",&b_Mgg);
 	}
 	ofstream eventlist;	
 	if(makeEventsList) eventlist.open ("trip_eventlist_SusyMain.txt");
@@ -306,8 +362,10 @@ void SusyMainAna::Loop() {
 			(char*)(string("Di Photon Mass Sectrum")+s_forTopo[iTopo]+";M^{#gamma #gamma} (GeV)").c_str(),
 			PhoMassNBins,PhoMassMin,PhoMassMax);
 
+		if(printLevel >=4) cout<<"make unsliced for "<<s_EventTopology[iTopo]<<endl;
 		LabelHist tmpMapKinVar;
 		for (int kKinVar = 0; kKinVar<nKinemVars; kKinVar++) {
+			if(printLevel >=5) cout<<"make unsliced for "<<s_KinemVars[kKinVar]<<endl;
 
 			if(KinVars[s_KinemVars[kKinVar]]->useCustomBinning){
 
@@ -518,8 +576,8 @@ void SusyMainAna::Loop() {
 		// start event looping
 	Long64_t nbytes = 0, nb = 0;
 	for (Long64_t jentry=0; jentry < processNEvents; jentry++) {
-	//for (Long64_t jentry=0; jentry < 500; jentry++){  //master loop
-			
+	//for (Long64_t jentry=0; jentry < 5000; jentry++){  //master loop
+		
 		bool becauseIsayso = false; //if true, sends events to the special log file.
 
 		if(printLevel > 3) std::cout << "Get the tree contents." << std::endl;
@@ -1087,7 +1145,7 @@ void SusyMainAna::Loop() {
 		}
 			//sort Muons by Pt
 		std::sort(Muons.begin(), Muons.end(), EtGreater<susy::Muon>);
-		if(printLevel>1)cout<<"Muons size= "<<Muons.size()<<endl;
+		//if(printLevel>1)cout<<"Muons size= "<<Muons.size()<<endl;
 		
 		selvar_mu_nmu->Fill(Muons.size());
 		float Mleplep = -1;
@@ -1153,7 +1211,7 @@ void SusyMainAna::Loop() {
 				}
 			}//end it_Ele electron loop
 			std::sort(EGLooseEles.begin(), EGLooseEles.end(), EtGreater<susy::Electron>); //sort EGLooseEles by Pt
-			if(printLevel>1)cout<<"EGLooseEles size= "<<EGLooseEles.size()<<endl;
+			//if(printLevel>1)cout<<"EGLooseEles size= "<<EGLooseEles.size()<<endl;
 		}//end eleMap
 		selvar_ele_nele->Fill(EGLooseEles.size());
 		if(Muons.size()<2 && EGLooseEles.size() >=2){
@@ -1185,7 +1243,6 @@ void SusyMainAna::Loop() {
 		float BBt = 0;
 		float BuHT = 0;
 		int nLFjets = 0;
-
 
 		if(printLevel > 4) std::cout << "Find pfJets in the event." << std::endl;
 		
@@ -1287,10 +1344,6 @@ void SusyMainAna::Loop() {
 		std::sort(ra3_pfjets.begin(),ra3_pfjets.end(),EtGreater<susy::PFJet>);
 		MHT_all = std::sqrt(MHT_x_all*MHT_x_all + MHT_y_all*MHT_y_all);
 
-		for(std::vector<susy::PFJet*>::iterator it = pfLFJetsLoose.begin();	it != pfLFJetsLoose.end(); it++) {
-
-		}
-
 		bool MllEWK = false;
 		int tempsize_LF= pfLFJetsLoose.size();
 		if(tempsize_LF >=2){
@@ -1336,6 +1389,13 @@ void SusyMainAna::Loop() {
 		}
 		if(printLevel > 4) std::cout << "Try to calculate bestMbj." << std::endl;
 		float bestMbb = -1;
+		float bjetDR = -1;
+		float bjetDPhi = -1;
+		float bjetEtaMax = -1;
+		float PtBB = -1;
+		float phobDRMin = -1;
+		float MphobMin = -1;
+		float phobDPhiMax = -1;
                 /*if(pfBJetsLoose.size() >=2){
                         for(std::vector<susy::PFJet*>::iterator it = pfBJetsLoose.begin(); it+1 != pfBJetsLoose.end(); it++) {
                                 for(std::vector<susy::PFJet*>::iterator it2 = pfBJetsLoose.begin()+1; it != pfBJetsLoose.end(); it++) {
@@ -1345,14 +1405,42 @@ void SusyMainAna::Loop() {
                 } */ 
 		int temp_nBJets= pfBJetsLoose.size();
 		if(temp_nBJets >=2){
-			for(int i=0;i<temp_nBJets-1;i++){
+			TLorentzVector b0 = pfBJetsLoose[0]->momentum;
+			TLorentzVector b1 = pfBJetsLoose[1]->momentum;
+			TLorentzVector bb = b0 + b1;
+			bjetDR = dR(b0,b1);
+			PtBB = (b0+b1).Pt();
+			bjetDPhi = phi_0_2pi(dPhi(b0.Phi(),b1.Phi()));
+			bjetEtaMax = fabs(b0.Eta());
+			
+			for(int i=0;i<temp_nBJets-1;i++){ //for every combination of jets
 				for(int j=i+1; j<temp_nBJets;j++){
 					float mmm = (pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M();
 					if(fabs((pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M()-mHiggs) < fabs(bestMbb-mHiggs)) bestMbb = (pfBJetsLoose[i]->momentum+pfBJetsLoose[j]->momentum).M();
 					if(mmm<10) printf("info: see low mbb mass=%f, nJ=%i, E1 %.2f E2 %.2f dphi %f \n",mmm,temp_nBJets,pfBJetsLoose[i]->momentum.E(),pfBJetsLoose[j]->momentum.E(),pfBJetsLoose[i]->momentum.Phi()-pfBJetsLoose[j]->momentum.Phi());
 				}
 			}
-		}
+
+			for(int i=0;i<temp_nBJets;i++){ //for every jet
+				if(fabs(pfBJetsLoose[i]->momentum.Eta()) > bjetEtaMax) bjetEtaMax = fabs(pfBJetsLoose[i]->momentum.Eta());
+				if(i==0){ 
+					phobDRMin = TMath::Min( dR(pfBJetsLoose[i]->momentum, p0),dR(pfBJetsLoose[i]->momentum, p1));
+					MphobMin = TMath::Min( (pfBJetsLoose[i]->momentum, p0).M(),(pfBJetsLoose[i]->momentum, p1).M());
+					phobDPhiMax = TMath::Max( phi_0_2pi(dPhi(pfBJetsLoose[i]->momentum.Phi(), p0.Phi())),
+								phi_0_2pi(dPhi(pfBJetsLoose[i]->momentum.Phi(), p1.Phi())));
+				}
+				else{
+					float thisminDR = TMath::Min( dR(pfBJetsLoose[i]->momentum, p0),dR(pfBJetsLoose[i]->momentum, p1));
+					float thisminM = TMath::Min( (pfBJetsLoose[i]->momentum, p0).M(),(pfBJetsLoose[i]->momentum, p1).M());
+					float thisphobDPhiMax = TMath::Max( phi_0_2pi(dPhi(pfBJetsLoose[i]->momentum.Phi(), p0.Phi())),
+								phi_0_2pi(dPhi(pfBJetsLoose[i]->momentum.Phi(), p1.Phi())));
+					if(phobDRMin > thisminDR) phobDRMin = thisminDR;
+					if(MphobMin > thisminM) MphobMin = thisminM;
+					if(phobDPhiMax < thisphobDPhiMax) phobDPhiMax = thisphobDPhiMax;
+				}
+					
+			}//end for every het
+		}//have 2 b's 
 		
 			//Find which jet is the most b-like
 //		cout<<endl<<"try to do Probe Mjj, njets = "<<temp_nJets<<endl;
@@ -1402,8 +1490,12 @@ void SusyMainAna::Loop() {
 		Counters["has met map"]++;
 		if(printLevel > 4 && event->eventNumber == ((unsigned int)probeevent)) cout<<"probe: corrmet "<<corrmet<<" uncorrmet "<< pfmet->met() <<endl;
 
+		
 		myST = HT_all + myPhotonST + corrmet;// + myLeptonST;
 		vMET.SetPtEtaPhiM(corrmet,0,metPhi,0);
+		float metfit = -1;
+		
+		if(pfBJetsLoose.size()>=2) metfit = (vMET + p0 + p1 + pfBJetsLoose[0]->momentum + pfBJetsLoose[1]->momentum).Et();
 
 		if(printLevel > 4) std::cout << "boo1" << std::endl;
 
@@ -1419,12 +1511,12 @@ void SusyMainAna::Loop() {
 		//////////////////////////////////////////////////////////////////////
 
 		if(makeEventsList) eventlist<<event->runNumber<<" "<<event->luminosityBlockNumber<<" "<<event->eventNumber<<endl;
-		if(false) {
-		//if(enableFilter) {
+		/*if(false) {
+		  if(enableFilter) {
 			nFiltered++;
 			Counters["number filtered"]++;
 			filterTree->Fill();
-		}// if(enableFilter)		
+		}*/ 
 	
 
 
@@ -1448,6 +1540,7 @@ void SusyMainAna::Loop() {
 
 
 		float phodPhi = phi_0_2pi(dPhi(p0.Phi(),p1.Phi()));
+		float phoDR = dR(p0,p1);
 //		float dPhiPho0Met = phi_0_2pi(dPhi(p0.Phi(),metPhi));
 //		float dPhiPho1Met = phi_0_2pi(dPhi(metPhi,p1.Phi()));
 
@@ -1475,37 +1568,8 @@ void SusyMainAna::Loop() {
                 }
 		if(printLevel > 4) std::cout << "boo3" << std::endl;
 
-		
-		/*
-			//calculate cos(theta*), the angle between the two photons in their center of mass frame.
-		TLorentzVector csgg,  csp0, csp1;
-		csgg.SetXYZT(gg.X(),gg.Y(),gg.Z(),gg.T());
-		csp0.SetXYZT(p0.X(),p0.Y(),p0.Z(),p0.T());
-		csp1.SetXYZT(p1.X(),p1.Y(),p1.Z(),p1.T());
-		TVector3 v3gg = csgg.Vect();//get the spacial vector.
-		TVector3 xhat(1,0,0);//x_hat unit vector
-		TVector3 axis = v3gg.Cross(xhat);
-		axis = axis.Unit();//make it a unit vector, we'll rotate along this.
-		double theta = csgg.Angle(xhat);
-//		printf("gg before: E %.1f P %.1f Px %.1f Py %.1f Pz %.1f\n",gg.E(),gg.P(),gg.Px(),gg.Py(),gg.Pz());
-//		printf("axis: x %.2f y %.2f z %.2f theta %.2f \n",axis.Px(),axis.Py(),axis.Pz(),theta);
-		csgg.Rotate(theta,axis); //rotate so that csgg is parallel with the x-axis. This makes the boost 1D
-		csp0.Rotate(theta,axis);
-		csp1.Rotate(theta,axis);
-//		printf("csgg afterR: E %.1f P %.1f Px %.1f Py %.1f Pz %.1f\n",csgg.E(),csgg.P(),csgg.Px(),csgg.Py(),csgg.Pz());
-		double beta = csgg.Beta();
-		csgg.Boost(-beta,0,0);
-		csp0.Boost(-beta,0,0);
-		csp1.Boost(-beta,0,0);
-		//these are now in the center of mass frame. and the boost is along xhat
-		//csp0 and csp1 are identically back to back. So it doesn't matter which one we choose. 
-//		printf("csgg afterB: E %.1f P %.1f Px %.1f Py %.1f Pz %.1f\n",csgg.E(),csgg.P(),csgg.Px(),csgg.Py(),csgg.Pz());
-		TVector3 p0prime = csp0.Vect().Unit();
-		//TVector3 p1prime = csp1.Vect().Unit();
-		//printf("p0prime: x %.2f y %.2f z %.2f \n",p0prime.Px(),p0prime.Py(),p0prime.Pz());
-		float cosTheta = fabs(p0prime * xhat)/p0prime.Mag();
-		//cosTheta now lives on 0,1. the -1 part is folded onto the 0,1 part. 
-		 */
+		float PhocosThetaStar = ThetaStar(p0,p1);
+
 			/// **************************************************************** ///
 
 
@@ -1536,14 +1600,24 @@ void SusyMainAna::Loop() {
 		float MJJ01gg01 = -1;
 		float Mbb01gg01 = -1;
 		//bool jetdEta15 = false;
+		float JetcosThetaStar = -1;
+		float HHcosThetaStar = -1;
+		bool twoBBar = false;
 		if(nJ >=2){
 			MJJ01gg01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum + gg).M();
 //			MJJ01 = (ra3_pfjets[0]->momentum + ra3_pfjets[1]->momentum).M();
 			//jetdEta15 = fabs(ra3_pfjets[0]->momentum.Eta() - ra3_pfjets[1]->momentum.Eta()) < 1.5;
+			JetcosThetaStar = ThetaStar(ra3_pfjets[0]->momentum, ra3_pfjets[1]->momentum);
 		}
 		if(nbL >=2 ){
-			Mbb01 = (pfBJetsLoose[0]->momentum + pfBJetsLoose[1]->momentum).M();
-			Mbb01gg01 = (pfBJetsLoose[0]->momentum + pfBJetsLoose[1]->momentum + gg).M();
+			TLorentzVector b0 = pfBJetsLoose[0]->momentum;
+			TLorentzVector b1 = pfBJetsLoose[1]->momentum;
+			TLorentzVector bb = b0 + b1;
+
+			Mbb01 = bb.M();//(pfBJetsLoose[0]->momentum + pfBJetsLoose[1]->momentum).M();
+			Mbb01gg01 = (bb+gg).M();//(pfBJetsLoose[0]->momentum + pfBJetsLoose[1]->momentum + gg).M();
+			HHcosThetaStar = ThetaStar(bb,gg);
+			twoBBar = is_bar(b0.Eta()) && is_bar(b1.Eta());
 		}
 		bool Mbb01_is_H = Mbb01 > 95.0 && Mbb01 < 155.0;
 		bool bestMjj_is_H = bestMjj > 110.0 && bestMjj < 140.0;
@@ -1618,7 +1692,8 @@ void SusyMainAna::Loop() {
 		//topoCut["3J"] =     (int(ra3_pfjets.size()) >= 3);
 		//topoCut["2J"] =     (int(ra3_pfjets.size()) >= 2);
 //		topoCut["metCut"] = (corrmet > 20.0);
-		topoCut["m30"] = (corrmet > 30.0);
+		//topoCut["m30ptgg80"] = (corrmet > 30.0 && ptgg > 80.0);
+		//topoCut["ptgg80"] = (ptgg > 80.0);
 		/*topoCut["1Jb"] =    (int(ra3_pfjets.size()) >= 1) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["2Jb"] =    (int(ra3_pfjets.size()) >= 2) && (int(pfBJetsMedium.size()) >= 1);
 		topoCut["3Jb"] =    (int(ra3_pfjets.size()) >= 3) && (int(pfBJetsMedium.size()) >= 1);
@@ -1647,10 +1722,14 @@ void SusyMainAna::Loop() {
 		//m_BTagWeight["3JbTm20"] = new BTagWeight(3,3,bTagRequirement_T);
 //		topoCut["2JbMLm20"] =    nJ >=2 && nbL >=2 && nbM >=1 && corrmet >20.0;
 
+		topoCut["2JbMM"] =    nJ >=2 && nbM >=2; //f
 		topoCut["2JbML"] =    nJ >=2 && nbL >=2 && nbM >=1; //f
 
 		topoCut["2JbMLgbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && twoPhoBar; //f
+		topoCut["2JbMLgbar2bbar2"] =    nJ >=2 && nbL >=2 && nbM >=1 && twoPhoBar && twoBBar; //f
 		topoCut["2JbMMgbar2"] =    nJ >=2 && nbM >=2 && twoPhoBar; //f
+		topoCut["2JbMMgbar2bbar2"] =    nJ >=2 && nbM >=2 && twoPhoBar && twoBBar; //f
+		//topoCut["2JbMMgbar2"] =    nJ >=2 && nbM >=2 && twoPhoBar; //f
 		//m_BTagWeight["2JbMLm20"] = new BTagWeight(3,2,bTagRequirement_ML);
 		//if(printLevel > 0) std::cout << "1boo5" << std::endl;
 //		topoCut["2JbMLgbar1"] =    nJ >=2 && nbL >=2 && nbM >=1 && onePhoBar;
@@ -1662,22 +1741,22 @@ void SusyMainAna::Loop() {
 
 
 
-		topoCut["2JbML!Gbar2Mbb"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar && Mbb01_is_H;//f
+		topoCut["2JbML!Gbar2Mbb"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar && Mbb01_is_H && nLepveto == 0;//stays ML
 		//m_BTagWeight["2JbML!Gbar2Mbb"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
-		topoCut["2JbML!Gbar2Mbb!"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar && !Mbb01_is_H;//f
+		topoCut["2JbML!Gbar2Mbb!"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar && !Mbb01_is_H && nLepveto == 0;//stays ML
 		//m_BTagWeight["2JbML!Gbar2Mbb!"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
 		topoCut["2JbMM!Gbar2Mbb"] =    nJ >=2 && nbL ==2 && nbM ==2 && twoPhoBar && Mbb01_is_H;//f
-			//m_BTagWeight["2JbMM!Gbar2Mbb"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+		//m_BTagWeight["2JbMM!Gbar2Mbb"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
 		topoCut["2JbMM!Gbar2Mbb!"] =    nJ >=2 && nbL ==2 && nbM ==2 && twoPhoBar && !Mbb01_is_H;//f
-			//m_BTagWeight["2JbML!Gbar2Mbb!"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
+			//m_BTagWeight["2JbMM!Gbar2Mbb!"] = new BTagWeight(3,2,bTagRequirement_ML,bTypeExactLoose);
 
 
 //		topoCut["2JbML!Gbar2"] =    nJ >=2 && nbL ==2 && nbM >=1 && twoPhoBar;
 
-		topoCut["3JbMLLGbar2"] =    nJ >=3 && nbL >=3 && nbM >=1 && twoPhoBar;//f
+		topoCut["3JbMLLGbar2"] =    nJ >=3 && nbL >=3 && nbM >=1 && twoPhoBar && nLepveto == 0;//stys ML
 
 		topoCut["3JbMMLGbar2"] =    nJ >=3 && nbL >=3 && nbM >=2 && twoPhoBar;//f
 
@@ -1788,19 +1867,29 @@ void SusyMainAna::Loop() {
 		//if(topoCut["2lep"]) cout<<"ok, pass cut"<<endl;
 
 
-		topoCut["23JbML!gbar2Mbb0lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
-		topoCut["2JbML!gbar2Mbb0lep"]  = nJ>=2           && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
-		topoCut["23JbML!gbar2Mbb01lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;
-		topoCut["2JbML!gbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;
+		topoCut["23JbMM!gbar2Mbb0lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=2 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
+
+		topoCut["2JbMM!gbar2Mbb0lep"]  = nJ>=2           && nbL ==2 && nbM >=2 && twoPhoBar && nLepveto == 0 && Mbb01_is_H;
+
+		topoCut["23JbMM!gbar2Mbb01lep"] = nJ>=2 && nJ <=3 && nbL ==2 && nbM >=2 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;
+
+		topoCut["2JbML!gbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;//stays ML
+
+		topoCut["2JbMM!gbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM >=2 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;//new
+		topoCut["2JbTL!gbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbT >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;//new
+		topoCut["2JbTM!gbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM == 2 && nbT >=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;//new
+
+		topoCut["2JbMLextgbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM ==1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;//stays ML
+		topoCut["2JbMLmaxgbar2Mbb01lep"]  = nJ>=2           && nbL ==2 && nbM <=1 && twoPhoBar && nLepveto < 2 && Mbb01_is_H;//stays ML
 
 		topoCut["2lJgbar2"] = nLFjets >=2 && twoPhoBar; //there's no point in this existing.
 		topoCut["2lJewkMllgbar2"]= nLFjets >=2 && twoPhoBar && MllEWK; //why not use 2-3?
 		topoCut["23lJewkMllgbar2"]= nLFjets >=2 && nLFjets <=3 && twoPhoBar && MllEWK;
 
-		topoCut["2JbML!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && bestMjj_is_H;
-		topoCut["2JbML!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && !bestMjj_is_H;
-		topoCut["2JbMM!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && bestMjj_is_H;
-		topoCut["2JbMM!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && !bestMjj_is_H;
+		//topoCut["2JbML!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && bestMjj_is_H;
+		//topoCut["2JbML!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && !bestMjj_is_H;
+		//topoCut["2JbMM!gbar2bestOn"] =nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && bestMjj_is_H;
+		//topoCut["2JbMM!gbar2bestOff"]=nJ>=2 && nbL ==2 && nbM ==2 && twoPhoBar && !bestMjj_is_H;
 
 		topoCut["2JbT!gbar2ProbeMJJ"]=nJ>=2 && nbT == 1 && twoPhoBar && ProbeMJJ && nbL < 2 && nLepveto ==0;
 
@@ -1811,24 +1900,51 @@ void SusyMainAna::Loop() {
 		topoCut["1!lep23Jb01M!ewkMllgbar2"]= nJ>=2 && nJ <=3 && (!MllEWK) && twoPhoBar && nLep == 1 && nbL <=1 && nbT<=0; //for WWbins and ZZbins
 
 		topoCut["2JbM2lepgbar2"] = nJ>=2 && nbM >=1 && twoPhoBar && nLep >=2;
-		topoCut["2JbML!1lepgbar2"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLep ==1;
-		topoCut["2JbML!gbar2bestOn0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto ==0 && bestMjj_is_H;
-		topoCut["4JbML!gbar2ewkMllbestOff0lep"]=nJ>=4 && nbL ==2 && nbM >=1 && MllEWK && twoPhoBar && (!bestMjj_is_H) && nLepveto==0;
-		topoCut["2JbML!gbar2bothOff0lep"]=nJ>=2 && nbL ==2 && nbM >=1 && twoPhoBar && nLepveto ==0 && (!bestMjj_is_H) && !topoCut["4JbML!gbar2ewkMllbestOff0lep"];
+		topoCut["2JbMM!1lepgbar2"]=nJ>=2 && nbL ==2 && nbM >=2 && twoPhoBar && nLep ==1;
+		topoCut["2JbMM!gbar2bestOn0lep"]=nJ>=2 && nbL ==2 && nbM >=2 && twoPhoBar && nLepveto ==0 && bestMjj_is_H;
+		topoCut["4JbMM!gbar2ewkMllbestOff0lep"]=nJ>=4 && nbL ==2 && nbM >=2 && MllEWK && twoPhoBar && (!bestMjj_is_H) && nLepveto==0;
+		topoCut["2JbMM!gbar2bothOff0lep"]=nJ>=2 && nbL ==2 && nbM >=2 && twoPhoBar && nLepveto ==0 && (!bestMjj_is_H) && !topoCut["4JbMM!gbar2ewkMllbestOff0lep"];
 		topoCut["01J0lep0Bgbar2"] = nJ <=1 && nbL ==0 && nLepveto == 0 && twoPhoBar;
 
 
 		if(printLevel > 3) std::cout << "boo5" << std::endl;
-		/*if(enableFilter && (nJ >=2 && nbL >=2 && nbM >=1) ) { //this makes the special little skim for Yuri
+		if(enableFilter && (nJ >=2 && nbL >=2 && nbM >=1 && twoPhoBar) ) { //this makes the special little skim for Yuri
+			TLorentzVector b0 = pfBJetsLoose[0]->momentum;
+			TLorentzVector b1 = pfBJetsLoose[1]->momentum;
+			b_pho0pt = p0.Pt();
+			b_pho0eta = p0.Eta();
+			b_pho0phi= p0.Phi();
+			b_pho0r9 = (*p_photonVector)[0]->r9;
+
+			b_pho1pt = p1.Pt();
+			b_pho1eta = p1.Eta();
+			b_pho1phi= p1.Phi();
+			b_pho1r9 = (*p_photonVector)[1]->r9;
+
+			b_jet0pt = b0.Pt();
+			b_jet0eta = b0.Eta();
+			b_jet0phi = b0.Phi();
+			b_jet0csv = pfBJetsLoose[0]->bTagDiscriminators[5];
+			b_jet1pt = b1.Pt();
+			b_jet1eta = b1.Eta();
+			b_jet1phi = b1.Phi();
+			b_jet1csv = pfBJetsLoose[1]->bTagDiscriminators[5];
+			b_Mgg = (p0+p1).M();
+			b_Mbb = (b0+b1).M();
+
+			b_phoDR = phoDR;
+			b_bjetDR = dR(b0,b1);
+			b_ptbb = (b0+b1).Pt();
+			b_ptgg = (p0+p1).Pt();
                         nFiltered++;
                         Counters["number filtered"]++;
                         filterTree->Fill();
-                }// if(enableFilter)    	*/
-		if(enableFilter && (topoCut["2lepgbar2"] || dilepEvent)){
+                }// if(enableFilter) 
+		/*if(enableFilter && (topoCut["2lepgbar2"] || dilepEvent)){
                         nFiltered++;
                         Counters["number filtered"]++;
                         filterTree->Fill();
-                }// if(enableFilter)    
+                */
 
 		//Fill Main kinematic varriable histograms.
 		for (int iTopo=0; iTopo<nEventTopologies; iTopo++) {
@@ -1839,23 +1955,33 @@ void SusyMainAna::Loop() {
                                 //corrmet > f_EventTopology_metCuts[iTopo]) 
 					//distrobutions of physics-good quantities.
 				lh_mGG_unsliced[s_EventTopology[iTopo]]->Fill(mgg);
+				if(printLevel > 8) std::cout << "1"<<endl;
 				lh_unsliced[s_EventTopology[iTopo]]["MET"]->Fill(corrmet);
-				lh_unsliced[s_EventTopology[iTopo]]["BMET"]->Fill(BMET);
+				if(printLevel > 9) std::cout << "2"<<endl;
+				//lh_unsliced[s_EventTopology[iTopo]]["BMET"]->Fill(BMET);
 				lh_unsliced[s_EventTopology[iTopo]]["ST"]->Fill(myST);//pfmet->sumEt);
-				lh_unsliced[s_EventTopology[iTopo]]["BST"]->Fill(BST);
+				if(printLevel > 9) std::cout << "3"<<endl;
+				//lh_unsliced[s_EventTopology[iTopo]]["BST"]->Fill(BST);
 				lh_unsliced[s_EventTopology[iTopo]]["HT"]->Fill(HT_all);
-				lh_unsliced[s_EventTopology[iTopo]]["BuHT"]->Fill(BuHT);
+				if(printLevel > 9) std::cout << "4"<<endl;
+				//lh_unsliced[s_EventTopology[iTopo]]["BuHT"]->Fill(BuHT);
 				lh_unsliced[s_EventTopology[iTopo]]["LHT"]->Fill(LHT_all);
+				if(printLevel > 9) std::cout << "5"<<endl;
 				lh_unsliced[s_EventTopology[iTopo]]["Bt"]->Fill(BT_all);
-				lh_unsliced[s_EventTopology[iTopo]]["BBt"]->Fill(BBt);
+				if(printLevel > 9) std::cout << "6"<<endl;
+				//lh_unsliced[s_EventTopology[iTopo]]["BBt"]->Fill(BBt);
 //				lh_unsliced[s_EventTopology[iTopo]]["BTL"]->Fill(BT[0]);
 //				lh_unsliced[s_EventTopology[iTopo]]["BTM"]->Fill(BT[1]);
 //				lh_unsliced[s_EventTopology[iTopo]]["BTT"]->Fill(BT[2]);
 
 				lh_unsliced[s_EventTopology[iTopo]]["MHT"]->Fill(MHT_all);
+				if(printLevel > 9) std::cout << "7"<<endl;
 				lh_unsliced[s_EventTopology[iTopo]]["LepT"]->Fill(myLeptonST);
 				for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
                                         lh_unsliced[s_EventTopology[iTopo]]["LepPt"]->Fill((*m_it)->momentum.Et());
+
+                                        lh_unsliced[s_EventTopology[iTopo]]["Mphoele"]->Fill(((*m_it)->momentum + p0).M());
+                                        lh_unsliced[s_EventTopology[iTopo]]["Mphoele"]->Fill(((*m_it)->momentum + p1).M());
                                 }
                                 for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
                                         lh_unsliced[s_EventTopology[iTopo]]["LepPt"]->Fill((*m_it)->momentum.Et());
@@ -1867,14 +1993,17 @@ void SusyMainAna::Loop() {
 //				lh_unsliced[s_EventTopology[iTopo]]["dPhiHG_prime"]->Fill(dPhiHG_prime);
 //				lh_unsliced[s_EventTopology[iTopo]]["HLMGt"]->Fill(HLMGt);
 				lh_unsliced[s_EventTopology[iTopo]]["PtGG"]->Fill(ptgg);
-				lh_unsliced[s_EventTopology[iTopo]]["BPtGG"]->Fill(BPtGG);
-				lh_unsliced[s_EventTopology[iTopo]]["phoHness"]->Fill(phoHness);
+				lh_unsliced[s_EventTopology[iTopo]]["PtGGPtBB"]->Fill(ptgg+PtBB);
+				if(printLevel > 9) std::cout << "8"<<endl;
+				//lh_unsliced[s_EventTopology[iTopo]]["BPtGG"]->Fill(BPtGG);
+				//lh_unsliced[s_EventTopology[iTopo]]["phoHness"]->Fill(phoHness);
 				//lh_unsliced[s_EventTopology[iTopo]]["PhiGG"]->Fill(phi_0_2pi(gg.Phi()));
 				//lh_unsliced[s_EventTopology[iTopo]]["EtaGG"]->Fill(gg.Eta());
 				lh_unsliced[s_EventTopology[iTopo]]["phoPt0"]->Fill(p0.Pt());
 				lh_unsliced[s_EventTopology[iTopo]]["phoPt1"]->Fill(p1.Pt());
 				lh_unsliced[s_EventTopology[iTopo]]["phoPhi"]->Fill(phi_0_2pi(p0.Phi()));
 				lh_unsliced[s_EventTopology[iTopo]]["phoPhi"]->Fill(phi_0_2pi(p1.Phi()));
+				if(printLevel > 9) std::cout << "9"<<endl;
 				lh_unsliced[s_EventTopology[iTopo]]["phoEta"]->Fill(p0.Eta());
 				lh_unsliced[s_EventTopology[iTopo]]["phoEta"]->Fill(p1.Eta());
 				lh_unsliced[s_EventTopology[iTopo]]["phoEtaMax"]->Fill(TMath::Max(fabs(p0.Eta()),fabs(p1.Eta())));
@@ -1883,11 +2012,27 @@ void SusyMainAna::Loop() {
 				lh_unsliced[s_EventTopology[iTopo]]["phoDEta"]->Fill(fabs(p0.Eta()-p1.Eta()));
 				lh_unsliced[s_EventTopology[iTopo]]["nJets"]->Fill((float)ra3_pfjets.size());
 				lh_unsliced[s_EventTopology[iTopo]]["nLFjets"]->Fill((float)nLFjets);
-				lh_unsliced[s_EventTopology[iTopo]]["Bunjets"]->Fill((float)Bunjets);
+				if(printLevel > 9) std::cout << "10"<<endl;
+				//lh_unsliced[s_EventTopology[iTopo]]["Bunjets"]->Fill((float)Bunjets);
 				lh_unsliced[s_EventTopology[iTopo]]["nBjets"]->Fill((float)pfBJetsLoose.size());//CHANGE ME!! TO CSVL
-				lh_unsliced[s_EventTopology[iTopo]]["BnBjets"]->Fill((float)BnBjets);
+				if(printLevel > 9) std::cout << "21"<<endl;
+				//lh_unsliced[s_EventTopology[iTopo]]["BnBjets"]->Fill((float)BnBjets);
 				lh_unsliced[s_EventTopology[iTopo]]["bestMbb"]->Fill(bestMbb);
+				if(printLevel > 9) std::cout << "22"<<endl;
 				lh_unsliced[s_EventTopology[iTopo]]["bestMjj"]->Fill(bestMjj);
+				if(printLevel > 9) std::cout << "222"<<endl;
+				lh_unsliced[s_EventTopology[iTopo]]["bjetDR"]->Fill(bjetDR);
+				lh_unsliced[s_EventTopology[iTopo]]["PtBB"]->Fill(PtBB);
+				if(printLevel > 9) std::cout << "23"<<endl;
+				lh_unsliced[s_EventTopology[iTopo]]["bjetDPhi"]->Fill(bjetDPhi);
+				if(printLevel > 9) std::cout << "24"<<endl;
+				lh_unsliced[s_EventTopology[iTopo]]["bjetEtaMax"]->Fill(bjetEtaMax);
+				if(printLevel > 9) std::cout << "11"<<endl;
+				lh_unsliced[s_EventTopology[iTopo]]["phobDRMin"]->Fill(phobDRMin);
+				lh_unsliced[s_EventTopology[iTopo]]["MphobMin"]->Fill(MphobMin);
+				lh_unsliced[s_EventTopology[iTopo]]["phobDPhiMax"]->Fill(phobDPhiMax);
+
+				if(printLevel > 8) std::cout << "5"<<endl;
 				{int tempsize = ra3_pfjets.size();
 				for(int i=0;i<tempsize-1;i++){
 					for(int j=i+1; j<tempsize;j++){
@@ -1903,9 +2048,16 @@ void SusyMainAna::Loop() {
 //				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg0Met);
 //				lh_unsliced[s_EventTopology[iTopo]]["MTphoMET"]->Fill(MTg1Met);
 				lh_unsliced[s_EventTopology[iTopo]]["MTggMET"]->Fill(MTggMET);
-//				lh_unsliced[s_EventTopology[iTopo]]["cosThetaStar"]->Fill(cosTheta);
+				lh_unsliced[s_EventTopology[iTopo]]["MTphoMet"]->Fill( sqrt(2* corrmet* p0.Pt() *( 1-cos(p0.Phi() - metPhi) ) ));
+				lh_unsliced[s_EventTopology[iTopo]]["MTphoMet"]->Fill( sqrt(2* corrmet* p1.Pt() *( 1-cos(p1.Phi() - metPhi) ) ));
+				lh_unsliced[s_EventTopology[iTopo]]["phometDPhi"]->Fill( phi_0_2pi(dPhi(metPhi,p0.Phi())));
+				lh_unsliced[s_EventTopology[iTopo]]["phometDPhi"]->Fill( phi_0_2pi(dPhi(metPhi,p1.Phi())));
+				lh_unsliced[s_EventTopology[iTopo]]["PhocosThetaStar"]->Fill(PhocosThetaStar);
+				lh_unsliced[s_EventTopology[iTopo]]["JetcosThetaStar"]->Fill(JetcosThetaStar);
+				lh_unsliced[s_EventTopology[iTopo]]["HHcosThetaStar"]->Fill(HHcosThetaStar);
 
 				lh_unsliced[s_EventTopology[iTopo]]["phoDPhi"]->Fill(phodPhi);
+				lh_unsliced[s_EventTopology[iTopo]]["phoDR"]->Fill(phoDR);
 //				lh_unsliced[s_EventTopology[iTopo]]["dPhiPhoMet"]->Fill(dPhiPho0Met);
 //				lh_unsliced[s_EventTopology[iTopo]]["dPhiPhoMet"]->Fill(dPhiPho1Met);
 				//lh_unsliced[s_EventTopology[iTopo]]["PitGG"]->Fill(ptgg/mgg);
@@ -1914,6 +2066,7 @@ void SusyMainAna::Loop() {
 					lh_unsliced[s_EventTopology[iTopo]]["Mleplep"]->Fill(Mleplep);
 					lh_unsliced[s_EventTopology[iTopo]]["MZllHgg"]->Fill(MZllHgg);
 				}
+
 				for(std::vector<susy::PFJet*>::iterator it = ra3_pfjets.begin(); it != ra3_pfjets.end(); it++) {
 //					if((*it)->bTagDiscriminators[5] > 0.679) pfBJetsMedium.push_back(*it);//CSV medium working point
 //					selvar_btag_csv->Fill((*it)->bTagDiscriminators[5]);					lh_unsliced[s_EventTopology[iTopo]]["jetEta"]->Fill((*it)->momentum.Eta());
@@ -1922,6 +2075,13 @@ void SusyMainAna::Loop() {
 					lh_unsliced[s_EventTopology[iTopo]]["jetPhi"]->Fill(phi_0_2pi((*it)->momentum.Phi() ));//
 					lh_unsliced[s_EventTopology[iTopo]]["dPhiJetMet"]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
 				}
+				for(std::vector<susy::PFJet*>::iterator it = pfLFJetsLoose.begin();     it != pfLFJetsLoose.end(); it++) {
+					lh_unsliced[s_EventTopology[iTopo]]["phobDR"]->Fill(dR((*it)->momentum.Pt(),p0));
+					lh_unsliced[s_EventTopology[iTopo]]["phobDR"]->Fill(dR((*it)->momentum.Pt(),p1));
+					lh_unsliced[s_EventTopology[iTopo]]["bjetmetDPhi"]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
+				}
+				lh_unsliced[s_EventTopology[iTopo]]["metfit"]->Fill(metfit);
+				if(printLevel > 8) std::cout << "6"<<endl;
 				if (ra3_pfjets.size()>=2) {
 					TLorentzVector j0 = ra3_pfjets[0]->momentum;
 					TLorentzVector j1 = ra3_pfjets[1]->momentum;
@@ -1939,6 +2099,8 @@ void SusyMainAna::Loop() {
 					lh_unsliced[s_EventTopology[iTopo]]["Mbb01gg01"]->Fill(Mbb01gg01);
 					lh_unsliced[s_EventTopology[iTopo]]["MJJ01gg01"]->Fill(MJJ01gg01);
 				} //these will only make sense with the dijet topology.
+
+				
 
 				if(printLevel > 3) std::cout << "boo6" << std::endl;
 
@@ -1995,14 +2157,14 @@ void SusyMainAna::Loop() {
 						Counters[string("are in lsb region")+s_forTopo[iTopo]]++;
 
 						lha2[s_EventTopology[iTopo]]["MET"][0]->Fill(corrmet);
-						lha2[s_EventTopology[iTopo]]["BMET"][0]->Fill(BMET);
+						//lha2[s_EventTopology[iTopo]]["BMET"][0]->Fill(BMET);
 						lha2[s_EventTopology[iTopo]]["ST"][0]->Fill(myST);
-						lha2[s_EventTopology[iTopo]]["BST"][0]->Fill(BST);
+						//lha2[s_EventTopology[iTopo]]["BST"][0]->Fill(BST);
 						lha2[s_EventTopology[iTopo]]["HT"][0]->Fill(HT_all);
-						lha2[s_EventTopology[iTopo]]["BuHT"][0]->Fill(BuHT);
+						//lha2[s_EventTopology[iTopo]]["BuHT"][0]->Fill(BuHT);
 						lha2[s_EventTopology[iTopo]]["LHT"][0]->Fill(LHT_all);
 						lha2[s_EventTopology[iTopo]]["Bt"][0]->Fill(BT_all);
-						lha2[s_EventTopology[iTopo]]["BBt"][0]->Fill(BBt);
+						//lha2[s_EventTopology[iTopo]]["BBt"][0]->Fill(BBt);
 //						lha2[s_EventTopology[iTopo]]["BTL"][0]->Fill(BT[0]);
 //						lha2[s_EventTopology[iTopo]]["BTM"][0]->Fill(BT[1]);
 //						lha2[s_EventTopology[iTopo]]["BTT"][0]->Fill(BT[2]);
@@ -2010,6 +2172,8 @@ void SusyMainAna::Loop() {
 						lha2[s_EventTopology[iTopo]]["LepT"][0]->Fill(myLeptonST);
                                                 for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
                                                         lha2[s_EventTopology[iTopo]]["LepPt"][0]->Fill((*m_it)->momentum.Et());
+                                                        lha2[s_EventTopology[iTopo]]["Mphoele"][0]->Fill( ((*m_it)->momentum + p0).M());
+                                                        lha2[s_EventTopology[iTopo]]["Mphoele"][0]->Fill( ((*m_it)->momentum + p1).M());
                                                 }
                                                 for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
                                                         lha2[s_EventTopology[iTopo]]["LepPt"][0]->Fill((*m_it)->momentum.Et());
@@ -2021,8 +2185,9 @@ void SusyMainAna::Loop() {
 //						lha2[s_EventTopology[iTopo]]["HLMGt"][0]->Fill(HLMGt);
 
 						lha2[s_EventTopology[iTopo]]["PtGG"][0]->Fill(ptgg);
-						lha2[s_EventTopology[iTopo]]["BPtGG"][0]->Fill(BPtGG);
-						lha2[s_EventTopology[iTopo]]["phoHness"][0]->Fill(phoHness);
+						lha2[s_EventTopology[iTopo]]["PtGGPtBB"][0]->Fill(ptgg+PtBB);
+						//lha2[s_EventTopology[iTopo]]["BPtGG"][0]->Fill(BPtGG);
+						//lha2[s_EventTopology[iTopo]]["phoHness"][0]->Fill(phoHness);
 						//lha2[s_EventTopology[iTopo]]["PhiGG"][0]->Fill(phi_0_2pi(gg.Phi()));
 						//lha2[s_EventTopology[iTopo]]["EtaGG"][0]->Fill(gg.Eta());
 						lha2[s_EventTopology[iTopo]]["phoPt0"][0]->Fill(p0.Pt());
@@ -2037,11 +2202,20 @@ void SusyMainAna::Loop() {
 						lha2[s_EventTopology[iTopo]]["phoDEta"][0]->Fill(fabs(p0.Eta()-p1.Eta()));
 						lha2[s_EventTopology[iTopo]]["nJets"][0]->Fill((float)ra3_pfjets.size());
 						lha2[s_EventTopology[iTopo]]["nLFjets"][0]->Fill((float)nLFjets);
-						lha2[s_EventTopology[iTopo]]["Bunjets"][0]->Fill((float)Bunjets);
+						//lha2[s_EventTopology[iTopo]]["Bunjets"][0]->Fill((float)Bunjets);
 						lha2[s_EventTopology[iTopo]]["nBjets"][0]->Fill((float)pfBJetsLoose.size());
-						lha2[s_EventTopology[iTopo]]["BnBjets"][0]->Fill((float)BnBjets);
+						//lha2[s_EventTopology[iTopo]]["BnBjets"][0]->Fill((float)BnBjets);
 						lha2[s_EventTopology[iTopo]]["bestMbb"][0]->Fill(bestMbb);
 						lha2[s_EventTopology[iTopo]]["bestMjj"][0]->Fill(bestMjj);
+
+						lha2[s_EventTopology[iTopo]]["bjetDR"][0]->Fill(bjetDR);
+						lha2[s_EventTopology[iTopo]]["PtBB"][0]->Fill(PtBB);
+						lha2[s_EventTopology[iTopo]]["bjetDPhi"][0]->Fill(bjetDPhi);
+						lha2[s_EventTopology[iTopo]]["bjetEtaMax"][0]->Fill(bjetEtaMax);
+						lha2[s_EventTopology[iTopo]]["phobDRMin"][0]->Fill(phobDRMin);
+						lha2[s_EventTopology[iTopo]]["MphobMin"][0]->Fill(MphobMin);
+						lha2[s_EventTopology[iTopo]]["phobDPhiMax"][0]->Fill(phobDPhiMax);
+
 						{int tempsize = ra3_pfjets.size();
 						for(int i=0;i<tempsize-1;i++){
 							for(int j=i+1; j<tempsize;j++){
@@ -2062,9 +2236,16 @@ void SusyMainAna::Loop() {
 //						lha2[s_EventTopology[iTopo]]["MTphoMET"][0]->Fill(MTg0Met);
 //						lha2[s_EventTopology[iTopo]]["MTphoMET"][0]->Fill(MTg1Met);
 						lha2[s_EventTopology[iTopo]]["MTggMET"][0]->Fill(MTggMET);
-//						lha2[s_EventTopology[iTopo]]["cosThetaStar"][0]->Fill(cosTheta);
+						lha2[s_EventTopology[iTopo]]["MTphoMet"][0]->Fill(sqrt(2* corrmet* p0.Pt() *( 1-cos(p0.Phi() - metPhi) ) ));
+						lha2[s_EventTopology[iTopo]]["MTphoMet"][0]->Fill(sqrt(2* corrmet* p1.Pt() *( 1-cos(p1.Phi() - metPhi) ) ));
+						lha2[s_EventTopology[iTopo]]["phometDPhi"][0]->Fill(phi_0_2pi(dPhi(metPhi,p0.Phi())));
+						lha2[s_EventTopology[iTopo]]["phometDPhi"][0]->Fill(phi_0_2pi(dPhi(metPhi,p1.Phi())));
+						lha2[s_EventTopology[iTopo]]["PhocosThetaStar"][0]->Fill(PhocosThetaStar);
+						lha2[s_EventTopology[iTopo]]["JetcosThetaStar"][0]->Fill(JetcosThetaStar);
+						lha2[s_EventTopology[iTopo]]["HHcosThetaStar"][0]->Fill(HHcosThetaStar);
 
 						lha2[s_EventTopology[iTopo]]["phoDPhi"][0]->Fill(phodPhi);
+						lha2[s_EventTopology[iTopo]]["phoDR"][0]->Fill(phoDR);
 //						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][0]->Fill(dPhiPho0Met);
 //						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][0]->Fill(dPhiPho1Met);
 
@@ -2073,8 +2254,14 @@ void SusyMainAna::Loop() {
 							lha2[s_EventTopology[iTopo]]["jetPt"][0]->Fill((*it)->momentum.Pt());
 							lha2[s_EventTopology[iTopo]]["jetEta"][0]->Fill((*it)->momentum.Eta());
 							lha2[s_EventTopology[iTopo]]["jetPhi"][0]->Fill(phi_0_2pi((*it)->momentum.Phi() ));
-							lha2[s_EventTopology[iTopo]]["dPhiJetMet"][0]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
+						lha2[s_EventTopology[iTopo]]["dPhiJetMet"][0]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
 						}
+						for(std::vector<susy::PFJet*>::iterator it = pfLFJetsLoose.begin();     it != pfLFJetsLoose.end(); it++) {
+							lha2[s_EventTopology[iTopo]]["phobDR"][0]->Fill(dR((*it)->momentum.Pt(),p0));
+							lha2[s_EventTopology[iTopo]]["phobDR"][0]->Fill(dR((*it)->momentum.Pt(),p1));
+							lha2[s_EventTopology[iTopo]]["bjetmetDPhi"][0]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
+						}
+						lha2[s_EventTopology[iTopo]]["metfit"][0]->Fill(metfit);
 						if (ra3_pfjets.size()>=2) {
 							TLorentzVector j0 = ra3_pfjets[0]->momentum;
 							TLorentzVector j1 = ra3_pfjets[1]->momentum;
@@ -2100,14 +2287,14 @@ void SusyMainAna::Loop() {
 						Counters[string("are in tag region")+s_forTopo[iTopo]]++;
 //						lha_MET[s_EventTopology[iTopo]][1]->Fill(corrmet);
 						lha2[s_EventTopology[iTopo]]["MET"][1]->Fill(corrmet);
-						lha2[s_EventTopology[iTopo]]["BMET"][1]->Fill(BMET);
+						//lha2[s_EventTopology[iTopo]]["BMET"][1]->Fill(BMET);
 						lha2[s_EventTopology[iTopo]]["ST"][1]->Fill(myST);
-						lha2[s_EventTopology[iTopo]]["BST"][1]->Fill(BST);
+						//lha2[s_EventTopology[iTopo]]["BST"][1]->Fill(BST);
 						lha2[s_EventTopology[iTopo]]["HT"][1]->Fill(HT_all);
-						lha2[s_EventTopology[iTopo]]["BuHT"][1]->Fill(BuHT);
+						//lha2[s_EventTopology[iTopo]]["BuHT"][1]->Fill(BuHT);
 						lha2[s_EventTopology[iTopo]]["LHT"][1]->Fill(LHT_all);
 						lha2[s_EventTopology[iTopo]]["Bt"][1]->Fill(BT_all);
-						lha2[s_EventTopology[iTopo]]["BBt"][1]->Fill(BBt);
+						//lha2[s_EventTopology[iTopo]]["BBt"][1]->Fill(BBt);
 //                                                lha2[s_EventTopology[iTopo]]["BTL"][1]->Fill(BT[0]);
 //                                                lha2[s_EventTopology[iTopo]]["BTM"][1]->Fill(BT[1]);
 //                                                lha2[s_EventTopology[iTopo]]["BTT"][1]->Fill(BT[2]);
@@ -2116,6 +2303,8 @@ void SusyMainAna::Loop() {
 						lha2[s_EventTopology[iTopo]]["LepT"][1]->Fill(myLeptonST);
                                                 for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
                                                         lha2[s_EventTopology[iTopo]]["LepPt"][1]->Fill((*m_it)->momentum.Et());
+                                                        lha2[s_EventTopology[iTopo]]["Mphoele"][1]->Fill( ((*m_it)->momentum + p0).M());
+                                                        lha2[s_EventTopology[iTopo]]["Mphoele"][1]->Fill( ((*m_it)->momentum + p1).M());
                                                 }
                                                 for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
                                                         lha2[s_EventTopology[iTopo]]["LepPt"][1]->Fill((*m_it)->momentum.Et());
@@ -2126,8 +2315,9 @@ void SusyMainAna::Loop() {
 //						lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][1]->Fill(dPhiHG_prime);
 //						lha2[s_EventTopology[iTopo]]["HLMGt"][1]->Fill(HLMGt);
 						lha2[s_EventTopology[iTopo]]["PtGG"][1]->Fill(ptgg);
-						lha2[s_EventTopology[iTopo]]["BPtGG"][1]->Fill(BPtGG);
-						lha2[s_EventTopology[iTopo]]["phoHness"][1]->Fill(phoHness);
+						lha2[s_EventTopology[iTopo]]["PtGGPtBB"][1]->Fill(ptgg+PtBB);
+						//lha2[s_EventTopology[iTopo]]["BPtGG"][1]->Fill(BPtGG);
+						//lha2[s_EventTopology[iTopo]]["phoHness"][1]->Fill(phoHness);
 						//lha2[s_EventTopology[iTopo]]["PhiGG"][1]->Fill(phi_0_2pi(gg.Phi()));
 						//lha2[s_EventTopology[iTopo]]["EtaGG"][1]->Fill(gg.Eta());
 						lha2[s_EventTopology[iTopo]]["phoPt0"][1]->Fill(p0.Pt());
@@ -2142,11 +2332,19 @@ void SusyMainAna::Loop() {
 						lha2[s_EventTopology[iTopo]]["phoDEta"][1]->Fill(fabs(p0.Eta()-p1.Eta()));
 						lha2[s_EventTopology[iTopo]]["nJets"][1]->Fill((float)ra3_pfjets.size());
 						lha2[s_EventTopology[iTopo]]["nLFjets"][1]->Fill((float)nLFjets);
-						lha2[s_EventTopology[iTopo]]["Bunjets"][1]->Fill((float)Bunjets);
+						//lha2[s_EventTopology[iTopo]]["Bunjets"][1]->Fill((float)Bunjets);
 						lha2[s_EventTopology[iTopo]]["nBjets"][1]->Fill((float)pfBJetsLoose.size());
-						lha2[s_EventTopology[iTopo]]["BnBjets"][1]->Fill((float)BnBjets);
+						//lha2[s_EventTopology[iTopo]]["BnBjets"][1]->Fill((float)BnBjets);
 						lha2[s_EventTopology[iTopo]]["bestMbb"][1]->Fill(bestMbb);
 						lha2[s_EventTopology[iTopo]]["bestMjj"][1]->Fill(bestMjj);
+                                                lha2[s_EventTopology[iTopo]]["bjetDR"][1]->Fill(bjetDR);
+						lha2[s_EventTopology[iTopo]]["PtBB"][1]->Fill(PtBB);
+                                                lha2[s_EventTopology[iTopo]]["bjetDPhi"][1]->Fill(bjetDPhi);
+                                                lha2[s_EventTopology[iTopo]]["bjetEtaMax"][1]->Fill(bjetEtaMax);
+                                                lha2[s_EventTopology[iTopo]]["phobDRMin"][1]->Fill(phobDRMin);
+                                                lha2[s_EventTopology[iTopo]]["MphobMin"][1]->Fill(MphobMin);
+                                                lha2[s_EventTopology[iTopo]]["phobDPhiMax"][1]->Fill(phobDPhiMax);
+
 
 						{int tempsize = ra3_pfjets.size();
 						for(int i=0;i<tempsize-1;i++){
@@ -2168,9 +2366,16 @@ void SusyMainAna::Loop() {
 //						lha2[s_EventTopology[iTopo]]["MTphoMET"][1]->Fill(MTg0Met);
 //						lha2[s_EventTopology[iTopo]]["MTphoMET"][1]->Fill(MTg1Met);
 						lha2[s_EventTopology[iTopo]]["MTggMET"][1]->Fill(MTggMET);
-//						lha2[s_EventTopology[iTopo]]["cosThetaStar"][1]->Fill(cosTheta);
+						lha2[s_EventTopology[iTopo]]["MTphoMet"][1]->Fill(sqrt(2* corrmet* p0.Pt() *( 1-cos(p0.Phi() - metPhi) ) ));
+						lha2[s_EventTopology[iTopo]]["MTphoMet"][1]->Fill(sqrt(2* corrmet* p1.Pt() *( 1-cos(p1.Phi() - metPhi) ) ));
+						lha2[s_EventTopology[iTopo]]["phometDPhi"][1]->Fill(phi_0_2pi(dPhi(metPhi,p0.Phi())));
+						lha2[s_EventTopology[iTopo]]["phometDPhi"][1]->Fill(phi_0_2pi(dPhi(metPhi,p1.Phi())));
+						lha2[s_EventTopology[iTopo]]["PhocosThetaStar"][1]->Fill(PhocosThetaStar);
+						lha2[s_EventTopology[iTopo]]["JetcosThetaStar"][1]->Fill(JetcosThetaStar);
+						lha2[s_EventTopology[iTopo]]["HHcosThetaStar"][1]->Fill(HHcosThetaStar);
 
 						lha2[s_EventTopology[iTopo]]["phoDPhi"][1]->Fill(phodPhi);
+						lha2[s_EventTopology[iTopo]]["phoDR"][1]->Fill(phoDR);
 //						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][1]->Fill(dPhiPho0Met);
 //						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][1]->Fill(dPhiPho1Met);
 
@@ -2181,6 +2386,12 @@ void SusyMainAna::Loop() {
 							lha2[s_EventTopology[iTopo]]["jetPhi"][1]->Fill(phi_0_2pi((*it)->momentum.Phi() ));
 							lha2[s_EventTopology[iTopo]]["dPhiJetMet"][1]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
 						}
+						for(std::vector<susy::PFJet*>::iterator it = pfLFJetsLoose.begin();     it != pfLFJetsLoose.end(); it++) {
+							lha2[s_EventTopology[iTopo]]["phobDR"][1]->Fill(dR((*it)->momentum.Pt(),p0));
+							lha2[s_EventTopology[iTopo]]["phobDR"][1]->Fill(dR((*it)->momentum.Pt(),p1));
+							lha2[s_EventTopology[iTopo]]["bjetmetDPhi"][1]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
+						}
+						lha2[s_EventTopology[iTopo]]["metfit"][1]->Fill(metfit);
 						if (ra3_pfjets.size()>=2) {
 							TLorentzVector j0 = ra3_pfjets[0]->momentum;
 							TLorentzVector j1 = ra3_pfjets[1]->momentum;
@@ -2252,14 +2463,14 @@ void SusyMainAna::Loop() {
 						Counters[string("are in usb region")+s_forTopo[iTopo]]++;
 
 						lha2[s_EventTopology[iTopo]]["MET"][2]->Fill(corrmet);
-						lha2[s_EventTopology[iTopo]]["BMET"][2]->Fill(BMET);
+						//lha2[s_EventTopology[iTopo]]["BMET"][2]->Fill(BMET);
 						lha2[s_EventTopology[iTopo]]["ST"][2]->Fill(myST);
-						lha2[s_EventTopology[iTopo]]["BST"][2]->Fill(BST);
+						//lha2[s_EventTopology[iTopo]]["BST"][2]->Fill(BST);
 						lha2[s_EventTopology[iTopo]]["HT"][2]->Fill(HT_all);
-						lha2[s_EventTopology[iTopo]]["BuHT"][2]->Fill(BuHT);
+						//lha2[s_EventTopology[iTopo]]["BuHT"][2]->Fill(BuHT);
 						lha2[s_EventTopology[iTopo]]["LHT"][2]->Fill(LHT_all);
 						lha2[s_EventTopology[iTopo]]["Bt"][2]->Fill(BT_all);
-						lha2[s_EventTopology[iTopo]]["BBt"][2]->Fill(BBt);
+						//lha2[s_EventTopology[iTopo]]["BBt"][2]->Fill(BBt);
 //                                                lha2[s_EventTopology[iTopo]]["BTL"][2]->Fill(BT[0]);
 //                                                lha2[s_EventTopology[iTopo]]["BTM"][2]->Fill(BT[1]);
 //                                                lha2[s_EventTopology[iTopo]]["BTT"][2]->Fill(BT[2]);
@@ -2267,6 +2478,8 @@ void SusyMainAna::Loop() {
 						lha2[s_EventTopology[iTopo]]["LepT"][2]->Fill(myLeptonST);
                                                 for(std::vector<susy::Electron*>::iterator m_it = EGLooseEles.begin(); m_it != EGLooseEles.end(); m_it++) {
                                                         lha2[s_EventTopology[iTopo]]["LepPt"][2]->Fill((*m_it)->momentum.Et());
+                                                        lha2[s_EventTopology[iTopo]]["Mphoele"][2]->Fill( ((*m_it)->momentum + p0).M());
+                                                        lha2[s_EventTopology[iTopo]]["Mphoele"][2]->Fill( ((*m_it)->momentum + p1).M());
                                                 }
                                                 for(std::vector<susy::Muon*>::iterator m_it = Muons.begin(); m_it != Muons.end(); m_it++){
                                                         lha2[s_EventTopology[iTopo]]["LepPt"][2]->Fill((*m_it)->momentum.Et());
@@ -2277,9 +2490,10 @@ void SusyMainAna::Loop() {
 //                                                lha2[s_EventTopology[iTopo]]["dPhiHG_prime"][2]->Fill(dPhiHG_prime);
 //                                                lha2[s_EventTopology[iTopo]]["HLMGt"][2]->Fill(HLMGt);
 						lha2[s_EventTopology[iTopo]]["PtGG"][2]->Fill(ptgg);
+						lha2[s_EventTopology[iTopo]]["PtGGPtBB"][2]->Fill(ptgg+PtBB);
 
-						lha2[s_EventTopology[iTopo]]["BPtGG"][2]->Fill(BPtGG);
-						lha2[s_EventTopology[iTopo]]["phoHness"][2]->Fill(phoHness);
+						//lha2[s_EventTopology[iTopo]]["BPtGG"][2]->Fill(BPtGG);
+						//lha2[s_EventTopology[iTopo]]["phoHness"][2]->Fill(phoHness);
 						//lha2[s_EventTopology[iTopo]]["PhiGG"][2]->Fill(phi_0_2pi(gg.Phi()));
 						//lha2[s_EventTopology[iTopo]]["EtaGG"][2]->Fill(gg.Eta());
 						lha2[s_EventTopology[iTopo]]["phoPt0"][2]->Fill(p0.Pt());
@@ -2294,11 +2508,19 @@ void SusyMainAna::Loop() {
 						lha2[s_EventTopology[iTopo]]["phoDEta"][2]->Fill(fabs(p0.Eta()-p1.Eta()));
 						lha2[s_EventTopology[iTopo]]["nJets"][2]->Fill((float)ra3_pfjets.size());
 						lha2[s_EventTopology[iTopo]]["nLFjets"][2]->Fill((float)nLFjets);
-						lha2[s_EventTopology[iTopo]]["Bunjets"][2]->Fill((float)Bunjets);
+						//lha2[s_EventTopology[iTopo]]["Bunjets"][2]->Fill((float)Bunjets);
 						lha2[s_EventTopology[iTopo]]["nBjets"][2]->Fill((float)pfBJetsLoose.size());
-						lha2[s_EventTopology[iTopo]]["BnBjets"][2]->Fill((float)BnBjets);
+						//lha2[s_EventTopology[iTopo]]["BnBjets"][2]->Fill((float)BnBjets);
 						lha2[s_EventTopology[iTopo]]["bestMbb"][2]->Fill(bestMbb);
 						lha2[s_EventTopology[iTopo]]["bestMjj"][2]->Fill(bestMjj);
+                                                lha2[s_EventTopology[iTopo]]["bjetDR"][2]->Fill(bjetDR);
+						lha2[s_EventTopology[iTopo]]["PtBB"][2]->Fill(PtBB);
+                                                lha2[s_EventTopology[iTopo]]["bjetDPhi"][2]->Fill(bjetDPhi);
+                                                lha2[s_EventTopology[iTopo]]["bjetEtaMax"][2]->Fill(bjetEtaMax);
+                                                lha2[s_EventTopology[iTopo]]["phobDRMin"][2]->Fill(phobDRMin);
+                                                lha2[s_EventTopology[iTopo]]["MphobMin"][2]->Fill(MphobMin);
+                                                lha2[s_EventTopology[iTopo]]["phobDPhiMax"][2]->Fill(phobDPhiMax);
+
 
 						{int tempsize = ra3_pfjets.size();
 						for(int i=0;i<tempsize-1;i++){
@@ -2320,9 +2542,19 @@ void SusyMainAna::Loop() {
 //						lha2[s_EventTopology[iTopo]]["MTphoMET"][2]->Fill(MTg0Met);
 //						lha2[s_EventTopology[iTopo]]["MTphoMET"][2]->Fill(MTg1Met);
 						lha2[s_EventTopology[iTopo]]["MTggMET"][2]->Fill(MTggMET);
-//						lha2[s_EventTopology[iTopo]]["cosThetaStar"][2]->Fill(cosTheta);
+						lha2[s_EventTopology[iTopo]]["MTphoMet"][2]->Fill(sqrt(2* corrmet* p0.Pt() *( 1-cos(p0.Phi() - metPhi) ) ));
+						lha2[s_EventTopology[iTopo]]["MTphoMet"][2]->Fill(sqrt(2* corrmet* p1.Pt() *( 1-cos(p1.Phi() - metPhi) ) ));
+						lha2[s_EventTopology[iTopo]]["phometDPhi"][2]->Fill(phi_0_2pi(dPhi(metPhi,p0.Phi())));
+						lha2[s_EventTopology[iTopo]]["phometDPhi"][2]->Fill(phi_0_2pi(dPhi(metPhi,p1.Phi())));
+
+
+
+						lha2[s_EventTopology[iTopo]]["PhocosThetaStar"][2]->Fill(PhocosThetaStar);
+						lha2[s_EventTopology[iTopo]]["JetcosThetaStar"][2]->Fill(JetcosThetaStar);
+						lha2[s_EventTopology[iTopo]]["HHcosThetaStar"][2]->Fill(HHcosThetaStar);
 
 						lha2[s_EventTopology[iTopo]]["phoDPhi"][2]->Fill(phodPhi);
+						lha2[s_EventTopology[iTopo]]["phoDR"][2]->Fill(phoDR);
 //						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][2]->Fill(dPhiPho0Met);
 //						lha2[s_EventTopology[iTopo]]["dPhiPhoMet"][2]->Fill(dPhiPho1Met);
 
@@ -2333,6 +2565,12 @@ void SusyMainAna::Loop() {
 							lha2[s_EventTopology[iTopo]]["jetPhi"][2]->Fill(phi_0_2pi((*it)->momentum.Phi() ));
 							lha2[s_EventTopology[iTopo]]["dPhiJetMet"][2]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
 						}
+						for(std::vector<susy::PFJet*>::iterator it = pfLFJetsLoose.begin();     it != pfLFJetsLoose.end(); it++) {
+							lha2[s_EventTopology[iTopo]]["phobDR"][2]->Fill(dR((*it)->momentum.Pt(),p0));
+							lha2[s_EventTopology[iTopo]]["phobDR"][2]->Fill(dR((*it)->momentum.Pt(),p1));
+							lha2[s_EventTopology[iTopo]]["bjetmetDPhi"][2]->Fill(phi_0_2pi(dPhi(metPhi,(*it)->momentum.Phi() )));//
+						}
+						lha2[s_EventTopology[iTopo]]["metfit"][2]->Fill(metfit);
 						if (ra3_pfjets.size()>=2) {
 							TLorentzVector j0 = ra3_pfjets[0]->momentum;
 							TLorentzVector j1 = ra3_pfjets[1]->momentum;
